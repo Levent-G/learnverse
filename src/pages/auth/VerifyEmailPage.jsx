@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { notify } from "../../utils/notify";
+import Page from "../../components/page/Page";
 
 export default function VerifyEmailPage() {
   const [searchParams] = useSearchParams();
@@ -21,7 +22,6 @@ export default function VerifyEmailPage() {
           setStatus("success");
           notify("Hesabınız başarıyla aktifleştirildi!", "success");
 
-          // İstersen 3 saniye sonra login sayfasına yönlendir
           setTimeout(() => {
             navigate("/login");
           }, 3000);
@@ -38,10 +38,18 @@ export default function VerifyEmailPage() {
   if (status === "loading") return <p>Doğrulama yapılıyor...</p>;
   if (status === "success")
     return (
-      <p>Hesabınız aktifleştirildi. Giriş sayfasına yönlendiriliyorsunuz...</p>
+      <Page title="Hata">
+        <p>
+          Hesabınız aktifleştirildi. Giriş sayfasına yönlendiriliyorsunuz...
+        </p>
+      </Page>
     );
   if (status === "error")
-    return <p>Geçersiz veya süresi dolmuş doğrulama linki.</p>;
+    return (
+      <Page title="Hata">
+        <p>Geçersiz veya süresi dolmuş doğrulama linki.</p>
+      </Page>
+    );
 
   return null;
 }

@@ -24,6 +24,7 @@ function App() {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, []);
+
   return (
     <AuthProvider>
       <Router>

@@ -11,10 +11,10 @@ export default function VerifyAccount() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState(null);
-  const hasRun = useRef(false); // 👈 Burası önemli
+  const hasRun = useRef(false); 
 
   useEffect(() => {
-    if (hasRun.current) return; // 👈 2. çalışmayı engelle
+    if (hasRun.current) return; 
     hasRun.current = true;
 
     const token = searchParams.get("token");

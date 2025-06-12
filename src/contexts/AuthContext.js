@@ -30,7 +30,6 @@ export function AuthProvider({ children }) {
         };
       }
 
-      // Token'ı localStorage veya context içinde saklayabilirsin
       localStorage.setItem("authToken", token);
 
       setCurrentUser({
@@ -54,7 +53,6 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     setLoading(true);
     try {
-      // Gerçek uygulamada logout servisi varsa buraya ekle
       localStorage.removeItem("authToken");
 
       setCurrentUser(null);

@@ -29,7 +29,7 @@ export default function Register() {
         "success"
       );
 
-      setTimeout(() => navigate("/eposta-dogrulama"), 2000); // yeni yönlendirme
+      setTimeout(() => navigate("/eposta-dogrulama"), 2000); 
     } catch (err) {
       notify(
         "Kayıt başarısız: " +
