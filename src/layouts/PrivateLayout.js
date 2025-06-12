@@ -16,9 +16,13 @@ import {
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import LogoutIcon from "@mui/icons-material/Logout";
+import SchoolIcon from "@mui/icons-material/School";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import QuizIcon from "@mui/icons-material/Quiz";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { useAuth } from "../contexts/AuthContext";
 import { notify } from "../utils/notify";
-
 const drawerWidth = 240;
 
 function PrivateLayout({ children }) {
@@ -29,6 +33,19 @@ function PrivateLayout({ children }) {
 
   const menuItems = [
     { label: "Ana Sayfa", icon: <HomeIcon />, path: "/ana-sayfa" },
+    {
+      label: "Kelime Kartları",
+      icon: <SchoolIcon />,
+      path: "/feature/kelime-kartlari",
+    },
+    {
+      label: "Kalıp Cümleler",
+      icon: <MenuBookIcon />,
+      path: "/feature/kalip-cumleler",
+    },
+    { label: "Quizler", icon: <QuizIcon />, path: "/feature/quizler" },
+    { label: "Topluluk", icon: <PeopleAltIcon />, path: "/feature/topluluk" },
+    { label: "AI Asistan", icon: <SmartToyIcon />, path: "/feature/ai-asistan" },
   ];
 
   const handleLogout = async () => {
@@ -45,10 +62,7 @@ function PrivateLayout({ children }) {
     <Box
       sx={{
         display: "flex",
-        height: "100vh",
-        width: "100vw",
-        overflow: "hidden",
-        backgroundColor: "#fefefe", // login sayfasına uyumlu açık renk
+        backgroundColor: "#fefefe",
       }}
     >
       <CssBaseline />
@@ -156,7 +170,13 @@ function PrivateLayout({ children }) {
                 letterSpacing: 1,
               }}
             >
-              <Box>LearnVerse</Box>
+              <Box>
+                <img
+                  src="/logo.png"
+                  alt="LearnVerse Logo"
+                  style={{ height: 40 }}
+                />
+              </Box>
             </Toolbar>
           </AppBar>
         )}
@@ -216,7 +236,7 @@ function PrivateLayout({ children }) {
           </Box>
         )}
 
-        <Box sx={{ padding: 3, flex: 1 }}>{children}</Box>
+        <Box sx={{ flex: 1, overflowY: "auto" }}>{children}</Box>
       </Box>
     </Box>
   );

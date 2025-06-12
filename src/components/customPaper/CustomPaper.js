@@ -5,7 +5,7 @@ const CustomPaper = ({ sx, title, altTitle, children }) => {
     <Paper
       elevation={3}
       sx={{
-        p: 4,
+        p: 7,
         borderRadius: 3,
         backgroundColor: "#ffffff",
         boxShadow: "0 10px 30px rgba(74, 144, 226, 0.15)", // mavi gölge

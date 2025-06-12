@@ -11,6 +11,12 @@ import EmailVerificationNotice from "./pages/auth/EmailVerificationNotice";
 import VerifyAccount from "./pages/auth/VerifyAccount";
 import { useEffect } from "react";
 import ResetPassword from "./pages/auth/ResetPassword";
+import KelimeKartlari from "./pages/features/kelimeKartlari/KelimeKartlari";
+import Quizler from "./pages/features/quizler/Quizler";
+import Topluluk from "./pages/features/topluluk/Topluluk";
+import AIAsistan from "./pages/features/aiAsistan/AIAsistan";
+import KalipCumleler from "./pages/features/kalipCumleler/KalipCumleler";
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   useEffect(() => {
@@ -29,6 +35,8 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
+          <Route path="/" element={<LandingPage />} />
+
           <Route path="/login" element={<Login />} />
           <Route path="/kayit" element={<Register />} />
           <Route path="/auth/verify" element={<VerifyEmailPage />} />
@@ -46,6 +54,17 @@ function App() {
                 <PrivateLayout>
                   <Routes>
                     <Route path="/ana-sayfa" element={<DashBoard />} />
+                    <Route
+                      path="/feature/kelime-kartlari"
+                      element={<KelimeKartlari />}
+                    />
+                    <Route
+                      path="/feature/kalip-cumleler"
+                      element={<KalipCumleler />}
+                    />
+                    <Route path="/feature/quizler" element={<Quizler />} />
+                    <Route path="/feature/topluluk" element={<Topluluk />} />
+                    <Route path="/feature/ai-asistan" element={<AIAsistan />} />
                   </Routes>
                 </PrivateLayout>
               </PrivateRoute>
