@@ -199,7 +199,8 @@ function PrivateLayout({ children }) {
                   sx={{
                     flex: 1,
                     textAlign: "center",
-                    py: 1,
+                    py: 2,
+                    px:1,
                     textDecoration: "none",
                     color: location.pathname === item.path ? "#9b59b6" : "#555",
                     borderBottom:

@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
 import PrivateLayout from "./layouts/PrivateLayout";
 import { ToastContainer } from "react-toastify";
-import DashBoard from "./pages/Dashboard";
 import Login from "./pages/auth/Login";
 import { AuthProvider } from "./contexts/AuthContext"; // BURADA EKLENMİŞ
 import Register from "./pages/auth/Register";
@@ -17,6 +16,7 @@ import Topluluk from "./pages/features/topluluk/Topluluk";
 import AIAsistan from "./pages/features/aiAsistan/AIAsistan";
 import KalipCumleler from "./pages/features/kalipCumleler/KalipCumleler";
 import LandingPage from "./pages/landingPage/LandingPage";
+import Dashboard from "./pages/dashboard/Dashboard";
 function App() {
   useEffect(() => {
     const handleBeforeUnload = () => {
@@ -52,7 +52,7 @@ function App() {
               <PrivateRoute>
                 <PrivateLayout>
                   <Routes>
-                    <Route path="/ana-sayfa" element={<DashBoard />} />
+                    <Route path="/ana-sayfa" element={<Dashboard />} />
                     <Route
                       path="/feature/kelime-kartlari"
                       element={<KelimeKartlari />}
