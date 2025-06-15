@@ -16,8 +16,7 @@ import Quizler from "./pages/features/quizler/Quizler";
 import Topluluk from "./pages/features/topluluk/Topluluk";
 import AIAsistan from "./pages/features/aiAsistan/AIAsistan";
 import KalipCumleler from "./pages/features/kalipCumleler/KalipCumleler";
-import LandingPage from "./pages/LandingPage";
-
+import LandingPage from "./pages/landingPage/LandingPage";
 function App() {
   useEffect(() => {
     const handleBeforeUnload = () => {
