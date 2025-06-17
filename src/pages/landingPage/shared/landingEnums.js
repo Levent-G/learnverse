@@ -5,6 +5,11 @@ import {
   Category,
   Brightness4,
   PhoneAndroid,
+  Timeline,
+  SmartToy,
+  School,
+  CheckCircle,
+  Star,
 } from "@mui/icons-material";
 
 export const features = [
@@ -103,4 +108,21 @@ export const generalFeatures = [
   "Gelişmiş yapay zeka algoritmalarıyla kişiselleştirme.",
   "Platformlar arası senkronizasyon ve otomatik kayıt.",
   "Gizlilik ve veri güvenliğine maksimum önem.",
+];
+export const iconListFeaturesCards = [
+  <LibraryBooks fontSize="large" key="icon1" />,
+  <Timeline fontSize="large" key="icon2" />,
+  <SmartToy fontSize="large" key="icon3" />,
+  <School fontSize="large" key="icon4" />,
+  <CheckCircle fontSize="large" key="icon5" />,
+  <Star fontSize="large" key="icon6" />,
+];
+
+export const iconListFeatures = [
+  <LibraryBooks fontSize="large" key="icon1" />,
+  <VolumeUp fontSize="large" key="icon2" />,
+  <Quiz fontSize="large" key="icon3" />,
+  <Category fontSize="large" key="icon4" />,
+  <Brightness4 fontSize="large" key="icon5" />,
+  <PhoneAndroid fontSize="large" key="icon6" />,
 ];

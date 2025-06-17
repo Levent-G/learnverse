@@ -9,9 +9,11 @@ import CustomButton from "../../components/customButton/CustomButton";
 import PasswordMatchHelper from "./PasswordMatchHelper";
 import { registerSchema } from "./authSchema";
 import { notify } from "../../utils/notify";
+import { useColors } from "../../context/ColorContext";
 
 export default function Register() {
   const navigate = useNavigate();
+  const { colors } = useColors();
 
   const handleRegister = async (data) => {
     try {
@@ -29,7 +31,7 @@ export default function Register() {
         "success"
       );
 
-      setTimeout(() => navigate("/eposta-dogrulama"), 2000); 
+      setTimeout(() => navigate("/eposta-dogrulama"), 2000);
     } catch (err) {
       notify(
         "Kayıt başarısız: " +
@@ -44,6 +46,9 @@ export default function Register() {
     <Page
       title={"Learnverse"}
       altTitle={"Hoş geldiniz! Kayıt olmak için bilgilerinizi girin."}
+      sx={{
+        background: `linear-gradient(135deg, ${colors.primaryLight}, #ffffff)`,
+      }}
     >
       <Form schema={registerSchema} onSubmit={handleRegister} customButton>
         <CustomInput
@@ -64,12 +69,7 @@ export default function Register() {
           name="username"
           autoComplete="username"
         />
-        <CustomInput
-          key="email"
-          label="Email"
-          name="email"
-          autoComplete="email"
-        />
+        <CustomInput key="email" label="Email" name="email" autoComplete="email" />
         <CustomInput
           key="age"
           label="Yaş"
@@ -101,7 +101,7 @@ export default function Register() {
             sx={{
               border: "none",
               background: "none",
-              color: "#9b59b6",
+              color: colors.primary,
               cursor: "pointer",
               fontSize: "0.85rem",
               textDecoration: "underline",

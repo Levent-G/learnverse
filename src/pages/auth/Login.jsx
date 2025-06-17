@@ -9,8 +9,11 @@ import { loginSchema } from "./authSchema";
 import { notify } from "../../utils/notify";
 import { useAuth } from "../../contexts/AuthContext";
 import ForgotPasswordModal from "./ForgotPasswordModal";
+import { useColors } from "../../context/ColorContext";
 
 export default function Login() {
+  const { colors } = useColors();
+
   const [forgotOpen, setForgotOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -58,10 +61,14 @@ export default function Login() {
             sx={{
               border: "none",
               background: "none",
-              color: "#9b59b6",
+              color: colors.primary, // Burada palette'den renk kullandık
               cursor: "pointer",
               fontSize: "0.8rem",
               textDecoration: "underline",
+              "&:hover": {
+                color: colors.primaryDark, // Hover rengini biraz koyultabiliriz
+              },
+              transition: "color 0.3s ease",
             }}
           >
             Şifremi Unuttum
@@ -75,11 +82,30 @@ export default function Login() {
               onClick={() => navigate("/kayit")}
               variant="outlined"
               text="Kayıt Ol"
+              sx={{
+                borderColor: colors.primary,
+                color: colors.primary,
+                "&:hover": {
+                  backgroundColor: colors.primaryLight,
+                  borderColor: colors.primaryLight,
+                },
+              }}
             />
-            <CustomButton type="submit" variant="contained" text="Giriş Yap" />
+            <CustomButton
+              type="submit"
+              variant="contained"
+              text="Giriş Yap"
+              sx={{
+                backgroundColor: colors.primary,
+                "&:hover": {
+                  backgroundColor: colors.primaryDark,
+                },
+              }}
+            />
           </Box>
         </Box>
       </Form>
+
       <ForgotPasswordModal
         open={forgotOpen}
         onClose={() => setForgotOpen(false)}

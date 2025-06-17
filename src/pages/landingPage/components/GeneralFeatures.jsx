@@ -1,35 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { Box, Typography, List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import {
+  Box,
+  Typography,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../../firebase/config";
+import { useFetchData } from "../../../hooks/useFetchData";
 
 const GeneralFeatures = () => {
-  const [title, setTitle] = useState("");
-  const [features, setFeatures] = useState([]);
+  const [data, error] = useFetchData("generalfeatures");
 
-  useEffect(() => {
-    async function fetchFeatures() {
-      try {
-        const docRef = doc(db, "pages", "learnverse", "fields", "generalfeatures");
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setTitle(data.title || "Learnverse Genel Özellikleri");
-          setFeatures(data.ozellikler || []);
-        } else {
-          console.log("generalfeatures dokümanı bulunamadı");
-        }
-      } catch (error) {
-        console.error("Veri çekme hatası:", error);
-      } finally {
-      }
-    }
-    fetchFeatures();
-  }, []);
-
-
-  return (
+  return !error ? (
     <Box textAlign="center" my={8}>
       <Typography
         variant="h3"
@@ -43,7 +26,7 @@ const GeneralFeatures = () => {
           mb: 5,
         }}
       >
-        {title}
+        {data?.title}
       </Typography>
 
       <List
@@ -52,7 +35,7 @@ const GeneralFeatures = () => {
           mx: "auto",
         }}
       >
-        {features.map((feature, idx) => (
+        {data?.ozellikler.map((feature, idx) => (
           <ListItem
             key={idx}
             sx={{
@@ -79,6 +62,13 @@ const GeneralFeatures = () => {
         ))}
       </List>
     </Box>
+  ) : (
+    <Typography
+      fontSize="1.5rem"
+      sx={{ fontWeight: 800, color: "red", textAlign: "center" }}
+    >
+      Sayfa Yüklenirken Hata Oluştu
+    </Typography>
   );
 };
 

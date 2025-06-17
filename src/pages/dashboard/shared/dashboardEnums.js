@@ -105,3 +105,54 @@ export const otherUsersProgress = [
   { name: "Mehmet", progress: 65 },
   { name: "Ayşe", progress: 90 },
 ];
+
+export const tasksData = [
+  {
+    title: "Günlük Görev",
+    tasks: [
+      "📘 10 kelime kartı tekrarla",
+      "🧠 1 quiz çöz",
+      "🎧 1 podcast dinle",
+    ],
+    buttonText: "Ek görev al",
+    route: "/feature/quizler",
+  },
+  {
+    title: "Öneri",
+    tasks: [
+      "📖 “The Curious Incident...” kitabına başla",
+      "💬 “How do you feel?” kalıbını tekrar et",
+    ],
+    buttonText: "Daha fazla öneri al",
+    route: "/feature/quizler",
+  },
+  {
+    title: "Mini Test",
+    tasks: ["📌 Bugünkü test hazır!"],
+    buttonText: "Teste Başla",
+    route: "/feature/quizler",
+  },
+];
+
+export const featuresModul = [
+  // Örnek veri, sen kendi dashboardEnums'dan getirebilirsin
+  {
+    path: "/module1",
+    icon: "📚",
+    title: "Temel İngilizce",
+    description: "İngilizce öğrenmeye giriş için temel dersler",
+  },
+  {
+    path: "/module2",
+    icon: "🗣️",
+    title: "Konuşma Pratiği",
+    description: "Günlük konuşma kalıplarını öğren ve uygula",
+  },
+  {
+    path: "/module3",
+    icon: "📝",
+    title: "Dil Bilgisi",
+    description: "Gramer kurallarını kolay ve hızlı öğren",
+  },
+];
+

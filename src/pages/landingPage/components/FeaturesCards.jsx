@@ -1,73 +1,51 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
-import { doc, getDoc} from "firebase/firestore";
-import {
-  LibraryBooks,
-  Timeline,
-  SmartToy,
-  School,
-  CheckCircle,
-  Star,
-} from "@mui/icons-material";
-import { db } from "../../../firebase/config";
-
-const iconList = [
-  <LibraryBooks fontSize="large" key="icon1" />,
-  <Timeline fontSize="large" key="icon2" />,
-  <SmartToy fontSize="large" key="icon3" />,
-  <School fontSize="large" key="icon4" />,
-  <CheckCircle fontSize="large" key="icon5" />,
-  <Star fontSize="large" key="icon6" />,
-];
+import { useFetchData } from "../../../hooks/useFetchData";
+import { iconListFeaturesCards } from "../shared/landingEnums";
 
 const FeaturesCards = ({ darkMode }) => {
+  const [data, error] = useFetchData("featurescards");
+
   const [cards, setCards] = useState([]);
 
+  //db den cards tutulma şekli düzeltilcek
   useEffect(() => {
     const fetchCards = async () => {
       try {
-        const docRef = doc(db, "pages", "learnverse", "fields", "featurescards");
-        const docSnap = await getDoc(docRef);
+        if (!data) return;
+        // card1, card2, ... her biri array içinde tek obje
+        const cardsObj = Object.keys(data)
+          .filter((key) => key.startsWith("card"))
+          .sort(
+            (a, b) =>
+              parseInt(a.replace("card", "")) - parseInt(b.replace("card", ""))
+          )
+          .map((key, index) => {
+            const cardData =
+              Array.isArray(data[key]) && data[key][0] ? data[key][0] : {};
 
-        if (docSnap.exists()) {
-          const data = docSnap.data();
+            return {
+              id: key,
+              icon: iconListFeaturesCards[index % iconListFeaturesCards.length],
+              title: cardData.title ?? "Başlık yok",
+              value: cardData.desc ?? "Açıklama yok",
+              bgLightColor: cardData.bgLightColor ?? "#fff",
+              textLightColor: cardData.textLightColor ?? "#000",
+              bgDarkColor: cardData.bgDarkColor ?? "#000",
+              textDarkColor: cardData.textDarkColor ?? "#fff",
+            };
+          });
 
-          // card1, card2, ... her biri array içinde tek obje
-          const cardsObj = Object.entries(data)
-            .filter(([key]) => key.startsWith("card"))
-            .sort(([a], [b]) => {
-              const aNum = parseInt(a.replace("card", ""));
-              const bNum = parseInt(b.replace("card", ""));
-              return aNum - bNum;
-            })
-            .map(([key, cardArray], index) => {
-              const cardData = Array.isArray(cardArray) && cardArray.length > 0 ? cardArray[0] : {};
-
-              return {
-                id: key,
-                icon: iconList[index % iconList.length],
-                title: cardData.title || "Başlık yok",
-                value: cardData.desc || "Açıklama yok", // desc olarak güncelledik
-                bgLightColor: cardData.bgLightColor || "#fff",
-                textLightColor: cardData.textLightColor || "#000",
-                bgDarkColor: cardData.bgDarkColor || "#000",
-                textDarkColor: cardData.textDarkColor || "#fff",
-              };
-            });
-
-          setCards(cardsObj);
-        } else {
-          console.warn("featurescards belgesi bulunamadı.");
-        }
+        setCards(cardsObj);
       } catch (error) {
         console.error("Veri çekme hatası:", error);
       }
     };
 
     fetchCards();
-  }, []);
+  }, [data]);
 
-  return (
+  return !error ? (
     <Box
       id="features-cards"
       sx={{
@@ -107,15 +85,21 @@ const FeaturesCards = ({ darkMode }) => {
             {card.title}
           </Typography>
 
-          <Typography
-            variant="body2"
-            sx={{ opacity: 0.9, fontSize: "1rem" }}
-          >
-            {card.value.length > 70 ? `${card.value.slice(0, 70)}...` : card.value}
+          <Typography variant="body2" sx={{ opacity: 0.9, fontSize: "1rem" }}>
+            {card.value.length > 70
+              ? `${card.value.slice(0, 70)}...`
+              : card.value}
           </Typography>
         </Box>
       ))}
     </Box>
+  ) : (
+    <Typography
+      fontSize="1.5rem"
+      sx={{ fontWeight: 800, color: "red", textAlign: "center" }}
+    >
+      Sayfa Yüklenirken Hata Oluştu
+    </Typography>
   );
 };
 

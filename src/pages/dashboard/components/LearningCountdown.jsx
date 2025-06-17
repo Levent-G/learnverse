@@ -5,12 +5,13 @@ import {
   Typography,
   CircularProgress,
   Stack,
-  useTheme,
 } from "@mui/material";
 import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
+import { useColors } from "../../../context/ColorContext";
 
 const LearningProgressCard = ({ completed = 72, target = 100 }) => {
-  const theme = useTheme();
+  const {colors} = useColors();
+  
   const remaining = target - completed;
   const progressPercent = (completed / target) * 100;
 
@@ -20,8 +21,8 @@ const LearningProgressCard = ({ completed = 72, target = 100 }) => {
         mx: "auto",
         p: 4,
         borderRadius: 3,
-        boxShadow: "0 6px 20px rgba(37, 99, 235, 0.15)",
-        background: `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.primary.main} 100%)`,
+        boxShadow: "0 6px 20px rgba(108, 99, 255, 0.15)", // primary rengin transparan gölgesi
+        background: `linear-gradient(135deg, ${colors.primaryLight} 0%, ${colors.primary} 100%)`,
         color: "#fff",
       }}
       elevation={8}

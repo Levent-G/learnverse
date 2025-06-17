@@ -1,47 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { Box, List, ListItem, Paper, Typography } from "@mui/material";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../../firebase/config";
+import { useFetchData } from "../../../hooks/useFetchData";
 
 const GeneralAnalyses = ({ darkMode }) => {
-  const [title, setTitle] = useState("");
   const [cards, setCards] = useState([]);
+
+  const [data, error] = useFetchData("generalanalyses");
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const docRef = doc(db, "pages", "learnverse", "fields", "generalanalyses");
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-
-          setTitle(data.title || "");
-
-          const tempCards = [];
-          for (let i = 1; i <= 6; i++) {
-            const key = i === 4 ? "card4v2" : `card${i}`;
-            const cardArr = data[key];
-            if (Array.isArray(cardArr) && cardArr.length > 0) {
-              tempCards.push(cardArr); 
-            } else {
-              tempCards.push([]); 
-            }
+        const tempCards = [];
+        for (let i = 1; i <= 6; i++) {
+          const key = i === 4 ? "card4v2" : `card${i}`;
+          const cardArr = data[key];
+          if (Array.isArray(cardArr) && cardArr.length > 0) {
+            tempCards.push(cardArr);
+          } else {
+            tempCards.push([]);
           }
-          setCards(tempCards);
-        } else {
-          console.log("GeneralAnalyses dokümanı bulunamadı!");
         }
+        setCards(tempCards);
       } catch (error) {
         console.error("Veri çekme hatası:", error);
       } finally {
       }
     }
     fetchData();
-  }, []);
+  }, [data]);
 
- 
-
-  return (
+  return !error ? (
     <Box
       id="general-analyses"
       sx={{
@@ -67,7 +55,7 @@ const GeneralAnalyses = ({ darkMode }) => {
           },
         }}
       >
-        {title}
+        {data?.title}
       </Typography>
 
       <Box
@@ -110,7 +98,7 @@ const GeneralAnalyses = ({ darkMode }) => {
             >
               {cardItems.map((item, idx) => (
                 <ListItem key={idx} disablePadding>
-                 {item.value}
+                  {item.value}
                 </ListItem>
               ))}
             </List>
@@ -118,6 +106,13 @@ const GeneralAnalyses = ({ darkMode }) => {
         ))}
       </Box>
     </Box>
+  ) : (
+    <Typography
+      fontSize="1.5rem"
+      sx={{ fontWeight: 800, color: "red", textAlign: "center", mt: 4 }}
+    >
+      Sayfa Yüklenirken Hata Oluştu
+    </Typography>
   );
 };
 

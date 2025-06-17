@@ -23,9 +23,12 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { useAuth } from "../contexts/AuthContext";
 import { notify } from "../utils/notify";
+import { useColors } from "../context/ColorContext";
+
 const drawerWidth = 240;
 
 function PrivateLayout({ children }) {
+  const { colors } = useColors();
   const isMobile = useMediaQuery("(max-width:800px)");
   const location = useLocation();
   const navigate = useNavigate();
@@ -33,16 +36,8 @@ function PrivateLayout({ children }) {
 
   const menuItems = [
     { label: "Ana Sayfa", icon: <HomeIcon />, path: "/ana-sayfa" },
-    {
-      label: "Kelime Kartları",
-      icon: <SchoolIcon />,
-      path: "/feature/kelime-kartlari",
-    },
-    {
-      label: "Kalıp Cümleler",
-      icon: <MenuBookIcon />,
-      path: "/feature/kalip-cumleler",
-    },
+    { label: "Kelime Kartları", icon: <SchoolIcon />, path: "/feature/kelime-kartlari" },
+    { label: "Kalıp Cümleler", icon: <MenuBookIcon />, path: "/feature/kalip-cumleler" },
     { label: "Quizler", icon: <QuizIcon />, path: "/feature/quizler" },
     { label: "Topluluk", icon: <PeopleAltIcon />, path: "/feature/topluluk" },
     { label: "AI Asistan", icon: <SmartToyIcon />, path: "/feature/ai-asistan" },
@@ -62,7 +57,8 @@ function PrivateLayout({ children }) {
     <Box
       sx={{
         display: "flex",
-        backgroundColor: "#fefefe",
+        backgroundColor: colors.neutralLight,
+        minHeight: "100vh",
       }}
     >
       <CssBaseline />
@@ -76,8 +72,7 @@ function PrivateLayout({ children }) {
             "& .MuiDrawer-paper": {
               width: drawerWidth,
               boxSizing: "border-box",
-              backgroundColor: "#fff",
-              borderRight: "1px solid #ddd",
+              backgroundColor: colors.neutralLight,
               paddingTop: 2,
             },
           }}
@@ -88,7 +83,7 @@ function PrivateLayout({ children }) {
               mb: 2,
               fontWeight: "bold",
               fontSize: 20,
-              color: "#4a148c", // mor vurgu #9b59b6'dan biraz koyu daha koyu görünmesi için
+              color: colors.primaryDark,
               letterSpacing: 1,
             }}
           >
@@ -107,11 +102,12 @@ function PrivateLayout({ children }) {
                   my: 1,
                   borderRadius: 2,
                   backgroundColor:
-                    location.pathname === item.path ? "#e1bee7" : "transparent", // açık mor arkaplan
-                  color: location.pathname === item.path ? "#6a1b9a" : "#333", // aktif ise koyu mor, değilse koyu gri
+                    location.pathname === item.path ? colors.secondaryLight : "transparent",
+                  color:
+                    location.pathname === item.path ? colors.secondaryDark : colors.neutralDark,
                   "&:hover": {
-                    backgroundColor: "#ce93d8",
-                    color: "#4a148c",
+                    backgroundColor: colors.secondary,
+                    color: colors.primaryDark,
                   },
                   transition: "all 0.3s ease",
                 }}
@@ -120,7 +116,7 @@ function PrivateLayout({ children }) {
                   sx={{
                     minWidth: 35,
                     color:
-                      location.pathname === item.path ? "#6a1b9a" : "#9c27b0",
+                      location.pathname === item.path ? colors.secondaryDark : colors.primary,
                   }}
                 >
                   {item.icon}
@@ -139,15 +135,15 @@ function PrivateLayout({ children }) {
               startIcon={<LogoutIcon />}
               variant="outlined"
               sx={{
-                color: "#9b59b6",
-                borderColor: "#9b59b6",
+                color: colors.secondaryDark,
+                borderColor: colors.secondaryDark,
                 borderRadius: 3,
                 textTransform: "none",
                 fontWeight: "bold",
                 "&:hover": {
-                  backgroundColor: "#f3e5f5",
-                  borderColor: "#8e24aa",
-                  color: "#6a1b9a",
+                  backgroundColor: colors.secondaryLight,
+                  borderColor: colors.secondary,
+                  color: colors.secondaryDark,
                 },
                 transition: "all 0.3s ease",
               }}
@@ -160,7 +156,7 @@ function PrivateLayout({ children }) {
 
       <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
         {!isMobile && (
-          <AppBar position="static" sx={{ backgroundColor: "#4a148c" }}>
+          <AppBar position="static" sx={{ backgroundColor: colors.primaryDark }}>
             <Toolbar
               sx={{
                 display: "flex",
@@ -171,11 +167,7 @@ function PrivateLayout({ children }) {
               }}
             >
               <Box>
-                <img
-                  src="/logo.png"
-                  alt="LearnVerse Logo"
-                  style={{ height: 40 }}
-                />
+                <img src="/logo.png" alt="LearnVerse Logo" style={{ height: 40 }} />
               </Box>
             </Toolbar>
           </AppBar>
@@ -184,7 +176,7 @@ function PrivateLayout({ children }) {
         {isMobile && (
           <Box
             sx={{
-              backgroundColor: "#fff",
+              backgroundColor: colors.neutralLight,
               boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
               display: "flex",
               flexDirection: "column",
@@ -200,15 +192,15 @@ function PrivateLayout({ children }) {
                     flex: 1,
                     textAlign: "center",
                     py: 2,
-                    px:1,
+                    px: 1,
                     textDecoration: "none",
-                    color: location.pathname === item.path ? "#9b59b6" : "#555",
+                    color: location.pathname === item.path ? colors.secondaryDark : "#555",
                     borderBottom:
                       location.pathname === item.path
-                        ? "2px solid #9b59b6"
+                        ? `2px solid ${colors.secondaryDark}`
                         : "2px solid transparent",
                     "&:hover": {
-                      backgroundColor: "#f9f9f9",
+                      backgroundColor: colors.neutralLight,
                     },
                     transition: "all 0.3s ease",
                   }}
@@ -225,9 +217,9 @@ function PrivateLayout({ children }) {
               startIcon={<LogoutIcon />}
               sx={{
                 py: 1,
-                color: "#9b59b6",
+                color: colors.secondaryDark,
                 fontSize: "0.85rem",
-                borderTop: "1px solid #eee",
+                borderTop: `1px solid ${colors.neutral}`,
                 fontWeight: "bold",
                 textTransform: "none",
               }}

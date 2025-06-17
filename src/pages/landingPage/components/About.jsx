@@ -1,33 +1,10 @@
-
-
 import { Box, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../../firebase/config";
+import { useFetchData } from "../../../hooks/useFetchData";
 
 const About = ({ darkMode }) => {
-  const [aboutData, setAboutData] = useState({ title: "", value: "" });
+  const [data, error] = useFetchData("about");
 
-  useEffect(() => {
-    async function fetchAbout() {
-      try {
-        const docRef = doc(db, "pages", "learnverse", "fields", "about");
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setAboutData(docSnap.data());
-        } else {
-          console.log("About dokümanı bulunamadı!");
-        }
-      } catch (error) {
-        console.error("About verisi çekilirken hata:", error);
-      } finally {
-      }
-    }
-    fetchAbout();
-  }, []);
-
-
-  return (
+  return !error ? (
     <Box
       id="about"
       className="py-24 px-6 mx-auto text-center relative"
@@ -54,7 +31,7 @@ const About = ({ darkMode }) => {
           },
         }}
       >
-        {aboutData.title || "Learnverse Nedir?"}
+        {data?.title || "Learnverse Nedir?"}
         <Box
           component="span"
           sx={{
@@ -81,10 +58,17 @@ const About = ({ darkMode }) => {
           mt: 0,
         }}
       >
-        {aboutData.value ||
+        {data?.value ||
           "Learnverse; interaktif, kullanıcı merkezli ve yapay zeka destekli bir dil öğrenme platformudur. Cümle tamamlama, sesli tekrar, kişisel kart oluşturma gibi araçlarla dil becerilerinizi hızla geliştirmenize yardımcı olur."}
       </Typography>
     </Box>
+  ) : (
+    <Typography
+      fontSize="1.5rem"
+      sx={{ fontWeight: 800, color: "red", textAlign: "center" }}
+    >
+      Sayfa Yüklenirken Hata Oluştu
+    </Typography>
   );
 };
 

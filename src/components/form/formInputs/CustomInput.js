@@ -1,6 +1,7 @@
 import { TextField } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
 import Base from "../base/Base";
+import { useColors } from "../../../context/ColorContext";
 
 export function CustomInput({
   name,
@@ -15,6 +16,7 @@ export function CustomInput({
     control,
     formState: { errors },
   } = useFormContext();
+  const { colors } = useColors();
 
   return (
     <Base {...props}>
@@ -39,12 +41,12 @@ export function CustomInput({
             sx={{
               "& .MuiOutlinedInput-root": {
                 "&.Mui-focused fieldset": {
-                  borderColor: "#9b59b6",
+                  borderColor: colors.primary,
                 },
               },
               "& .MuiInputLabel-root": {
                 "&.Mui-focused": {
-                  color: "#9b59b6",
+                  color: colors.primary,
                 },
               },
               ...props.sx,

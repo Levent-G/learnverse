@@ -1,26 +1,19 @@
 import React from "react";
-import {
-  Box,
-  Card,
-  Grid,
-  LinearProgress,
-  Typography,
-} from "@mui/material";
+import { Box, Card, Grid, LinearProgress, Typography } from "@mui/material";
 import { Translate } from "@mui/icons-material";
-
-const languageLevels = [
-  { language: "İngilizce", level: "Orta", progress: 65 },
-  { language: "Almanca", level: "Başlangıç", progress: 30 },
-];
+import { languageLevels } from "../shared/dashboardEnums";
+import { useColors } from "../../../context/ColorContext";
 
 const DilSeviyesi = () => {
+  const { colors } = useColors();
+
   return (
     <Box mb={6}>
       <Typography
         variant="h5"
         sx={{
           fontWeight: 700,
-          color: "#00695c", // koyu teal (deniz yeşili)
+          color: colors.primaryDark,  // koyu mor-mavi, ciddi ve okunabilir
           mb: 4,
           textAlign: "center",
         }}
@@ -34,7 +27,7 @@ const DilSeviyesi = () => {
             <Card
               elevation={5}
               sx={{
-                backgroundColor: "#b2dfdb", // yumuşak teal-bej ton
+                backgroundColor: colors.neutralLight, // çok açık gri-beyaz
                 borderRadius: 3,
                 height: 140,
                 display: "flex",
@@ -42,17 +35,17 @@ const DilSeviyesi = () => {
                 justifyContent: "center",
                 px: 3,
                 py: 2,
-                boxShadow: "0 6px 16px rgba(0, 105, 92, 0.15)",
+                boxShadow: `0 6px 16px ${colors.primaryLight}33`, // hafif mor-mavi gölge
                 cursor: "default",
               }}
             >
               <Box display="flex" alignItems="center" mb={1}>
-                <Translate sx={{ color: "#004d40", fontSize: 32 }} />
+                <Translate sx={{ color: colors.primary, fontSize: 32 }} />
                 <Typography
                   variant="subtitle1"
                   ml={1.5}
                   fontWeight={600}
-                  color="#004d40"
+                  color={colors.primaryDark}
                 >
                   {language} - Seviye: {level}
                 </Typography>
@@ -64,9 +57,9 @@ const DilSeviyesi = () => {
                 sx={{
                   height: 12,
                   borderRadius: 6,
-                  backgroundColor: "#80cbc4", // açık teal alt bar
+                  backgroundColor: colors.neutral, // orta gri-mavi
                   "& .MuiLinearProgress-bar": {
-                    backgroundColor: "#004d40", // koyu teal bar
+                    backgroundColor: colors.success, // pastel yeşil vurgusu
                   },
                 }}
               />
@@ -75,7 +68,7 @@ const DilSeviyesi = () => {
                 variant="body2"
                 mt={1}
                 fontWeight={600}
-                color="#004d40"
+                color={colors.primaryDark}
                 textAlign="right"
               >
                 %{progress} tamamlandı

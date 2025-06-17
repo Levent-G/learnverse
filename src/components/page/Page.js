@@ -1,8 +1,11 @@
 import React from "react";
 import { Alert, Box, Container } from "@mui/material";
 import CustomPaper from "../customPaper/CustomPaper";
+import { useColors } from "../../context/ColorContext";
 
 const Page = ({ title, altTitle, info, error, sx, children }) => {
+  const { colors } = useColors();
+
   return (
     <Box
       sx={{
@@ -10,9 +13,10 @@ const Page = ({ title, altTitle, info, error, sx, children }) => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(135deg, #f5e8ff, #ffffff)", // Açık mor - beyaz geçişli
+        // Arka planı pastel renk paletindeki tonlarla güncelledim
+        background: `linear-gradient(135deg, ${colors.primaryLight}, ${colors.neutralLight})`,
         fontFamily: "Rubik, sans-serif",
-        px: 2,
+        p: 3,
         ...sx,
       }}
       component="main"
@@ -21,8 +25,8 @@ const Page = ({ title, altTitle, info, error, sx, children }) => {
         <Alert
           severity="info"
           sx={{
-            backgroundColor: "#e3f2fd",
-            color: "#1e1e2f",
+            backgroundColor: colors.primaryLight,
+            color: colors.primaryDark,
             mt: 2,
             mb: 2,
             borderRadius: 2,
@@ -34,7 +38,15 @@ const Page = ({ title, altTitle, info, error, sx, children }) => {
       <Container maxWidth="xs">
         <CustomPaper title={title} altTitle={altTitle}>
           {error && (
-            <Alert severity="error" sx={{ mb: 2, fontSize: "0.85rem" }}>
+            <Alert
+              severity="error"
+              sx={{
+                mb: 2,
+                fontSize: "0.85rem",
+                backgroundColor: colors.error,
+                color: "#fff",
+              }}
+            >
               {error}
             </Alert>
           )}

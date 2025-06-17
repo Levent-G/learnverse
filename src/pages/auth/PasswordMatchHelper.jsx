@@ -1,9 +1,12 @@
 import { Typography } from "@mui/material";
 import React from "react";
 import { useFormContext, useWatch } from "react-hook-form";
+import { useColors } from "../../context/ColorContext";
 
 export default function PasswordMatchHelper() {
   const { control } = useFormContext();
+  const { colors } = useColors();
+
   const password = useWatch({ control, name: "password" });
   const confirmPassword = useWatch({ control, name: "confirmPassword" });
 
@@ -13,13 +16,13 @@ export default function PasswordMatchHelper() {
     <Typography
       variant="caption"
       sx={{
-        color: isMatching ? "green" : "error.main",
+        color: isMatching ? colors.success : colors.error,
         mt: 0.5,
         ml: 0.5,
         fontSize: "0.75rem",
       }}
     >
-      {confirmPassword ? !isMatching && "Şifreler eşleşmiyor" : ""}
+      {confirmPassword ? (!isMatching && "Şifreler eşleşmiyor") : ""}
     </Typography>
   );
 }

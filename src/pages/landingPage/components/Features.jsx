@@ -1,57 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Container, Typography, Grid, Paper } from "@mui/material";
-import {
-  LibraryBooks,
-  VolumeUp,
-  Quiz,
-  Category,
-  Brightness4,
-  PhoneAndroid,
-} from "@mui/icons-material";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../../firebase/config";
-
-const iconList = [
-  <LibraryBooks fontSize="large" key="icon1" />,
-  <VolumeUp fontSize="large" key="icon2" />,
-  <Quiz fontSize="large" key="icon3" />,
-  <Category fontSize="large" key="icon4" />,
-  <Brightness4 fontSize="large" key="icon5" />,
-  <PhoneAndroid fontSize="large" key="icon6" />,
-];
+import { useFetchData } from "../../../hooks/useFetchData";
+import { iconListFeatures } from "../shared/landingEnums";
 
 const Features = ({ darkMode }) => {
   const [features, setFeatures] = useState([]);
 
+  const [data, error] = useFetchData("features");
+
+  //dbden değişicek tutulma şekli
   useEffect(() => {
     async function fetchFeatures() {
       try {
-        const docRef = doc(db, "pages", "learnverse", "fields", "features");
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          const cards = [];
-          for (let i = 1; i <= 6; i++) {
-            const cardArr = data[`card${i}`];
-            if (Array.isArray(cardArr) && cardArr.length > 0) {
-              cards.push(cardArr[0]);
-            }
+        const cards = [];
+        for (let i = 1; i <= 6; i++) {
+          const cardArr = data[`card${i}`];
+          if (Array.isArray(cardArr) && cardArr.length > 0) {
+            cards.push(cardArr[0]);
           }
-          setFeatures(cards);
-        } else {
-          console.log("Features dokümanı bulunamadı!");
         }
+        setFeatures(cards);
       } catch (error) {
         console.error("Features verisi çekilirken hata:", error);
       } finally {
       }
     }
     fetchFeatures();
-  }, []);
+  }, [data]);
 
-
-
-  return (
+  return !error ? (
     <Box
       id="features"
       sx={{
@@ -83,8 +60,12 @@ const Features = ({ darkMode }) => {
                   alignItems: { xs: "flex-start", md: "center" },
                   p: 4,
                   borderRadius: 4,
-                  bgcolor: darkMode ? feature.bgDarkColor : feature.bgLightColor,
-                  color: darkMode ? feature.textDarkColor : feature.textLightColor,
+                  bgcolor: darkMode
+                    ? feature.bgDarkColor
+                    : feature.bgLightColor,
+                  color: darkMode
+                    ? feature.textDarkColor
+                    : feature.textLightColor,
                   boxShadow: darkMode
                     ? "0 8px 20px rgba(0,0,0,0.7)"
                     : "0 8px 24px rgba(0,0,0,0.12)",
@@ -103,12 +84,16 @@ const Features = ({ darkMode }) => {
                     mr: { xs: 0, md: 4 },
                     minWidth: 80,
                     minHeight: 80,
-                    bgcolor: darkMode ? feature.textDarkColor : feature.textLightColor,
+                    bgcolor: darkMode
+                      ? feature.textDarkColor
+                      : feature.textLightColor,
                     borderRadius: 3,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    color: darkMode ? feature.bgDarkColor : feature.bgLightColor,
+                    color: darkMode
+                      ? feature.bgDarkColor
+                      : feature.bgLightColor,
                     fontSize: 48,
                     boxShadow: darkMode
                       ? "0 4px 10px rgba(0,0,0,0.5)"
@@ -118,7 +103,7 @@ const Features = ({ darkMode }) => {
                     flexShrink: 0,
                   }}
                 >
-                  {iconList[i % iconList.length]}
+                  {iconListFeatures[i % iconListFeatures.length]}
                 </Box>
 
                 <Box
@@ -152,11 +137,15 @@ const Features = ({ darkMode }) => {
                       py: 1.3,
                       fontWeight: 700,
                       textTransform: "none",
-                      backgroundColor: darkMode ? feature.bgLightColor : feature.bgDarkColor,
+                      backgroundColor: darkMode
+                        ? feature.bgLightColor
+                        : feature.bgDarkColor,
                       color: darkMode ? "black" : "white",
                       "&:hover": {
                         filter: "brightness(1.1)",
-                        backgroundColor: darkMode ? feature.bgLightColor : feature.bgDarkColor,
+                        backgroundColor: darkMode
+                          ? feature.bgLightColor
+                          : feature.bgDarkColor,
                       },
                     }}
                   >
@@ -169,6 +158,13 @@ const Features = ({ darkMode }) => {
         </Grid>
       </Container>
     </Box>
+  ) : (
+    <Typography
+      fontSize="1.5rem"
+      sx={{ fontWeight: 800, color: "red", textAlign: "center" }}
+    >
+      Sayfa Yüklenirken Hata Oluştu
+    </Typography>
   );
 };
 

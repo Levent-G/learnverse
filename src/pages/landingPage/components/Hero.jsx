@@ -1,36 +1,12 @@
 import { Box, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom"; // düzeltme: doğru router kullanımı
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "../../../firebase/config";
+import { useFetchData } from "../../../hooks/useFetchData";
 
 const Hero = () => {
-  const [heroData, setHeroData] = useState({
-    title: "",
-    title2: "",
-    description: "",
-  });
+  const [data, error] = useFetchData("hero");
 
-  useEffect(() => {
-    const fetchHeroData = async () => {
-      try {
-        const docRef = doc(db, "pages", "learnverse", "fields", "hero");
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setHeroData(docSnap.data());
-        } else {
-          console.warn("Hero verisi bulunamadı.");
-        }
-      } catch (error) {
-        console.error("Hero verisi alınırken hata:", error);
-      }
-    };
-
-    fetchHeroData();
-  }, []);
-
-  return (
+  return !error ? (
     <Box className="text-center py-16 px-4">
       <motion.h2
         initial={{ opacity: 0, y: -30 }}
@@ -38,9 +14,9 @@ const Hero = () => {
         transition={{ duration: 0.8 }}
         className="text-4xl sm:text-5xl font-bold mb-6"
       >
-        {heroData.title}{" "}
+        {data?.title}{" "}
         <Typography variant="span" sx={{ color: "#c084fc" }}>
-          {heroData.title2}
+          {data?.title2}
         </Typography>
       </motion.h2>
       <Typography
@@ -52,7 +28,7 @@ const Hero = () => {
           marginBottom: 3,
         }}
       >
-        {heroData.description}
+        {data?.description}
       </Typography>
       <Link
         to="/kayit"
@@ -61,6 +37,13 @@ const Hero = () => {
         Hemen Başla
       </Link>
     </Box>
+  ) : (
+    <Typography
+      fontSize="1.5rem"
+      sx={{ fontWeight: 800, color: "red", textAlign: "center" }}
+    >
+      Sayfa Yüklenirken Hata Oluştu
+    </Typography>
   );
 };
 

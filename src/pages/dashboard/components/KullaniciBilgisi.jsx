@@ -2,17 +2,19 @@ import { Avatar, Box, Stack, Typography } from "@mui/material";
 import React from "react";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
+import { useColors } from "../../../context/ColorContext";
 
 const KullaniciBilgisi = () => {
+  const {colors} = useColors();
+
   return (
     <Box
       component="header"
       sx={{
         py: 3,
         px: 2,
-        bgcolor: "background.default",
-        borderBottom: "1px solid",
-        borderColor: "divider",
+        bgcolor: colors.neutralLight,
+        borderBottom: `1px solid ${colors.neutral}`,
         textAlign: "center",
         maxWidth: 480,
         mx: "auto",
@@ -25,10 +27,10 @@ const KullaniciBilgisi = () => {
           height: 56,
           mx: "auto",
           mb: 1.5,
-          bgcolor: "primary.main",
+          bgcolor: colors.primary,
           fontSize: 24,
           fontWeight: "medium",
-          boxShadow: "0 2px 8px rgba(25, 118, 210, 0.3)",
+          boxShadow: `0 2px 8px ${colors.primaryLight}66`, // 66 = opacity ~40%
         }}
         aria-label="kullanıcı avatar"
       >
@@ -39,15 +41,14 @@ const KullaniciBilgisi = () => {
         variant="h5"
         fontWeight={700}
         gutterBottom
-        sx={{ letterSpacing: 0.5, color: "text.primary" }}
+        sx={{ letterSpacing: 0.5, color: colors.neutralDark }}
       >
         Hoş geldin, Ahmet!
       </Typography>
 
       <Typography
         variant="body2"
-        color="text.secondary"
-        sx={{ mb: 3, fontStyle: "italic" }}
+        sx={{ mb: 3, fontStyle: "italic", color: colors.neutral }}
       >
         Bugün öğrenmeye hazır mısın?
       </Typography>
@@ -57,15 +58,15 @@ const KullaniciBilgisi = () => {
         justifyContent="center"
         spacing={4}
         flexWrap="wrap"
-        sx={{ color: "text.secondary", fontWeight: 500 }}
+        sx={{ color: colors.neutral, fontWeight: 500 }}
       >
         <Stack direction="row" alignItems="center" spacing={0.8}>
-          <LocalFireDepartmentIcon fontSize="small" color="warning" />
+          <LocalFireDepartmentIcon fontSize="small" sx={{ color: colors.warning }} />
           <Typography>Seri: 5 gün</Typography>
         </Stack>
 
         <Stack direction="row" alignItems="center" spacing={0.8}>
-          <EmojiEventsIcon fontSize="small" color="success" />
+          <EmojiEventsIcon fontSize="small" sx={{ color: colors.success }} />
           <Typography>Başarı Puanı: 1260</Typography>
         </Stack>
       </Stack>

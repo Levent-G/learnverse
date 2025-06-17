@@ -1,8 +1,11 @@
 import { Box, LinearProgress, Typography, Card } from "@mui/material";
 import React from "react";
 import { otherUsersProgress, userProgress } from "../shared/dashboardEnums";
+import { useColors } from "../../../context/ColorContext";
 
 const KullanicinIlerlemesi = () => {
+  const { colors } = useColors();
+
   const allProgressValues = [
     userProgress.progress,
     ...otherUsersProgress.map((u) => u.progress),
@@ -13,9 +16,14 @@ const KullanicinIlerlemesi = () => {
 
   return (
     <Box mb={6}>
-        <Typography
+      <Typography
         variant="h5"
-        sx={{ fontWeight: 700, color: "#6a1b9a", mb: 4, textAlign: "center" }} // mor-lila
+        sx={{
+          fontWeight: 700,
+          color: colors.primaryDark,
+          mb: 4,
+          textAlign: "center",
+        }}
       >
         Genel İlerlemeniz
       </Typography>
@@ -27,18 +35,18 @@ const KullanicinIlerlemesi = () => {
           gap: 3,
         }}
       >
-        {[ // kart yapısında hem kendin hem ortalama
+        {[
           {
             title: `${userProgress.name} (Siz)`,
             value: userProgress.progress,
-            barColor: "#673ab7",
-            bgColor: "#ede7f6",
+            barColor: colors.primary,
+            bgColor: colors.primaryLight + "33", // saydam açık ton
           },
           {
             title: "Tüm Kullanıcıların Ortalaması",
             value: averageProgress,
-            barColor: "#9575cd",
-            bgColor: "#ede7f6",
+            barColor: colors.secondary,
+            bgColor: colors.secondaryLight + "33",
           },
         ].map(({ title, value, barColor, bgColor }, i) => (
           <Card
@@ -47,15 +55,15 @@ const KullanicinIlerlemesi = () => {
               flex: "1 1 320px",
               p: 3,
               borderRadius: 4,
-              backgroundColor: "#f8f5fc",
-              boxShadow: "0 4px 12px rgba(74, 20, 140, 0.1)",
+              backgroundColor: colors.neutralLight,
+              boxShadow: `0 4px 12px ${colors.primaryDark}22`,
             }}
           >
             <Typography
               fontWeight={700}
               mb={1}
               fontSize="1rem"
-              color="#5e35b1"
+              color={colors.primaryDark}
             >
               {title}
             </Typography>
@@ -75,7 +83,7 @@ const KullanicinIlerlemesi = () => {
               variant="body2"
               mt={1}
               fontSize="0.85rem"
-              color="#4a148c"
+              color={colors.primaryDark}
             >
               %{value.toFixed(1)} tamamlandı
             </Typography>

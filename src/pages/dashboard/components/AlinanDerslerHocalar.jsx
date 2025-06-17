@@ -1,17 +1,21 @@
 import { Avatar, Box, Card, Grid, Typography } from "@mui/material";
 import React from "react";
 import { enrolledCourses } from "../shared/dashboardEnums";
+import { useColors } from "../../../context/ColorContext";
 
 const AlinanDerslerHocalar = () => {
+  const { colors } = useColors();
+
   return (
     <Box mb={6}>
       <Typography
         variant="h6"
         sx={{
           fontWeight: 600,
-          color: "#4a148c",
+          color: colors.primaryDark,
           mt: 6,
           mb: 4,
+          textAlign: "center",
         }}
       >
         Aldığınız Dersler & Hocalar
@@ -27,8 +31,15 @@ const AlinanDerslerHocalar = () => {
                 alignItems: "center",
                 gap: 2,
                 borderRadius: 4,
-                backgroundColor: "#f3e5f5", // açık mor ton
-                boxShadow: "0 3px 10px rgba(74, 20, 140, 0.1)",
+                backgroundColor: colors.primaryLight + "33", // çok açık mor-lila saydam
+                boxShadow: `0 3px 10px ${colors.primaryDark}22`,
+                cursor: "default",
+                transition: "transform 0.3s ease",
+                "&:hover": {
+                  transform: "translateY(-4px)",
+                  boxShadow: `0 6px 20px ${colors.primaryDark}44`,
+                  backgroundColor: colors.primaryLight + "55",
+                },
               }}
             >
               <Avatar
@@ -37,20 +48,20 @@ const AlinanDerslerHocalar = () => {
                 sx={{
                   width: 56,
                   height: 56,
-                  border: "2px solid #7e57c2",
+                  border: `2px solid ${colors.primary}`,
                 }}
               />
               <Box>
                 <Typography
                   fontWeight={700}
                   fontSize="1rem"
-                  sx={{ color: "#4a148c" }}
+                  sx={{ color: colors.primaryDark }}
                 >
                   {course.subject}
                 </Typography>
                 <Typography
                   variant="body2"
-                  sx={{ color: "#6a1b9a", mt: 0.5 }}
+                  sx={{ color: colors.primary }}
                 >
                   Eğitmen: {course.teacher}
                 </Typography>

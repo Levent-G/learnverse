@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import { Box } from "@mui/material";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -8,19 +7,10 @@ import Features from "./components/Features";
 import GeneralAnalyses from "./components/GeneralAnalyses";
 import GeneralFeatures from "./components/GeneralFeatures";
 import Footer from "./components/Footer";
+import { useDarkMode } from "../../hooks/useDarkMode";
 
 export default function LandingPage() {
-  const [darkMode, setDarkMode] = useState(false);
-
-  // Optional: sayfa yüklendiğinde body veya html tag'ına da dark class ekle (tailwind bazen sorun yaşamamak için)
-  useEffect(() => {
-    const root = window.document.documentElement;
-    if (darkMode) {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-  }, [darkMode]);
+  const [darkMode, setDarkMode] = useDarkMode(false);
 
   return (
     <Box className="min-h-screen transition-colors duration-500 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
