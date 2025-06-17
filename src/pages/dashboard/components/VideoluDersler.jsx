@@ -4,6 +4,7 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import CustomButton from "../../../components/customButton/CustomButton";
 import { videoLessons } from "../shared/dashboardEnums";
 import { useColors } from "../../../context/ColorContext";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
 
 const VideoluDersler = () => {
   const { colors } = useColors();
@@ -12,11 +13,11 @@ const VideoluDersler = () => {
     <Box mb={6}>
       <Typography
         variant="h5"
-        sx={{ 
-          fontWeight: 700, 
+        sx={{
+          fontWeight: 700,
           color: colors.primaryDark, // koyu mor-lila
-          mb: 4, 
-          textAlign: "center" 
+          mb: 4,
+          textAlign: "center",
         }}
       >
         Videolu Dersler
@@ -46,22 +47,27 @@ const VideoluDersler = () => {
               role="button"
               tabIndex={0}
               onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") alert(`Videoyu izlemek için tıklandı: ${title}`);
+                if (e.key === "Enter" || e.key === " ")
+                  alert(`Videoyu izlemek için tıklandı: ${title}`);
               }}
               aria-label={`${title} videosunu izlemek için tıklayın`}
             >
               <Box
-                component="img"
-                src={thumbnail}
-                alt={title}
                 sx={{
                   width: 160,
                   height: "100%",
-                  objectFit: "cover",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   flexShrink: 0,
                   borderRadius: "3px 0 0 3px",
+                  backgroundColor: "#F0F0F0", // arka plan rengi
                 }}
-              />
+              >
+                <MenuBookIcon
+                  sx={{ fontSize: 64, color: colors.primaryDark }}
+                />
+              </Box>
               <CardContent
                 sx={{
                   flexGrow: 1,

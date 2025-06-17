@@ -3,6 +3,7 @@ import { Box, Grid, Typography } from "@mui/material";
 import CategoryFilter from "./CategoryFilter";
 import WordCard from "./WordCard";
 import WordModal from "./WordModal";
+import { useColors } from "../../../context/ColorContext"; // ✅ Hook importu
 
 const words = [
   {
@@ -31,6 +32,7 @@ const words = [
 const categories = ["Tümü", "Günlük", "İş", "Seyahat", "Eğitim"];
 
 export default function KelimeKartlari() {
+  const { colors } = useColors(); // ✅ Renkler hook'tan alınıyor
   const [selectedCategory, setSelectedCategory] = useState("Tümü");
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedWord, setSelectedWord] = useState(null);
@@ -58,10 +60,15 @@ export default function KelimeKartlari() {
   };
 
   return (
-    <Box sx={{ mx: "auto", p: { xs: 2, md: 4 } }}>
+    <Box sx={{ mx: "auto", p: { xs: 2, md: 4 }, backgroundColor: colors.neutralLight, minHeight: "100vh" }}>
       <Typography
         variant="h4"
-        sx={{ mb: 3, fontWeight: 700, color: "#8e24aa", textAlign: "center" }}
+        sx={{
+          mb: 3,
+          fontWeight: 700,
+          color: colors.primaryDark, // ✅ Paletten alındı
+          textAlign: "center",
+        }}
       >
         Kelime Öğrenimi
       </Typography>

@@ -15,7 +15,7 @@ const KullanicinIlerlemesi = () => {
     allProgressValues.length;
 
   return (
-    <Box mb={6}>
+    <Box mb={6} >
       <Typography
         variant="h5"
         sx={{

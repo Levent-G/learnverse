@@ -1,100 +1,176 @@
 import React from "react";
 import { Box, Typography, Button, Modal, Chip, Divider, Stack } from "@mui/material";
+import { useColors } from "../../../context/ColorContext";
 
 const WordModal = ({ open, word, onClose }) => {
+  const { colors } = useColors();
+
   if (!word) return null;
 
   return (
-    <Modal open={open} onClose={onClose} sx={{ overflowY: "auto" }}>
+    <Modal
+      open={open}
+      onClose={onClose}
+      aria-labelledby="word-modal-title"
+      aria-describedby="word-modal-description"
+      sx={{
+        overflowY: "auto",
+        backdropFilter: "blur(6px)", // arka planı flu yapar, odak artırır
+        backgroundColor: "rgba(0,0,0,0.3)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        p: 2,
+      }}
+    >
       <Box
         sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: { xs: "90%", sm: 500 },
-          bgcolor: "#fff",
-          borderRadius: 3,
-          p: { xs: 3, sm: 4 },
+          width: { xs: "100%", sm: 500 },
+          bgcolor: colors.neutralLight,
+          borderRadius: 4,
+          p: { xs: 3, sm: 5 },
+          boxShadow: `0 12px 24px ${colors.primaryDark}55`,
           outline: "none",
           maxHeight: "90vh",
           overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
+          gap: 3,
+          fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
         }}
       >
+        {/* Başlık */}
         <Typography
-          variant="h4"
-          sx={{ mb: 1, fontWeight: 700, color: "#7C3AED", textAlign: "center" }}
+          id="word-modal-title"
+          variant="h3"
+          sx={{
+            fontWeight: 800,
+            color: colors.primaryDark,
+            textAlign: "center",
+            letterSpacing: 1.2,
+            textTransform: "uppercase",
+            userSelect: "none",
+          }}
         >
           {word.word}
         </Typography>
 
+        {/* Anlam */}
         <Typography
           variant="h6"
-          sx={{ mb: 3, fontWeight: 500, color: "#2E2E3A", textAlign: "center" }}
+          sx={{
+            color: colors.neutralDark,
+            fontWeight: 600,
+            textAlign: "center",
+            fontStyle: "italic",
+            letterSpacing: 0.3,
+          }}
         >
           {word.meaning}
         </Typography>
 
-        <Divider sx={{ mb: 3 }} />
+        <Divider sx={{ borderColor: colors.primaryLight }} />
 
-        <Box sx={{ textAlign: "center", mb: 3 }}>
-          <audio controls style={{ width: "100%" }}>
+        {/* Ses */}
+        <Box sx={{ textAlign: "center" }}>
+          <audio
+            controls
+            style={{
+              width: "100%",
+              borderRadius: 10,
+              outline: "none",
+              filter: `drop-shadow(0 2px 4px ${colors.primaryDark}33)`,
+            }}
+          >
             <source src={word.audio} type="audio/mpeg" />
             Tarayıcınız ses oynatıcısını desteklemiyor.
           </audio>
         </Box>
 
-        <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 600, color: "#7C3AED" }}>
-          Örnek Cümleler:
-        </Typography>
-        <Box
-          component="ul"
-          sx={{ pl: 3, mb: 3, color: "#2E2E3A", fontSize: "0.95rem" }}
-        >
-          {word.examples.map((ex, i) => (
-            <li key={i} style={{ marginBottom: 8 }}>
-              {ex}
-            </li>
-          ))}
+        {/* Örnek Cümleler */}
+        <Box>
+          <Typography
+            variant="subtitle1"
+            sx={{ mb: 1, fontWeight: 700, color: colors.primaryDark }}
+          >
+            Örnek Cümleler:
+          </Typography>
+          <Box
+            component="ul"
+            sx={{
+              pl: 3,
+              color: colors.neutralDark,
+              fontSize: "1rem",
+              lineHeight: 1.5,
+              userSelect: "text",
+            }}
+          >
+            {word.examples.map((ex, i) => (
+              <li
+                key={i}
+                style={{
+                  marginBottom: 10,
+                  borderLeft: `3px solid ${colors.secondary}`,
+                  paddingLeft: 8,
+                }}
+              >
+                {ex}
+              </li>
+            ))}
+          </Box>
         </Box>
 
-        <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 600, color: "#7C3AED" }}>
-          Benzer Kelimeler:
-        </Typography>
-        <Stack
-          direction="row"
-          spacing={1}
-          sx={{ flexWrap: "wrap", mb: 3 }}
-        >
-          {word.similar.map((sim, i) => (
-            <Chip
-              key={i}
-              label={sim}
-              variant="outlined"
-              sx={{
-                bgcolor: "#F3E8FF",
-                borderColor: "#7C3AED",
-                color: "#7C3AED",
-                fontWeight: 500,
-              }}
-              size="small"
-            />
-          ))}
-        </Stack>
+        {/* Benzer Kelimeler */}
+        <Box>
+          <Typography
+            variant="subtitle1"
+            sx={{ mb: 1, fontWeight: 700, color: colors.primaryDark }}
+          >
+            Benzer Kelimeler:
+          </Typography>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{ flexWrap: "wrap", gap: 1 }}
+          >
+            {word.similar.map((sim, i) => (
+              <Chip
+                key={i}
+                label={sim}
+                variant="filled"
+                sx={{
+                  bgcolor: colors.secondary,
+                  color: colors.neutralLight,
+                  fontWeight: 600,
+                  boxShadow: `0 3px 6px ${colors.secondary}99`,
+                  cursor: "default",
+                  userSelect: "none",
+                }}
+                size="medium"
+              />
+            ))}
+          </Stack>
+        </Box>
 
-        <Box sx={{ textAlign: "right" }}>
+        {/* Kapat Butonu */}
+        <Box sx={{ textAlign: "center", mt: 2 }}>
           <Button
             variant="contained"
             onClick={onClose}
             sx={{
               textTransform: "none",
-              borderRadius: 2,
-              backgroundColor: "#F43F5E",
-              fontWeight: 600,
-              px: 3,
-              py: 1,
+              borderRadius: 3,
+              backgroundColor: colors.primary,
+              color: colors.neutralLight,
+              fontWeight: 700,
+              px: 5,
+              py: 1.5,
+              fontSize: "1rem",
+              boxShadow: `0 4px 12px ${colors.primary}99`,
+              transition: "background-color 0.3s ease, box-shadow 0.3s ease",
               "&:hover": {
-                backgroundColor: "#D5304F",
+                backgroundColor: colors.primaryDark,
+                boxShadow: `0 6px 18px ${colors.primaryDark}cc`,
               },
             }}
           >

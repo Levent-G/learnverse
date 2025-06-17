@@ -7,9 +7,9 @@ import { CustomInput } from "../../components/form/formInputs/CustomInput";
 import CustomButton from "../../components/customButton/CustomButton";
 import { loginSchema } from "./authSchema";
 import { notify } from "../../utils/notify";
-import { useAuth } from "../../contexts/AuthContext";
 import ForgotPasswordModal from "./ForgotPasswordModal";
 import { useColors } from "../../context/ColorContext";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {
   const { colors } = useColors();
@@ -102,6 +102,7 @@ export default function Login() {
                 },
               }}
             />
+           
           </Box>
         </Box>
       </Form>

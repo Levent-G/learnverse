@@ -15,6 +15,12 @@ export default function Dashboard() {
       {/* Kullanıcı Bilgisi */}
       <KullaniciBilgisi />
 
+      {/* Dil Seviyesi */}
+      <DilSeviyesi />
+
+      {/* Kullanıcının İlerlemesi */}
+      <KullanicinIlerlemesi />
+
       {/* öğrenmenize ne akdar kaldı */}
       <LearningCountdown />
 
@@ -24,14 +30,8 @@ export default function Dashboard() {
       {/* Modüller - Her modülü ayrı açarak göster */}
       <Modüller />
 
-      {/* Dil Seviyesi */}
-      <DilSeviyesi />
-
       {/* Videolu Dersler */}
       <VideoluDersler />
-
-      {/* Kullanıcının İlerlemesi */}
-      <KullanicinIlerlemesi />
 
       {/*  Aldığınız Dersler & Hocalar */}
       <AlinanDerslerHocalar />

@@ -5,8 +5,11 @@ import LevelSelector from "./LevelSelector";
 import StudyPlan from "./StudyPlan";
 import DailyTips from "./DailyTips";
 import ChatBot from "./ChatBot";
+import { useColors } from "../../../context/ColorContext";
 
 export default function AIAsistan() {
+  const {colors} = useColors();
+
   const [level, setLevel] = useState("beginner");
   const [tips] = useState(initialTips);
   const [chat, setChat] = useState([
@@ -18,7 +21,7 @@ export default function AIAsistan() {
       sx={{
         mx: "auto",
         p: 4,
-        bgcolor: "background.paper",
+        bgcolor: colors.backgroundPaper,
         borderRadius: 3,
         boxShadow: 3,
       }}
@@ -27,7 +30,7 @@ export default function AIAsistan() {
         variant="h4"
         sx={{
           mb: 3,
-          color: "#8e24aa",
+          color: colors.primary,
           fontWeight: 700,
           textAlign: "center",
         }}

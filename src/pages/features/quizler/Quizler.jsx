@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, Divider } from "@mui/material";
 import FillInTheBlanks from "./FillInTheBlanks";
 import MultipleChoice from "./MultipleChoice";
 import TrueFalse from "./TrueFalse";
 import Matching from "./Matching";
+import { useColors } from "../../../context/ColorContext";
 
 export default function DetailedQuiz() {
+  const { colors } = useColors();
+
   const [fillAnswers, setFillAnswers] = useState({});
   const [mcAnswers, setMcAnswers] = useState({});
   const [tfAnswers, setTfAnswers] = useState({});
@@ -103,29 +106,55 @@ export default function DetailedQuiz() {
   };
 
   return (
-    <Box sx={{ mx: "auto", p: 4 }}>
+    <Box
+      sx={{
+        mx: "auto",
+        p: 4,
+        maxWidth: 700,
+        bgcolor: colors.background || "background.paper",
+        borderRadius: 3,
+        boxShadow: 3,
+        color: colors.textPrimary || "text.primary",
+        userSelect: "text",
+        minHeight: "80vh",
+        display: "flex",
+        flexDirection: "column",
+        gap: 3,
+      }}
+    >
       <Typography
         variant="h4"
-        sx={{ mb: 4, color: "#6a1b9a", fontWeight: 700 }}
+        sx={{ color: colors.primaryDark, fontWeight: 700, textAlign: "center" }}
       >
         Detaylı Quiz Bölümü
       </Typography>
+
+      <Divider sx={{ borderColor: colors.primaryLight }} />
 
       <FillInTheBlanks
         data={quizData.fillInTheBlanks}
         answers={fillAnswers}
         onChange={handleFillChange}
       />
+
+      <Divider sx={{ borderColor: colors.primaryLight }} />
+
       <MultipleChoice
         data={quizData.multipleChoice}
         answers={mcAnswers}
         onChange={handleMcChange}
       />
+
+      <Divider sx={{ borderColor: colors.primaryLight }} />
+
       <TrueFalse
         data={quizData.trueFalse}
         answers={tfAnswers}
         onChange={handleTfChange}
       />
+
+      <Divider sx={{ borderColor: colors.primaryLight }} />
+
       <Matching
         data={quizData.matching}
         answers={matchAnswers}
@@ -136,19 +165,32 @@ export default function DetailedQuiz() {
         variant="contained"
         onClick={checkScore}
         sx={{
-          px: 5,
+          px: 6,
           py: 1.5,
           fontWeight: 600,
           borderRadius: 10,
-          backgroundColor: "#6a1b9a",
-          "&:hover": { backgroundColor: "#4a148c" },
+          backgroundColor: colors.primary,
+          color: colors.textOnPrimary,
+          alignSelf: "center",
+          "&:hover": { backgroundColor: colors.primaryDark },
+          mt: 2,
+          userSelect: "none",
         }}
       >
         Sonuçları Kontrol Et
       </Button>
 
       {score && (
-        <Typography sx={{ mt: 3, fontWeight: 700, fontSize: "1.2rem" }}>
+        <Typography
+          sx={{
+            mt: 3,
+            fontWeight: 700,
+            fontSize: "1.25rem",
+            color: colors.successText || "green",
+            textAlign: "center",
+            userSelect: "text",
+          }}
+        >
           Doğru: {score.correct} / {score.total} &nbsp; | &nbsp; Başarı Oranı:{" "}
           {((score.correct / score.total) * 100).toFixed(1)}%
         </Typography>

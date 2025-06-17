@@ -38,7 +38,6 @@ const Moduller = () => {
                 "&:hover": {
                   transform: "translateY(-6px)",
                   boxShadow: `0 12px 28px ${colors.primary}4d`, // %30 opacity
-                  bgcolor: colors.primary, // Canlı mor (hover)
                 },
               }}
               onClick={() => navigate(path)}

@@ -8,7 +8,7 @@ const DilSeviyesi = () => {
   const { colors } = useColors();
 
   return (
-    <Box mb={6}>
+    <Box mb={6} mt={6}>
       <Typography
         variant="h5"
         sx={{

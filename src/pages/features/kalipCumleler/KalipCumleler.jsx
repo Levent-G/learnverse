@@ -5,8 +5,11 @@ import { categories, phraseData } from "./shared/kalipCumlelerEnums";
 import PhraseCard from "./PhraseCard";
 import PhraseModal from "./PhraseModal";
 import AddPhraseForm from "./AddPhraseForm";
+import { useColors } from "../../../context/ColorContext"; // renk hook'u import
 
 export default function KalipCumleler() {
+  const { colors } = useColors(); // renk paletini alıyoruz
+
   const [newPhraseText, setNewPhraseText] = useState("");
   const [newPhraseCategory, setNewPhraseCategory] = useState("Genel");
   const [selectedCategory, setSelectedCategory] = useState("Tümü");
@@ -14,11 +17,11 @@ export default function KalipCumleler() {
   const [selectedPhrase, setSelectedPhrase] = useState(null);
   const [userPhrases, setUserPhrases] = useState([]);
 
-  // ✅ Recording state
+  // Kayıt durumu
   const [recording, setRecording] = useState(false);
   const [recordedAudio, setRecordedAudio] = useState(null);
 
-  // ✅ Quiz state
+  // Quiz durumu
   const [quizAnswers, setQuizAnswers] = useState([]);
   const [quizResult, setQuizResult] = useState(null);
 
@@ -47,10 +50,9 @@ export default function KalipCumleler() {
     setNewPhraseCategory("Genel");
   };
 
-  // ✅ Mikrofon fonksiyonları (gerçek kayıt yerine simülasyon)
+  // Kayıt simülasyonu
   const onStartRecord = () => {
     setRecording(true);
-    // Simülasyon: 3 saniyede ses dosyası üret
     setTimeout(() => {
       setRecording(false);
       setRecordedAudio("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3");
@@ -61,7 +63,7 @@ export default function KalipCumleler() {
     setRecording(false);
   };
 
-  // ✅ Quiz işlemleri
+  // Quiz işlemleri
   const onQuizChange = (idx, value) => {
     const updated = [...quizAnswers];
     updated[idx] = value;
@@ -80,10 +82,17 @@ export default function KalipCumleler() {
   };
 
   return (
-    <Box sx={{ mx: "auto", p: 3 }}>
+    <Box sx={{ mx: "auto", p: 3, maxWidth: 1200 }}>
       <Typography
         variant="h4"
-        sx={{ mb: 3, fontWeight: 700, color: "#6a1b9a", textAlign: "center" }}
+        sx={{
+          mb: 3,
+          fontWeight: 700,
+          color: colors.primaryDark, // sabit renk yerine palet
+          textAlign: "center",
+          userSelect: "none",
+          letterSpacing: 1.2,
+        }}
       >
         Kalıp Cümleler
       </Typography>
@@ -96,10 +105,7 @@ export default function KalipCumleler() {
 
       <Grid container spacing={3}>
         {[...phraseData, ...userPhrases]
-          .filter(
-            (p) =>
-              selectedCategory === "Tümü" || p.category === selectedCategory
-          )
+          .filter((p) => selectedCategory === "Tümü" || p.category === selectedCategory)
           .map((phrase) => (
             <Grid item xs={12} sm={6} md={4} key={phrase.id}>
               <PhraseCard phrase={phrase} onClick={() => openModal(phrase)} />

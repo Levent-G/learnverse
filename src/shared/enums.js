@@ -1,20 +1,18 @@
 export const colorsPalet = {
-    primary: "#6C63FF",       // Yumuşak mor-mavi (pastel ve modern)
-    primaryLight: "#A29BFE",  // Açık pastel mor
-    primaryDark: "#4E47C2",   // Koyu pastel mor
-  
-    secondary: "#FF9F80",     // Pastel mercan-turuncu (sıcak ve şık)
-    secondaryLight: "#FFBEA8",// Açık pastel mercan
-    secondaryDark: "#D77A5E", // Koyu pastel mercan
-  
-    neutralLight: "#F5F5F7",  // Çok açık gri-beyaz (nazik)
-    neutral: "#B0B0C3",       // Orta pastel gri-mavi
-    neutralDark: "#555770",   // Koyu pastel gri-mavi
-  
-    accent: "#7DD3C1",        // Yumuşak mint yeşili (vurgular için)
-    success: "#86EFAC",       // Pastel yeşil
-    error: "#F87171",         // Pastel kırmızı
-  
-    warning: "#FCD34D",       // Pastel sarı (sıcak ama yumuşak)
-  };
-  
+  primary: "#0EA5E9",        // Serin açık mavi (temiz ve güvenilir)
+  primaryLight: "#E0F2FE",   // Buz mavisi
+  primaryDark: "#0369A1",    // Derin mavi (odak alanları)
+
+  secondary: "#818CF8",      // Lila-mavi geçişi (soğuk ama pastel)
+  secondaryLight: "#C7D2FE", // Açık pastel indigo
+  secondaryDark: "#4338CA",  // Koyu mavi-mor
+
+  neutralLight: "#F0F9FF",   // Çok açık buz beyazı
+  neutral: "#94A3B8",        // Açık mavi-gri
+  neutralDark: "#1E293B",    // Lacivertimsi koyu gri
+
+  accent: "#99F6E4",         // Turkuaz-mint (serin vurgu)
+  success: "#6EE7B7",        // Açık yeşil
+  error: "#FCA5A5",          // Hafif kırmızı-şeftali
+  warning: "#FCD34D",        // Mevcut pastel sarı
+};

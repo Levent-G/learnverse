@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { useEffect } from "react";
-import { AuthProvider } from "./contexts/AuthContext";
 import PrivateRoute from "./components/PrivateRoute";
 import PrivateLayout from "./layouts/PrivateLayout";
 import { privateRoutes, publicRoutes } from "./routes/Routes";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   useEffect(() => {

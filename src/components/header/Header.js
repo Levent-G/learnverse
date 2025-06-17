@@ -1,5 +1,4 @@
 import React from 'react';
-import { useAuth } from '../../contexts/AuthContext';
 import { auth } from '../../firebase/config';
 import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +12,7 @@ import {
   MenuItem,
 } from '@mui/material';
 import { AccountCircle } from '@mui/icons-material';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Header() {
   const { currentUser } = useAuth();
