@@ -1,51 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import {
   Box,
   Typography,
   Button,
   Divider,
-  CircularProgress,
 } from "@mui/material";
 import MultipleChoice from "./MultipleChoice";
 import { useColors } from "../../../context/ColorContext";
 import axios from "axios";
 
-export default function DetailedQuiz() {
+export default function DetailedQuiz({quizData}) {
   const { colors } = useColors();
 
   const userInfoString = localStorage.getItem("userInfo");
   const userInfo = JSON.parse(userInfoString);
 
-  const [quizData, setQuizData] = useState([]);
   const [mcAnswers, setMcAnswers] = useState({});
-  const [loading, setLoading] = useState(true);
   const [score, setScore] = useState(null);
   const [quizStats, setQuizStats] = useState(null); // ← istatistik state’i
 
-  useEffect(() => {
-    const fetchQuizData = async () => {
-      try {
-        const response = await axios.get("http://localhost:8010/quiz", {
-          headers: {
-            Authorization: `Bearer ${userInfo.token}`,
-          },
-          params: {
-            level: "A1",
-            category: "Greetings",
-            count: 10,
-          },
-        });
 
-        setQuizData(response.data);
-      } catch (error) {
-        console.error("Quiz verisi alınamadı:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchQuizData();
-  }, []);
 
   const checkScore = async () => {
     const answersPayload = quizData.map((item, idx) => ({
@@ -101,14 +75,7 @@ export default function DetailedQuiz() {
     setMcAnswers((prev) => ({ ...prev, [idx]: val }));
   };
 
-  if (loading) {
-    return (
-      <Box sx={{ textAlign: "center", mt: 10 }}>
-        <CircularProgress color="primary" />
-        <Typography mt={2}>Quiz yükleniyor...</Typography>
-      </Box>
-    );
-  }
+
 
   if (!quizData.length) {
     return (
