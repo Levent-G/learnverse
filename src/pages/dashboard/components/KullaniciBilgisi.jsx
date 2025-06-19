@@ -5,32 +5,35 @@ import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import { useColors } from "../../../context/ColorContext";
 
 const KullaniciBilgisi = () => {
-  const {colors} = useColors();
+  const { colors } = useColors();
 
   return (
     <Box
       component="header"
       sx={{
-        py: 3,
-        px: 2,
-        bgcolor: colors.neutralLight,
-        borderBottom: `1px solid ${colors.neutral}`,
-        textAlign: "center",
-        maxWidth: 480,
+        py: 4,
+        px: 3,
         mx: "auto",
         userSelect: "none",
+        bgcolor: colors.primaryLight,
+        borderRadius: 3,
+        boxShadow: `0 4px 12px ${colors.primaryLight}55`,
+        textAlign: "center",
       }}
     >
       <Avatar
         sx={{
-          width: 56,
-          height: 56,
+          width: 70,
+          height: 70,
           mx: "auto",
-          mb: 1.5,
+          mb: 2,
           bgcolor: colors.primary,
-          fontSize: 24,
-          fontWeight: "medium",
-          boxShadow: `0 2px 8px ${colors.primaryLight}66`, // 66 = opacity ~40%
+          fontSize: 28,
+          fontWeight: "bold",
+          boxShadow: `0 4px 12px ${colors.primaryDark}88`,
+          border: `3px solid ${colors.primaryLight}`,
+          cursor: "default",
+          userSelect: "none",
         }}
         aria-label="kullanıcı avatar"
       >
@@ -38,37 +41,50 @@ const KullaniciBilgisi = () => {
       </Avatar>
 
       <Typography
-        variant="h5"
+        variant="h4"
         fontWeight={700}
         gutterBottom
-        sx={{ letterSpacing: 0.5, color: colors.neutralDark }}
+        sx={{ letterSpacing: 1, color: colors.primaryDark }}
       >
         Hoş geldin, Ahmet!
       </Typography>
 
       <Typography
-        variant="body2"
-        sx={{ mb: 3, fontStyle: "italic", color: colors.neutral }}
+        variant="body1"
+        sx={{
+          mb: 4,
+          fontStyle: "italic",
+          color: colors.neutralDark,
+          fontWeight: 500,
+          letterSpacing: 0.3,
+        }}
       >
         Bugün öğrenmeye hazır mısın?
       </Typography>
 
       <Stack
-        direction="row"
+        direction={{ xs: "column", sm: "row" }}
         justifyContent="center"
-        spacing={4}
+        spacing={3}
         flexWrap="wrap"
-        sx={{ color: colors.neutral, fontWeight: 500 }}
       >
-        <Stack direction="row" alignItems="center" spacing={0.8}>
-          <LocalFireDepartmentIcon fontSize="small" sx={{ color: colors.warning }} />
-          <Typography>Seri: 5 gün</Typography>
-        </Stack>
+        
+          <LocalFireDepartmentIcon
+            fontSize="medium"
+            sx={{ color: colors.warning }}
+          />
+          <Typography
+            variant="subtitle1"
+            fontWeight={600}
+            color={colors.warning}
+          >
+            Seri: 5 gün
+          </Typography>
 
-        <Stack direction="row" alignItems="center" spacing={0.8}>
-          <EmojiEventsIcon fontSize="small" sx={{ color: colors.success }} />
-          <Typography>Başarı Puanı: 1260</Typography>
-        </Stack>
+          <EmojiEventsIcon fontSize="medium" sx={{ color: colors.success }} />
+          <Typography variant="subtitle1" fontWeight={600} color={colors.success}>
+            Başarı Puanı: 1260
+          </Typography>
       </Stack>
     </Box>
   );
