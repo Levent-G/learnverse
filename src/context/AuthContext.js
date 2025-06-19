@@ -7,6 +7,31 @@ export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const setUserInfo = async (email, token) => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8010/user/getUserInfo",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            email,
+          },
+        }
+      );
+
+      const userInfo = {
+        ...response.data, // sunucudan gelen kullanıcı bilgileri
+        token: token, // auth token
+      };
+
+      localStorage.setItem("userInfo", JSON.stringify(userInfo));
+    } catch (error) {
+      console.error("Kullanıcı bilgisi alınamadı:", error);
+    }
+  };
+
   const login = async (email, password) => {
     setLoading(true);
     try {
@@ -29,7 +54,7 @@ export function AuthProvider({ children }) {
             "Hesabınız aktif değil. Lütfen e-posta kutunuzu kontrol edip doğrulama linkine tıklayın.",
         };
       }
-
+      setUserInfo(email, token);
       localStorage.setItem("authToken", token);
 
       setCurrentUser({

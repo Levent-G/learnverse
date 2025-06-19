@@ -1,109 +1,122 @@
-import React, { useState } from "react";
-import { Box, Typography, Button, Divider } from "@mui/material";
-import FillInTheBlanks from "./FillInTheBlanks";
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  Typography,
+  Button,
+  Divider,
+  CircularProgress,
+} from "@mui/material";
 import MultipleChoice from "./MultipleChoice";
-import TrueFalse from "./TrueFalse";
-import Matching from "./Matching";
 import { useColors } from "../../../context/ColorContext";
+import axios from "axios";
 
 export default function DetailedQuiz() {
   const { colors } = useColors();
 
-  const [fillAnswers, setFillAnswers] = useState({});
+  const userInfoString = localStorage.getItem("userInfo");
+  const userInfo = JSON.parse(userInfoString);
+
+  const [quizData, setQuizData] = useState([]);
   const [mcAnswers, setMcAnswers] = useState({});
-  const [tfAnswers, setTfAnswers] = useState({});
-  const [matchAnswers, setMatchAnswers] = useState({});
+  const [loading, setLoading] = useState(true);
   const [score, setScore] = useState(null);
+  const [quizStats, setQuizStats] = useState(null); // ← istatistik state’i
 
-  const quizData = {
-    fillInTheBlanks: [
-      { sentence: "I ___ to the store yesterday.", answer: "went" },
-      { sentence: "She ___ playing the piano.", answer: "is" },
-    ],
-    multipleChoice: [
-      {
-        question: "What is the past tense of 'go'?",
-        options: ["goed", "went", "gone", "goes"],
-        answer: "went",
-      },
-      {
-        question: "Choose the correct sentence:",
-        options: [
-          "He don't like apples.",
-          "He doesn't like apples.",
-          "He not like apples.",
-          "He no like apples.",
-        ],
-        answer: "He doesn't like apples.",
-      },
-    ],
-    trueFalse: [
-      { question: "The capital of England is London.", answer: true },
-      { question: "Cats can fly.", answer: false },
-    ],
-    matching: [
-      {
-        left: ["Dog", "Cat", "Bird"],
-        right: ["Kuş", "Kedi", "Köpek"],
-        answer: { Dog: "Köpek", Cat: "Kedi", Bird: "Kuş" },
-      },
-    ],
-  };
+  useEffect(() => {
+    const fetchQuizData = async () => {
+      try {
+        const response = await axios.get("http://localhost:8010/quiz", {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+          params: {
+            level: "A1",
+            category: "Greetings",
+            count: 10,
+          },
+        });
 
-  const handleFillChange = (idx, val) => {
-    setFillAnswers((prev) => ({ ...prev, [idx]: val }));
+        setQuizData(response.data);
+      } catch (error) {
+        console.error("Quiz verisi alınamadı:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchQuizData();
+  }, []);
+
+  const checkScore = async () => {
+    const answersPayload = quizData.map((item, idx) => ({
+      english: item.question,
+      selected: mcAnswers[idx] || "",
+    }));
+
+    try {
+      // 1. Cevapları gönder
+      await axios.post(
+        "http://localhost:8010/quiz/check",
+        {
+          answers: answersPayload,
+          userEmail: userInfo.email,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        }
+      );
+
+      // 2. Skoru yerel hesapla
+      let total = quizData.length;
+      let correct = 0;
+
+      quizData.forEach((item, i) => {
+        if (mcAnswers[i] === item.correctAnswer) {
+          correct++;
+        }
+      });
+
+      setScore({ correct, total });
+
+      // 3. İstatistikleri al
+      const statsRes = await axios.get("http://localhost:8010/quiz/stats", {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+        params: {
+          email: userInfo.email,
+        },
+      });
+
+      setQuizStats(statsRes.data);
+      console.log("Kullanıcı istatistikleri:", statsRes.data);
+    } catch (error) {
+      console.error("Cevap gönderme veya istatistik çekme hatası:", error);
+    }
   };
 
   const handleMcChange = (idx, val) => {
     setMcAnswers((prev) => ({ ...prev, [idx]: val }));
   };
 
-  const handleTfChange = (idx, val) => {
-    setTfAnswers((prev) => ({ ...prev, [idx]: val }));
-  };
+  if (loading) {
+    return (
+      <Box sx={{ textAlign: "center", mt: 10 }}>
+        <CircularProgress color="primary" />
+        <Typography mt={2}>Quiz yükleniyor...</Typography>
+      </Box>
+    );
+  }
 
-  const handleMatchChange = (leftItem, val) => {
-    setMatchAnswers((prev) => ({ ...prev, [leftItem]: val }));
-  };
-
-  const checkScore = () => {
-    let total = 0;
-    let correct = 0;
-
-    quizData.fillInTheBlanks.forEach(({ answer }, i) => {
-      total++;
-      if (
-        (fillAnswers[i] || "").trim().toLowerCase() === answer.toLowerCase()
-      ) {
-        correct++;
-      }
-    });
-
-    quizData.multipleChoice.forEach(({ answer }, i) => {
-      total++;
-      if ((mcAnswers[i] || "") === answer) {
-        correct++;
-      }
-    });
-
-    quizData.trueFalse.forEach(({ answer }, i) => {
-      total++;
-      if (tfAnswers[i] !== undefined && tfAnswers[i] === answer) {
-        correct++;
-      }
-    });
-
-    quizData.matching.forEach(({ answer, left }) => {
-      left.forEach((item) => {
-        total++;
-        if (matchAnswers[item] === answer[item]) {
-          correct++;
-        }
-      });
-    });
-
-    setScore({ correct, total });
-  };
+  if (!quizData.length) {
+    return (
+      <Box sx={{ textAlign: "center", mt: 10 }}>
+        <Typography color="error">Quiz verisi yüklenemedi.</Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -131,34 +144,14 @@ export default function DetailedQuiz() {
 
       <Divider sx={{ borderColor: colors.primaryLight }} />
 
-      <FillInTheBlanks
-        data={quizData.fillInTheBlanks}
-        answers={fillAnswers}
-        onChange={handleFillChange}
-      />
-
-      <Divider sx={{ borderColor: colors.primaryLight }} />
-
       <MultipleChoice
-        data={quizData.multipleChoice}
+        data={quizData.map((item) => ({
+          question: item.question,
+          options: item.options,
+          answer: item.correctAnswer, // MultipleChoice bileşeni `answer` bekliyorsa
+        }))}
         answers={mcAnswers}
         onChange={handleMcChange}
-      />
-
-      <Divider sx={{ borderColor: colors.primaryLight }} />
-
-      <TrueFalse
-        data={quizData.trueFalse}
-        answers={tfAnswers}
-        onChange={handleTfChange}
-      />
-
-      <Divider sx={{ borderColor: colors.primaryLight }} />
-
-      <Matching
-        data={quizData.matching}
-        answers={matchAnswers}
-        onChange={handleMatchChange}
       />
 
       <Button
@@ -181,19 +174,58 @@ export default function DetailedQuiz() {
       </Button>
 
       {score && (
-        <Typography
-          sx={{
-            mt: 3,
-            fontWeight: 700,
-            fontSize: "1.25rem",
-            color: colors.successText || "green",
-            textAlign: "center",
-            userSelect: "text",
-          }}
-        >
-          Doğru: {score.correct} / {score.total} &nbsp; | &nbsp; Başarı Oranı:{" "}
-          {((score.correct / score.total) * 100).toFixed(1)}%
-        </Typography>
+        <Box sx={{ mt: 3, textAlign: "center" }}>
+          <Typography
+            sx={{
+              fontWeight: 700,
+              fontSize: "1.25rem",
+              color: colors.successText || "green",
+              userSelect: "text",
+            }}
+          >
+            ✅ Doğru: {score.correct} / {score.total} &nbsp; | &nbsp; Başarı
+            Oranı: {((score.correct / score.total) * 100).toFixed(1)}%
+          </Typography>
+
+          {quizStats && (
+            <Box
+              sx={{
+                mt: 2,
+                textAlign: "center",
+                color: colors.textSecondary || "#555",
+              }}
+            >
+              <Typography variant="h6" sx={{ fontWeight: 600, mt: 2 }}>
+                📊 Kullanıcı İstatistikleri
+              </Typography>
+
+              {/* Örnek: Toplam doğru-yanlış */}
+              {quizStats.additionalProp1 && (
+                <Typography sx={{ mt: 1 }}>
+                  Toplam Doğru: {quizStats.additionalProp1.totalCorrect} <br />
+                  Toplam Yanlış: {quizStats.additionalProp1.totalWrong}
+                </Typography>
+              )}
+
+              {/* Örnek: Seviye bazlı doğru/yanlış */}
+              {quizStats.additionalProp2 && (
+                <Box sx={{ mt: 2 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+                    📚 Seviye Bazlı Performans
+                  </Typography>
+                  {Object.entries(quizStats.additionalProp2).map(
+                    ([level, data]) => (
+                      <Typography key={level}>
+                        {level.toUpperCase()} - ✅ {data.dogru || 0} / ❌{" "}
+                        {data.yanlis || 0}
+                      </Typography>
+                    )
+                  )}
+                </Box>
+              )}
+            </Box>
+          )}
+        </Box>
       )}
     </Box>
   );

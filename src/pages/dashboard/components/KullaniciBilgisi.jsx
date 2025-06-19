@@ -6,7 +6,8 @@ import { useColors } from "../../../context/ColorContext";
 
 const KullaniciBilgisi = () => {
   const { colors } = useColors();
-
+  const userInfoString = localStorage.getItem("userInfo");
+  const userInfo = JSON.parse(userInfoString);
   return (
     <Box
       component="header"
@@ -37,7 +38,7 @@ const KullaniciBilgisi = () => {
         }}
         aria-label="kullanıcı avatar"
       >
-        A
+        {userInfo.username?.charAt(0)?.toUpperCase()}
       </Avatar>
 
       <Typography
@@ -46,7 +47,7 @@ const KullaniciBilgisi = () => {
         gutterBottom
         sx={{ letterSpacing: 1, color: colors.primaryDark }}
       >
-        Hoş geldin, Ahmet!
+        Hoş geldin, {userInfo.username}
       </Typography>
 
       <Typography
@@ -68,23 +69,18 @@ const KullaniciBilgisi = () => {
         spacing={3}
         flexWrap="wrap"
       >
-        
-          <LocalFireDepartmentIcon
-            fontSize="medium"
-            sx={{ color: colors.warning }}
-          />
-          <Typography
-            variant="subtitle1"
-            fontWeight={600}
-            color={colors.warning}
-          >
-            Seri: 5 gün
-          </Typography>
+        <LocalFireDepartmentIcon
+          fontSize="medium"
+          sx={{ color: colors.warning }}
+        />
+        <Typography variant="subtitle1" fontWeight={600} color={colors.warning}>
+          Seri: 5 gün
+        </Typography>
 
-          <EmojiEventsIcon fontSize="medium" sx={{ color: colors.success }} />
-          <Typography variant="subtitle1" fontWeight={600} color={colors.success}>
-            Başarı Puanı: 1260
-          </Typography>
+        <EmojiEventsIcon fontSize="medium" sx={{ color: colors.success }} />
+        <Typography variant="subtitle1" fontWeight={600} color={colors.success}>
+          Başarı Puanı: 1260
+        </Typography>
       </Stack>
     </Box>
   );
