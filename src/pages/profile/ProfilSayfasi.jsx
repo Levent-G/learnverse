@@ -145,6 +145,17 @@ export default function ProfilSayfasi() {
           <Typography variant="body1">{userInfo.username}</Typography>
         </Box>
 
+        <Box sx={{ mb: 2 }}>
+          <Typography
+            variant="subtitle2"
+            color="text.secondary"
+            sx={{ mb: 0.5 }}
+          >
+            🧾 Yaş
+          </Typography>
+          <Typography variant="body1">{userInfo.age}</Typography>
+        </Box>
+
         <Divider sx={{ my: 2 }} />
 
         <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>

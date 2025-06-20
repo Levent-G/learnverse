@@ -7,27 +7,24 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import * as yup from "yup";
 import { useApiRequest } from "../../hooks/useApiRequest";
 import { notify } from "../../utils/notify";
 import { CustomInput } from "../../components/form/formInputs/CustomInput";
 import Form from "../../components/form/Form";
-
-const schema = yup.object({
-  name: yup.string().required("Ad gerekli"),
-  surname: yup.string().required("Soyad gerekli"),
-  username: yup.string().required("Kullanıcı adı gerekli"),
-  email: yup.string().email("Geçerli bir e-posta girin").required("E-posta gerekli"),
-});
+import { schema } from "./shared/profileSchema";
 
 export default function ProfilGuncelleModal({ open, onClose, defaultValues }) {
   const { request } = useApiRequest();
 
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+  const userId = userInfo?.id;
+
   const handleSubmit = async (data) => {
     const res = await request({
-      url: "/user/update", // 🔄 senin güncelleme endpoint'in
-      method: "POST",
-      body: data,
+      url: "/user/updateUser",
+      method: "PUT",
+      params: { id: userId }, // query parametre olarak id ekleniyor
+      body: data, // güncellenen profil bilgileri
     });
 
     if (res.success) {
@@ -43,7 +40,11 @@ export default function ProfilGuncelleModal({ open, onClose, defaultValues }) {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
       <DialogTitle
-        sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
       >
         <Typography fontWeight={600}>✏️ Profili Güncelle</Typography>
         <IconButton onClick={onClose}>
@@ -60,6 +61,7 @@ export default function ProfilGuncelleModal({ open, onClose, defaultValues }) {
           <CustomInput name="name" label="Ad" />
           <CustomInput name="surname" label="Soyad" />
           <CustomInput name="username" label="Kullanıcı Adı" />
+          <CustomInput name="age" label="Yaş" />
           <CustomInput name="email" label="E-posta" />
         </Form>
       </DialogContent>
