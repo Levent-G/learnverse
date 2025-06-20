@@ -81,7 +81,7 @@ const KullaniciBilgisi = () => {
           variant="subtitle1"
           fontWeight={600}
           color={colors.warning}
-          sx={{ minWidth: 120, textAlign: "center" }}
+          sx={{  textAlign: "center" }}
         >
           Seri: 5 gün
         </Typography>
@@ -94,7 +94,7 @@ const KullaniciBilgisi = () => {
           variant="subtitle1"
           fontWeight={600}
           color={colors.success}
-          sx={{ minWidth: 120, textAlign: "center" }}
+          sx={{  textAlign: "center" }}
         >
           Başarı Puanı: 1260
         </Typography>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import QuizSelector from "./QuizSelector";
 import Quizler from "./Quizler";
-import QuizStats from "./QuizStats";
+import QuizStats from "./components/QuizStats";
 
 export default function QuizMain() {
   const [quizData, setQuizData] = useState(null);

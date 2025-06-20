@@ -2,10 +2,10 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Box } from "@mui/material";
 import { useColors } from "../../../context/ColorContext";
 import { useApiRequest } from "../../../hooks/useApiRequest";
-
-import QuizHeader from "./QuizHeader";
-import QuestionCard from "./QuestionCard";
-import QuizResult from "./QuizResult";
+import QuizResult from "./components/QuizResult";
+import QuizHeader from "./components/QuizHeader";
+import QuestionCard from "./components/QuestionCard";
+import ErrorPage from "../../../components/errorPage/ErrorPage";
 
 export default function DetailedQuiz({ quizData }) {
   const { colors } = useColors();
@@ -19,9 +19,8 @@ export default function DetailedQuiz({ quizData }) {
   const [quizStats, setQuizStats] = useState(null);
   const [quizFinished, setQuizFinished] = useState(false);
 
-  // countdown sadece kullanıcı seçim yaptıktan sonra 5'ten geriye sayar, null ise gösterilmez
   const [countdown, setCountdown] = useState(null);
-
+  const [consecutiveCorrect, setConsecutiveCorrect] = useState(0);
 
   const handleFinishQuiz = useCallback(async () => {
     setQuizFinished(true);
@@ -55,13 +54,13 @@ export default function DetailedQuiz({ quizData }) {
   }, [quizData, mcAnswers, request, userInfo]);
 
   const handleAnswerChange = (val) => {
-    // Aynı soruya birden fazla cevap verilmesin
     if (mcAnswers[currentQuestionIndex] !== undefined) return;
 
     setMcAnswers((prev) => ({ ...prev, [currentQuestionIndex]: val }));
-    setCountdown(3); // Sayaç başlat
+    setCountdown(3);
   };
 
+  // Sayaç
   useEffect(() => {
     if (countdown === null) return;
 
@@ -71,7 +70,7 @@ export default function DetailedQuiz({ quizData }) {
       } else {
         setCurrentQuestionIndex((idx) => idx + 1);
       }
-      setCountdown(null); // Sayaç sıfırla
+      setCountdown(null);
       return;
     }
 
@@ -82,12 +81,21 @@ export default function DetailedQuiz({ quizData }) {
     return () => clearInterval(interval);
   }, [countdown, currentQuestionIndex, quizData.length, handleFinishQuiz]);
 
+  // Üst üste doğru cevabı takip et
+  useEffect(() => {
+    const userAnswer = mcAnswers[currentQuestionIndex];
+
+    if (userAnswer === undefined) return;
+
+    if (userAnswer === quizData[currentQuestionIndex].correctAnswer) {
+      setConsecutiveCorrect((count) => count + 1);
+    } else {
+      setConsecutiveCorrect(0);
+    }
+  }, [mcAnswers, currentQuestionIndex, quizData]);
+
   if (!quizData?.length) {
-    return (
-      <Box sx={{ textAlign: "center", mt: 10, color: "error.main" }}>
-        Quiz verisi yüklenemedi.
-      </Box>
-    );
+    return <ErrorPage title={"Üzgünüz, quiz verisine ulaşılamadı!"} />;
   }
 
   if (quizFinished && score) {
@@ -115,7 +123,7 @@ export default function DetailedQuiz({ quizData }) {
       }}
     >
       <QuizHeader
-        countdown={countdown} // sadece countdown gönder
+        countdown={countdown}
         current={currentQuestionIndex + 1}
         total={quizData.length}
       />
@@ -128,6 +136,8 @@ export default function DetailedQuiz({ quizData }) {
         showResult={showResult}
         onSelect={handleAnswerChange}
         colors={colors}
+        questionNumber={currentQuestionIndex + 1}
+        consecutiveCorrect={consecutiveCorrect}
       />
     </Box>
   );

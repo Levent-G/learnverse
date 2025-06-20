@@ -8,6 +8,7 @@ import VideoluDersler from "./components/VideoluDersler";
 import KullanicinIlerlemesi from "./components/KullanicinIlerlemesi";
 import AlinanDerslerHocalar from "./components/AlinanDerslerHocalar";
 import LearningCountdown from "./components/LearningCountdown";
+import QuizStats from "../features/quizler/components/QuizStats";
 
 export default function Dashboard() {
   return (
@@ -26,6 +27,9 @@ export default function Dashboard() {
 
       {/* Günlük Görevler */}
       <GunlukGorevler />
+
+      {/* quizler */}
+      <QuizStats />
 
       {/* Modüller - Her modülü ayrı açarak göster */}
       <Modüller />

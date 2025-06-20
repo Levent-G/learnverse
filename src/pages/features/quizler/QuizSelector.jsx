@@ -1,26 +1,51 @@
-import { Paper, Typography, Box } from "@mui/material";
+import { Paper, Typography, Box, Button } from "@mui/material";
+import { useState } from "react";
 import { useApiRequest } from "../../../hooks/useApiRequest";
-import { CustomSelect } from "../../../components/form/formInputs/CustomSelect";
 import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
 import { useColors } from "../../../context/ColorContext";
-import Form from "../../../components/form/Form";
-import { schema } from "./shared/quizSchema";
+
+const categories = [
+  "Greetings",
+  "People",
+  "Numbers",
+  "Family",
+  "Colors",
+  "Months & Seasons",
+];
 
 const QuizSelector = ({ onQuizFetched }) => {
   const { request } = useApiRequest();
   const { colors } = useColors();
 
-  const handleSubmit = async (data) => {
-    const result = await request({
-      url: "/quiz",
-      method: "GET",
-      params: { ...data, count: 10 },
-    });
+  const userLevel = "A1";
 
-    if (result.success) {
-      onQuizFetched(result.data);
-    } else {
-      throw new Error(result.error || "Quiz alınamadı");
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleStartQuiz = async () => {
+    setLoading(true);
+
+    // Rastgele kategori seçimi
+    const randomCategory =
+      categories[Math.floor(Math.random() * categories.length)];
+    setSelectedCategory(randomCategory);
+
+    try {
+      const result = await request({
+        url: "/quiz",
+        method: "GET",
+        params: { level: userLevel, category: randomCategory, count: 10 },
+      });
+
+      if (result.success) {
+        onQuizFetched(result.data);
+      } else {
+        throw new Error(result.error || "Quiz alınamadı");
+      }
+    } catch (error) {
+      alert(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -29,12 +54,15 @@ const QuizSelector = ({ onQuizFetched }) => {
       elevation={5}
       sx={{
         maxWidth: 460,
-        height:400,
+        height: 400,
         mx: "auto",
         mt: 8,
         p: 4,
         borderRadius: 4,
         bgcolor: colors.background || "#fff",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
       }}
     >
       <Box
@@ -65,47 +93,32 @@ const QuizSelector = ({ onQuizFetched }) => {
         color={colors.textSecondary || "text.secondary"}
         sx={{ mb: 2 }}
       >
-        Hemen seviyeni ve kategorini seçerek eğlenceli bir test çöz!
+        Seviye: <strong>{userLevel}</strong> olarak seçildi.
+        <br />
+        {selectedCategory
+          ? `Seçilen kategori: ${selectedCategory}`
+          : "Başlat'a basınca kategori rastgele seçilecek."}
       </Typography>
 
-      <Form
-        schema={schema}
-        onSubmit={handleSubmit}
-        submitText="🚀 Quizi Başlat"
-        buttonSx={{
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleStartQuiz}
+        disabled={loading}
+        sx={{
           py: 1.5,
           fontWeight: 600,
           borderRadius: 10,
-          backgroundColor: colors.primary,
-          color: colors.textOnPrimary || "#fff",
           textTransform: "none",
           fontSize: "1rem",
-          "&:hover": {
-            backgroundColor: colors.primaryDark,
-          },
-          width:"100%"
+          mt: 2,
+          backgroundColor: colors.primary,
+          "&:hover": { backgroundColor: colors.primaryDark },
+          width: "100%",
         }}
-        sx={{ mt: 1 }}
       >
-        <CustomSelect
-          name="level"
-          label="Seviye"
-          options={["A1", "A2", "B1", "B2", "C1"]}
-        />
-
-        <CustomSelect
-          name="category"
-          label="Kategori"
-          options={[
-            "Greetings",
-            "People",
-            "Numbers",
-            "Family",
-            "Colors",
-            "Months & Seasons",
-          ]}
-        />
-      </Form>
+        {loading ? "Yükleniyor..." : "🚀 Quizi Başlat"}
+      </Button>
     </Paper>
   );
 };

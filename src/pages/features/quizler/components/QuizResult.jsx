@@ -1,11 +1,45 @@
-import React from "react";
-import { Paper, Box, Typography } from "@mui/material";
+import React, { useEffect } from "react";
+import { Paper, Box, Typography, Button } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
+import confetti from "canvas-confetti"; // 👈 Ekledik
 
 export default function QuizResult({ score, quizStats, colors }) {
+
   const ratio = score.correct / score.total;
   const success = ratio >= 0.8;
+
+  useEffect(() => {
+    if (!success) return;
+
+    const confettiBurst = () => {
+      const duration = 2 * 1000;
+      const animationEnd = Date.now() + duration;
+
+      (function frame() {
+        confetti({
+          particleCount: 4,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0, y: 0.7 },
+          colors: [colors.success || "#4caf50", colors.primary || "#2196f3"],
+        });
+        confetti({
+          particleCount: 4,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1, y: 0.7 },
+          colors: [colors.success || "#4caf50", colors.primary || "#2196f3"],
+        });
+
+        if (Date.now() < animationEnd) {
+          requestAnimationFrame(frame);
+        }
+      })();
+    };
+
+    confettiBurst();
+  }, [success, colors.success, colors.primary]);
 
   return (
     <Paper
@@ -13,13 +47,13 @@ export default function QuizResult({ score, quizStats, colors }) {
       sx={{
         mx: "auto",
         mt: 5,
-        p: 4, 
+        p: 4,
         maxWidth: 720,
         bgcolor: colors.background,
         borderRadius: 5,
         textAlign: "center",
         boxShadow: success
-          ? `0 0 10px 3px ${colors.primary}55` 
+          ? `0 0 10px 3px ${colors.primary}55`
           : `0 0 10px 3px ${colors.warning}55`,
       }}
     >
@@ -43,8 +77,8 @@ export default function QuizResult({ score, quizStats, colors }) {
       </Box>
 
       <Typography
-        variant="h4" 
-        fontWeight={700} 
+        variant="h4"
+        fontWeight={700}
         color={success ? colors.primaryDark : colors.warningDark}
         gutterBottom
       >
@@ -68,11 +102,12 @@ export default function QuizResult({ score, quizStats, colors }) {
           component="span"
           fontWeight={700}
           color={success ? colors.primary : colors.warning}
-       
         >
           {(ratio * 100).toFixed(1)}%
         </Box>
       </Typography>
+
+      {/* ... quizStats içeriği aynen kalabilir ... */}
 
       {quizStats?.additionalProp1 && (
         <Box
@@ -91,7 +126,7 @@ export default function QuizResult({ score, quizStats, colors }) {
               p: 2,
               borderRadius: 3,
               minWidth: 150,
-              boxShadow: 1, 
+              boxShadow: 1,
             }}
           >
             <Typography variant="subtitle2" fontWeight={600}>
@@ -210,6 +245,24 @@ export default function QuizResult({ score, quizStats, colors }) {
           40%, 80% { transform: translateX(5px);}
         }
       `}</style>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => window.location.reload()}
+        sx={{
+          py: 1.5,
+          fontWeight: 600,
+          borderRadius: 10,
+          textTransform: "none",
+          fontSize: "1rem",
+          mt: 2,
+          backgroundColor: colors.primary,
+          "&:hover": { backgroundColor: colors.primaryDark },
+          width: "100%",
+        }}
+      >
+        {"🚀 Yeni Quiz"}
+      </Button>
     </Paper>
   );
 }

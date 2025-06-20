@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Box, Paper, Typography, Grid } from "@mui/material";
+
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import QuizIcon from "@mui/icons-material/AssignmentTurnedIn";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import InsightsIcon from "@mui/icons-material/Insights";
-import { useColors } from "../../../context/ColorContext";
-import { useApiRequest } from "../../../hooks/useApiRequest";
+import { useApiRequest } from "../../../../hooks/useApiRequest";
+import { useColors } from "../../../../context/ColorContext";
+import ErrorPage from "../../../../components/errorPage/ErrorPage";
 
 export default function QuizStats() {
   const { colors } = useColors();
@@ -42,11 +44,11 @@ export default function QuizStats() {
     };
 
     fetchStats();
-  }, [request,userInfo?.email]);
+  }, [request, userInfo?.email]);
 
   if (loading) return <Typography>İstatistikler yükleniyor...</Typography>;
   if (error) return <Typography color="error">{error}</Typography>;
-  if (!stats) return <Typography>İstatistik bulunamadı.</Typography>;
+  if (!stats) return <ErrorPage title={"İstatistik bulunamadı."} />;
 
   const total = (stats.totalCorrect || 0) + (stats.totalWrong || 0);
   const successRatio = total ? (stats.totalCorrect / total) * 100 : 0;
@@ -98,7 +100,7 @@ export default function QuizStats() {
               sx={{
                 p: 3,
                 borderRadius: 4,
-                height:200,
+                height: 200,
                 bgcolor: colors.background,
                 textAlign: "center",
                 transition: "transform 0.3s, box-shadow 0.3s",

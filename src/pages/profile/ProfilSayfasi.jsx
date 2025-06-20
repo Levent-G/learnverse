@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { notify } from "../../utils/notify";
 import SifreDegistirModal from "./SifreDegistirModal";
 import ProfilGuncelleModal from "./ProfilGuncelleModal";
-import QuizStats from "../features/quizler/QuizStats";
+import QuizStats from "../features/quizler/components/QuizStats";
 
 export default function ProfilSayfasi() {
   const { colors } = useColors();
