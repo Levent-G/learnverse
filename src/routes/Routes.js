@@ -11,6 +11,7 @@ import Topluluk from "../pages/features/topluluk/Topluluk";
 import AIAsistan from "../pages/features/aiAsistan/AIAsistan";
 import KalipCumleler from "../pages/features/kalipCumleler/KalipCumleler";
 import QuizMain from "../pages/features/quizler/QuizMain";
+import ProfilSayfasi from "../pages/profile/ProfilSayfasi";
 
 const publicRoutes = [
   { path: "/", element: <LandingPage /> },
@@ -29,6 +30,7 @@ const privateRoutes = [
   { path: "/feature/quizler", element: <QuizMain /> },
   { path: "/feature/topluluk", element: <Topluluk /> },
   { path: "/feature/ai-asistan", element: <AIAsistan /> },
+  { path: "/profil", element: <ProfilSayfasi /> },
 ];
 
 export { publicRoutes, privateRoutes };

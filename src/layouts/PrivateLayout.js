@@ -24,10 +24,13 @@ import SmartToyIcon from "@mui/icons-material/SmartToy";
 import { notify } from "../utils/notify";
 import { useColors } from "../context/ColorContext";
 import { useAuth } from "../context/AuthContext";
+import UserMenu from "./UserProfileMenu";
 
 const drawerWidth = 240;
 
 function PrivateLayout({ children }) {
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+
   const { colors } = useColors();
   const isMobile = useMediaQuery("(max-width:800px)");
   const location = useLocation();
@@ -191,6 +194,16 @@ function PrivateLayout({ children }) {
                   style={{ height: 40 }}
                 />
               </Box>
+              <Box>
+                <UserMenu
+                  username={userInfo.username?.[0]?.toUpperCase() || "?"}
+                  onLogout={() => {
+                    localStorage.removeItem("authToken");
+                    localStorage.removeItem("userInfo");
+                    navigate("/giris");
+                  }}
+                />
+              </Box>
             </Toolbar>
           </AppBar>
         )}
@@ -254,7 +267,7 @@ function PrivateLayout({ children }) {
           </Box>
         )}
 
-        <Box sx={{ flex: 1, overflowY: "auto" ,p:2}}>{children}</Box>
+        <Box sx={{ flex: 1, overflowY: "auto", p: 2 }}>{children}</Box>
       </Box>
     </Box>
   );

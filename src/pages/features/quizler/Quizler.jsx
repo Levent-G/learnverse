@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Box } from "@mui/material";
 import { useColors } from "../../../context/ColorContext";
 import { useApiRequest } from "../../../hooks/useApiRequest";
 
-// Alt bileşenler
 import QuizHeader from "./QuizHeader";
 import QuestionCard from "./QuestionCard";
-import NavigationButtons from "./NavigationButtons";
 import QuizResult from "./QuizResult";
 
 export default function DetailedQuiz({ quizData }) {
@@ -21,9 +19,9 @@ export default function DetailedQuiz({ quizData }) {
   const [quizStats, setQuizStats] = useState(null);
   const [quizFinished, setQuizFinished] = useState(false);
 
-  const totalTimeSeconds = 600;
-  const [timeLeft, setTimeLeft] = useState(totalTimeSeconds);
-  const timerRef = useRef(null);
+  // countdown sadece kullanıcı seçim yaptıktan sonra 5'ten geriye sayar, null ise gösterilmez
+  const [countdown, setCountdown] = useState(null);
+
 
   const handleFinishQuiz = useCallback(async () => {
     setQuizFinished(true);
@@ -42,11 +40,11 @@ export default function DetailedQuiz({ quizData }) {
       },
     });
 
-    const correct = quizData.filter(
+    const correctCount = quizData.filter(
       (item, i) => mcAnswers[i] === item.correctAnswer
     ).length;
 
-    setScore({ correct, total: quizData.length });
+    setScore({ correct: correctCount, total: quizData.length });
 
     const { data } = await request({
       url: "/quiz/stats",
@@ -56,41 +54,33 @@ export default function DetailedQuiz({ quizData }) {
     if (data) setQuizStats(data);
   }, [quizData, mcAnswers, request, userInfo]);
 
+  const handleAnswerChange = (val) => {
+    // Aynı soruya birden fazla cevap verilmesin
+    if (mcAnswers[currentQuestionIndex] !== undefined) return;
+
+    setMcAnswers((prev) => ({ ...prev, [currentQuestionIndex]: val }));
+    setCountdown(5); // Sayaç başlat
+  };
+
   useEffect(() => {
-    if (quizFinished) {
-      clearInterval(timerRef.current);
+    if (countdown === null) return;
+
+    if (countdown <= 0) {
+      if (currentQuestionIndex === quizData.length - 1) {
+        handleFinishQuiz();
+      } else {
+        setCurrentQuestionIndex((idx) => idx + 1);
+      }
+      setCountdown(null); // Sayaç sıfırla
       return;
     }
 
-    timerRef.current = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timerRef.current);
-          handleFinishQuiz();
-          return 0;
-        }
-        return prev - 1;
-      });
+    const interval = setInterval(() => {
+      setCountdown((c) => (c !== null ? c - 1 : null));
     }, 1000);
 
-    return () => clearInterval(timerRef.current);
-  }, [quizFinished, handleFinishQuiz]);
-
-  const handleAnswerChange = (val) => {
-    setMcAnswers((prev) => ({ ...prev, [currentQuestionIndex]: val }));
-  };
-
-  const handleNext = () => {
-    if (currentQuestionIndex < quizData.length - 1) {
-      setCurrentQuestionIndex((idx) => idx + 1);
-    }
-  };
-
-  const handleBack = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex((idx) => idx - 1);
-    }
-  };
+    return () => clearInterval(interval);
+  }, [countdown, currentQuestionIndex, quizData.length, handleFinishQuiz]);
 
   if (!quizData?.length) {
     return (
@@ -106,9 +96,7 @@ export default function DetailedQuiz({ quizData }) {
 
   const currentQuestion = quizData[currentQuestionIndex];
   const userAnswer = mcAnswers[currentQuestionIndex] || "";
-  const isNextEnabled = userAnswer !== "";
-  const isLastQuestion = currentQuestionIndex === quizData.length - 1;
-  const allAnswered = quizData.every((_, idx) => mcAnswers[idx]);
+  const showResult = userAnswer !== "";
 
   return (
     <Box
@@ -127,8 +115,7 @@ export default function DetailedQuiz({ quizData }) {
       }}
     >
       <QuizHeader
-        timeLeft={timeLeft}
-        totalTime={totalTimeSeconds}
+        countdown={countdown} // sadece countdown gönder
         current={currentQuestionIndex + 1}
         total={quizData.length}
       />
@@ -137,18 +124,10 @@ export default function DetailedQuiz({ quizData }) {
         question={currentQuestion.question}
         options={currentQuestion.options}
         selectedAnswer={userAnswer}
+        correctAnswer={currentQuestion.correctAnswer}
+        showResult={showResult}
         onSelect={handleAnswerChange}
         colors={colors}
-      />
-
-      <NavigationButtons
-        onBack={handleBack}
-        onNext={handleNext}
-        onFinish={handleFinishQuiz}
-        showBack={currentQuestionIndex > 0}
-        showNext={!isLastQuestion}
-        showFinish={isLastQuestion && allAnswered}
-        nextDisabled={!isNextEnabled}
       />
     </Box>
   );
