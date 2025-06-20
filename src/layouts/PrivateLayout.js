@@ -1,41 +1,30 @@
-import React from "react";
-import {
-  AppBar,
-  Toolbar,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  CssBaseline,
-  useMediaQuery,
-  Box,
-  Button,
-  Divider,
-} from "@mui/material";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Box, CssBaseline, useMediaQuery } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
+import { useColors } from "../context/ColorContext";
+import { useAuth } from "../context/AuthContext";
+
+import DrawerMenu from "./components/DrawerMenu";
+import MobileDrawerMenu from "./components/MobileDrawerMenu";
+import DesktopAppBar from "./components/DesktopAppBar";
+import MobileAppBar from "./components/MobileAppBar";
+
 import HomeIcon from "@mui/icons-material/Home";
-import LogoutIcon from "@mui/icons-material/Logout";
 import SchoolIcon from "@mui/icons-material/School";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import QuizIcon from "@mui/icons-material/Quiz";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
-import { notify } from "../utils/notify";
-import { useColors } from "../context/ColorContext";
-import { useAuth } from "../context/AuthContext";
-import UserMenu from "./UserProfileMenu";
 
-const drawerWidth = 240;
-
-function PrivateLayout({ children }) {
+export default function PrivateLayout({ children }) {
   const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-
   const { colors } = useColors();
   const isMobile = useMediaQuery("(max-width:800px)");
-  const location = useLocation();
   const navigate = useNavigate();
   const { logout } = useAuth();
+
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const menuItems = [
     { label: "Ana Sayfa", icon: <HomeIcon />, path: "/ana-sayfa" },
@@ -58,13 +47,14 @@ function PrivateLayout({ children }) {
     },
   ];
 
+  // Dilerseniz burada iconları da aynı şekilde import edip ekleyin, veya props olarak PrivateLayout dışından verin
+
   const handleLogout = async () => {
     const result = await logout();
     if (result.success) {
-      notify("Çıkış yapıldı", "info");
       navigate("/login");
     } else {
-      notify(result.error || "Çıkış sırasında bir hata oluştu", "error");
+      alert(result.error || "Çıkış sırasında bir hata oluştu");
     }
   };
 
@@ -79,192 +69,35 @@ function PrivateLayout({ children }) {
       <CssBaseline />
 
       {!isMobile && (
-        <Drawer
-          variant="permanent"
-          sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            "& .MuiDrawer-paper": {
-              width: drawerWidth,
-              boxSizing: "border-box",
-              backgroundColor: colors.neutralLight,
-              paddingTop: 2,
-            },
-          }}
-        >
-          <Box
-            sx={{
-              px: 3,
-              mb: 2,
-              fontWeight: "bold",
-              fontSize: 20,
-              color: colors.primaryDark,
-              letterSpacing: 1,
-            }}
-          >
-            LearnVerse
-          </Box>
-          <Divider />
-          <List>
-            {menuItems.map((item) => (
-              <ListItem
-                button
-                key={item.label}
-                component={Link}
-                to={item.path}
-                sx={{
-                  mx: 2,
-                  my: 1,
-                  borderRadius: 2,
-                  backgroundColor:
-                    location.pathname === item.path
-                      ? colors.secondaryLight
-                      : "transparent",
-                  color: colors.neutralDark,
-                  "&:hover": {
-                    backgroundColor: colors.secondary,
-                    color: "white",
-                  },
-                  transition: "all 0.3s ease",
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 35,
-                    color:
-                      location.pathname === item.path
-                        ? colors.secondaryDark
-                        : colors.primary,
-                  }}
-                >
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText primary={item.label} />
-              </ListItem>
-            ))}
-          </List>
-
-          <Box sx={{ flexGrow: 1 }} />
-
-          <Box sx={{ px: 3, pb: 2 }}>
-            <Button
-              onClick={handleLogout}
-              fullWidth
-              startIcon={<LogoutIcon />}
-              variant="outlined"
-              sx={{
-                color: colors.secondaryDark,
-                borderColor: colors.secondaryDark,
-                borderRadius: 3,
-                textTransform: "none",
-                fontWeight: "bold",
-                "&:hover": {
-                  backgroundColor: colors.secondaryLight,
-                  borderColor: colors.secondary,
-                  color: colors.secondaryDark,
-                },
-                transition: "all 0.3s ease",
-              }}
-            >
-              Çıkış Yap
-            </Button>
-          </Box>
-        </Drawer>
+        <DrawerMenu menuItems={menuItems} onLogout={handleLogout} />
       )}
 
       <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
         {!isMobile && (
-          <AppBar
-            position="static"
-            sx={{ backgroundColor: colors.primaryDark }}
-          >
-            <Toolbar
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                fontWeight: 600,
-                fontSize: "18px",
-                letterSpacing: 1,
-              }}
-            >
-              <Box>
-                <img
-                  src="/logo.png"
-                  alt="LearnVerse Logo"
-                  style={{ height: 40 }}
-                />
-              </Box>
-              <Box>
-                <UserMenu
-                  username={userInfo.username?.[0]?.toUpperCase() || "?"}
-                  onLogout={() => {
-                    localStorage.removeItem("authToken");
-                    localStorage.removeItem("userInfo");
-                    navigate("/giris");
-                  }}
-                />
-              </Box>
-            </Toolbar>
-          </AppBar>
+          <DesktopAppBar
+            username={userInfo?.username || "?"}
+            onLogout={handleLogout}
+          />
         )}
 
         {isMobile && (
-          <Box
-            sx={{
-              backgroundColor: colors.neutralLight,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <Box sx={{ display: "flex" }}>
-              {menuItems.map((item) => (
-                <Box
-                  key={item.label}
-                  component={Link}
-                  to={item.path}
-                  sx={{
-                    flex: 1,
-                    textAlign: "center",
-                    py: 2,
-                    px: 1,
-                    textDecoration: "none",
-                    color:
-                      location.pathname === item.path
-                        ? colors.secondaryDark
-                        : "#555",
-                    borderBottom:
-                      location.pathname === item.path
-                        ? `2px solid ${colors.secondaryDark}`
-                        : "2px solid transparent",
-                    "&:hover": {
-                      backgroundColor: colors.neutralLight,
-                    },
-                    transition: "all 0.3s ease",
-                  }}
-                >
-                  <Box sx={{ color: "inherit" }}>{item.icon}</Box>
-                  <Box sx={{ fontSize: "14px", mt: 0.5 }}>{item.label}</Box>
-                </Box>
-              ))}
-            </Box>
+          <MobileAppBar
+            username={userInfo?.username || "?"}
+            onLogout={handleLogout}
+            onMenuClick={() => setDrawerOpen(true)}
+          />
+        )}
 
-            <Button
-              onClick={handleLogout}
-              variant="text"
-              startIcon={<LogoutIcon />}
-              sx={{
-                py: 1,
-                color: colors.secondaryDark,
-                fontSize: "0.85rem",
-                borderTop: `1px solid ${colors.neutral}`,
-                fontWeight: "bold",
-                textTransform: "none",
-              }}
-            >
-              Çıkış Yap
-            </Button>
-          </Box>
+        {isMobile && (
+          <MobileDrawerMenu
+            open={drawerOpen}
+            onClose={() => setDrawerOpen(false)}
+            menuItems={menuItems}
+            onLogout={() => {
+              setDrawerOpen(false);
+              handleLogout();
+            }}
+          />
         )}
 
         <Box sx={{ flex: 1, overflowY: "auto", p: 2 }}>{children}</Box>
@@ -272,5 +105,3 @@ function PrivateLayout({ children }) {
     </Box>
   );
 }
-
-export default PrivateLayout;

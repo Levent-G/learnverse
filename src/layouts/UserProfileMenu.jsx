@@ -28,12 +28,18 @@ export default function UserMenu({ username, onLogout }) {
       <IconButton onClick={handleClick} size="large">
         <Avatar
           sx={{
-            width: 34,
-            height: 34,
-            bgcolor: colors.secondary,
+            width: 40,
+            height: 40,
+            mx: "auto",
+            bgcolor: colors.primary,
             fontSize: 18,
-            fontWeight: 600,
+            fontWeight: "bold",
+            boxShadow: `0 4px 12px ${colors.primaryDark}88`,
+            border: `3px solid ${colors.primaryLight}`,
+            cursor: "default",
+            userSelect: "none",
           }}
+          aria-label="kullanıcı avatar"
         >
           {username?.charAt(0)?.toUpperCase()}
         </Avatar>

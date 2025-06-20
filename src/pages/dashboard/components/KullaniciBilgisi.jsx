@@ -38,7 +38,7 @@ const KullaniciBilgisi = () => {
         }}
         aria-label="kullanıcı avatar"
       >
-        {userInfo?.username?.charAt(0)?.toUpperCase()}
+        {userInfo.username?.charAt(0)?.toUpperCase()}
       </Avatar>
 
       <Typography
@@ -62,23 +62,40 @@ const KullaniciBilgisi = () => {
       >
         Bugün öğrenmeye hazır mısın?
       </Typography>
-
       <Stack
         direction={{ xs: "column", sm: "row" }}
         justifyContent="center"
         spacing={3}
         flexWrap="wrap"
+        sx={{
+          maxWidth: "100%",
+          overflowX: "auto",
+          px: 2,
+        }}
       >
         <LocalFireDepartmentIcon
           fontSize="medium"
-          sx={{ color: colors.warning }}
+          sx={{ color: colors.warning, alignSelf: "center" }}
         />
-        <Typography variant="subtitle1" fontWeight={600} color={colors.warning}>
+        <Typography
+          variant="subtitle1"
+          fontWeight={600}
+          color={colors.warning}
+          sx={{ minWidth: 120, textAlign: "center" }}
+        >
           Seri: 5 gün
         </Typography>
 
-        <EmojiEventsIcon fontSize="medium" sx={{ color: colors.success }} />
-        <Typography variant="subtitle1" fontWeight={600} color={colors.success}>
+        <EmojiEventsIcon
+          fontSize="medium"
+          sx={{ color: colors.success, alignSelf: "center" }}
+        />
+        <Typography
+          variant="subtitle1"
+          fontWeight={600}
+          color={colors.success}
+          sx={{ minWidth: 120, textAlign: "center" }}
+        >
           Başarı Puanı: 1260
         </Typography>
       </Stack>
