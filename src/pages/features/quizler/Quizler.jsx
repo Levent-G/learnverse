@@ -59,7 +59,7 @@ export default function DetailedQuiz({ quizData }) {
     if (mcAnswers[currentQuestionIndex] !== undefined) return;
 
     setMcAnswers((prev) => ({ ...prev, [currentQuestionIndex]: val }));
-    setCountdown(5); // Sayaç başlat
+    setCountdown(3); // Sayaç başlat
   };
 
   useEffect(() => {

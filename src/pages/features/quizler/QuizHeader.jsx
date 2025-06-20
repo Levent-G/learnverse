@@ -25,7 +25,7 @@ export default function QuizHeader({ countdown, current, total }) {
       </Typography>
       <LinearProgress
         variant="determinate"
-        value={(countdown / 5) * 100} // 5 saniyeden geriye doğru sayıyor
+        value={(countdown / 3) * 100} // 5 saniyeden geriye doğru sayıyor
         sx={{ height: 10, borderRadius: 5, mt: 0.5 }}
       />
       <Typography variant="h5" textAlign="center" fontWeight={700} mt={2}>

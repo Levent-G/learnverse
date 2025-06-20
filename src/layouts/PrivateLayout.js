@@ -16,6 +16,7 @@ import MenuBookIcon from "@mui/icons-material/MenuBook";
 import QuizIcon from "@mui/icons-material/Quiz";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
+import { notify } from "../utils/notify";
 
 export default function PrivateLayout({ children }) {
   const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
@@ -53,6 +54,7 @@ export default function PrivateLayout({ children }) {
     const result = await logout();
     if (result.success) {
       navigate("/login");
+      notify("Çıkış Yapıldı", "info");
     } else {
       alert(result.error || "Çıkış sırasında bir hata oluştu");
     }
