@@ -58,7 +58,7 @@ function PrivateLayout({ children }) {
   const handleLogout = async () => {
     const result = await logout();
     if (result.success) {
-      notify("Çıkış yapıldı", "success");
+      notify("Çıkış yapıldı", "info");
       navigate("/login");
     } else {
       notify(result.error || "Çıkış sırasında bir hata oluştu", "error");
@@ -254,7 +254,7 @@ function PrivateLayout({ children }) {
           </Box>
         )}
 
-        <Box sx={{ flex: 1, overflowY: "auto" }}>{children}</Box>
+        <Box sx={{ flex: 1, overflowY: "auto" ,p:2}}>{children}</Box>
       </Box>
     </Box>
   );

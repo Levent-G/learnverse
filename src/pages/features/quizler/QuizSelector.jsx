@@ -1,90 +1,112 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Select,
-  Button,
-} from "@mui/material";
-import axios from "axios";
+import { Paper, Typography, Box } from "@mui/material";
+import { useApiRequest } from "../../../hooks/useApiRequest";
+import { CustomSelect } from "../../../components/form/formInputs/CustomSelect";
+import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
+import { useColors } from "../../../context/ColorContext";
+import Form from "../../../components/form/Form";
+import { schema } from "./shared/quizSchema";
 
 const QuizSelector = ({ onQuizFetched }) => {
-  const [level, setLevel] = useState("");
-  const [category, setCategory] = useState("");
-  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  const { request } = useApiRequest();
+  const { colors } = useColors();
 
-  const availableLevels = ["A1", "A2", "B1", "B2", "C1"];
-  const availableCategories = [
-    "Greetings",
-    "People",
-    "Numbers",
-    "Family",
-    "Colors",
-    "Months & Seasons",
-  ];
+  const handleSubmit = async (data) => {
+    const result = await request({
+      url: "/quiz",
+      method: "GET",
+      params: { ...data, count: 10 },
+    });
 
-  const handleStartQuiz = async () => {
-    try {
-      const response = await axios.get("http://localhost:8010/quiz", {
-        headers: {
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-        params: {
-          level,
-          category,
-          count: 10,
-        },
-      });
-
-      onQuizFetched(response.data); // Quiz ekranına veriyi aktar
-    } catch (error) {
-      console.error("Quiz alınamadı:", error);
+    if (result.success) {
+      onQuizFetched(result.data);
+    } else {
+      throw new Error(result.error || "Quiz alınamadı");
     }
   };
 
   return (
-    <Box sx={{ maxWidth: 400, mx: "auto", mt: 4 }}>
-      <Typography variant="h5" gutterBottom textAlign="center">
-        Quiz Başlat
+    <Paper
+      elevation={5}
+      sx={{
+        maxWidth: 460,
+        height:400,
+        mx: "auto",
+        mt: 8,
+        p: 4,
+        borderRadius: 4,
+        bgcolor: colors.background || "#fff",
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 1,
+          mb: 2,
+        }}
+      >
+        <EmojiObjectsIcon
+          sx={{ fontSize: 32, color: colors.primary || "#1976d2" }}
+        />
+        <Typography
+          variant="h5"
+          textAlign="center"
+          fontWeight={700}
+          color={colors.primaryDark || "#0d47a1"}
+        >
+          Quiz Başlat
+        </Typography>
+      </Box>
+
+      <Typography
+        variant="body2"
+        textAlign="center"
+        color={colors.textSecondary || "text.secondary"}
+        sx={{ mb: 2 }}
+      >
+        Hemen seviyeni ve kategorini seçerek eğlenceli bir test çöz!
       </Typography>
 
-      <FormControl fullWidth sx={{ mb: 2 }}>
-        <InputLabel>Seviye</InputLabel>
-        <Select value={level} label="Seviye" onChange={(e) => setLevel(e.target.value)}>
-          {availableLevels.map((lvl) => (
-            <MenuItem key={lvl} value={lvl}>
-              {lvl}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-      <FormControl fullWidth sx={{ mb: 2 }}>
-        <InputLabel>Kategori</InputLabel>
-        <Select
-          value={category}
-          label="Kategori"
-          onChange={(e) => setCategory(e.target.value)}
-        >
-          {availableCategories.map((cat) => (
-            <MenuItem key={cat} value={cat}>
-              {cat}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-      <Button
-        variant="contained"
-        fullWidth
-        onClick={handleStartQuiz}
-        disabled={!level || !category}
+      <Form
+        schema={schema}
+        onSubmit={handleSubmit}
+        submitText="🚀 Quizi Başlat"
+        buttonSx={{
+          py: 1.5,
+          fontWeight: 600,
+          borderRadius: 10,
+          backgroundColor: colors.primary,
+          color: colors.textOnPrimary || "#fff",
+          textTransform: "none",
+          fontSize: "1rem",
+          "&:hover": {
+            backgroundColor: colors.primaryDark,
+          },
+          width:"100%"
+        }}
+        sx={{ mt: 1 }}
       >
-        Quizi Başlat
-      </Button>
-    </Box>
+        <CustomSelect
+          name="level"
+          label="Seviye"
+          options={["A1", "A2", "B1", "B2", "C1"]}
+        />
+
+        <CustomSelect
+          name="category"
+          label="Kategori"
+          options={[
+            "Greetings",
+            "People",
+            "Numbers",
+            "Family",
+            "Colors",
+            "Months & Seasons",
+          ]}
+        />
+      </Form>
+    </Paper>
   );
 };
 

@@ -1,199 +1,155 @@
-import React, { useState} from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Divider,
-} from "@mui/material";
-import MultipleChoice from "./MultipleChoice";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { Box } from "@mui/material";
 import { useColors } from "../../../context/ColorContext";
-import axios from "axios";
+import { useApiRequest } from "../../../hooks/useApiRequest";
 
-export default function DetailedQuiz({quizData}) {
+// Alt bileşenler
+import QuizHeader from "./QuizHeader";
+import QuestionCard from "./QuestionCard";
+import NavigationButtons from "./NavigationButtons";
+import QuizResult from "./QuizResult";
+
+export default function DetailedQuiz({ quizData }) {
   const { colors } = useColors();
+  const { request } = useApiRequest();
 
-  const userInfoString = localStorage.getItem("userInfo");
-  const userInfo = JSON.parse(userInfoString);
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
 
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [mcAnswers, setMcAnswers] = useState({});
   const [score, setScore] = useState(null);
-  const [quizStats, setQuizStats] = useState(null); // ← istatistik state’i
+  const [quizStats, setQuizStats] = useState(null);
+  const [quizFinished, setQuizFinished] = useState(false);
 
+  const totalTimeSeconds = 600;
+  const [timeLeft, setTimeLeft] = useState(totalTimeSeconds);
+  const timerRef = useRef(null);
 
+  const handleFinishQuiz = useCallback(async () => {
+    setQuizFinished(true);
 
-  const checkScore = async () => {
     const answersPayload = quizData.map((item, idx) => ({
       english: item.question,
       selected: mcAnswers[idx] || "",
     }));
 
-    try {
-      // 1. Cevapları gönder
-      await axios.post(
-        "http://localhost:8010/quiz/check",
-        {
-          answers: answersPayload,
-          userEmail: userInfo.email,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${userInfo.token}`,
-          },
+    await request({
+      url: "/quiz/check",
+      method: "POST",
+      body: {
+        answers: answersPayload,
+        userEmail: userInfo.email,
+      },
+    });
+
+    const correct = quizData.filter(
+      (item, i) => mcAnswers[i] === item.correctAnswer
+    ).length;
+
+    setScore({ correct, total: quizData.length });
+
+    const { data } = await request({
+      url: "/quiz/stats",
+      params: { email: userInfo.email },
+    });
+
+    if (data) setQuizStats(data);
+  }, [quizData, mcAnswers, request, userInfo]);
+
+  useEffect(() => {
+    if (quizFinished) {
+      clearInterval(timerRef.current);
+      return;
+    }
+
+    timerRef.current = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current);
+          handleFinishQuiz();
+          return 0;
         }
-      );
-
-      // 2. Skoru yerel hesapla
-      let total = quizData.length;
-      let correct = 0;
-
-      quizData.forEach((item, i) => {
-        if (mcAnswers[i] === item.correctAnswer) {
-          correct++;
-        }
+        return prev - 1;
       });
+    }, 1000);
 
-      setScore({ correct, total });
+    return () => clearInterval(timerRef.current);
+  }, [quizFinished, handleFinishQuiz]);
 
-      // 3. İstatistikleri al
-      const statsRes = await axios.get("http://localhost:8010/quiz/stats", {
-        headers: {
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-        params: {
-          email: userInfo.email,
-        },
-      });
+  const handleAnswerChange = (val) => {
+    setMcAnswers((prev) => ({ ...prev, [currentQuestionIndex]: val }));
+  };
 
-      setQuizStats(statsRes.data);
-      console.log("Kullanıcı istatistikleri:", statsRes.data);
-    } catch (error) {
-      console.error("Cevap gönderme veya istatistik çekme hatası:", error);
+  const handleNext = () => {
+    if (currentQuestionIndex < quizData.length - 1) {
+      setCurrentQuestionIndex((idx) => idx + 1);
     }
   };
 
-  const handleMcChange = (idx, val) => {
-    setMcAnswers((prev) => ({ ...prev, [idx]: val }));
+  const handleBack = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex((idx) => idx - 1);
+    }
   };
 
-
-
-  if (!quizData.length) {
+  if (!quizData?.length) {
     return (
-      <Box sx={{ textAlign: "center", mt: 10 }}>
-        <Typography color="error">Quiz verisi yüklenemedi.</Typography>
+      <Box sx={{ textAlign: "center", mt: 10, color: "error.main" }}>
+        Quiz verisi yüklenemedi.
       </Box>
     );
   }
+
+  if (quizFinished && score) {
+    return <QuizResult score={score} quizStats={quizStats} colors={colors} />;
+  }
+
+  const currentQuestion = quizData[currentQuestionIndex];
+  const userAnswer = mcAnswers[currentQuestionIndex] || "";
+  const isNextEnabled = userAnswer !== "";
+  const isLastQuestion = currentQuestionIndex === quizData.length - 1;
+  const allAnswered = quizData.every((_, idx) => mcAnswers[idx]);
 
   return (
     <Box
       sx={{
         mx: "auto",
+        mt: 4,
         p: 4,
         maxWidth: 700,
-        bgcolor: colors.background || "background.paper",
+        bgcolor: colors.background,
         borderRadius: 3,
-        boxShadow: 3,
-        color: colors.textPrimary || "text.primary",
-        userSelect: "text",
-        minHeight: "80vh",
+        boxShadow: 4,
+        color: colors.textPrimary,
         display: "flex",
         flexDirection: "column",
         gap: 3,
       }}
     >
-      <Typography
-        variant="h4"
-        sx={{ color: colors.primaryDark, fontWeight: 700, textAlign: "center" }}
-      >
-        Detaylı Quiz Bölümü
-      </Typography>
-
-      <Divider sx={{ borderColor: colors.primaryLight }} />
-
-      <MultipleChoice
-        data={quizData.map((item) => ({
-          question: item.question,
-          options: item.options,
-          answer: item.correctAnswer, // MultipleChoice bileşeni `answer` bekliyorsa
-        }))}
-        answers={mcAnswers}
-        onChange={handleMcChange}
+      <QuizHeader
+        timeLeft={timeLeft}
+        totalTime={totalTimeSeconds}
+        current={currentQuestionIndex + 1}
+        total={quizData.length}
       />
 
-      <Button
-        variant="contained"
-        onClick={checkScore}
-        sx={{
-          px: 6,
-          py: 1.5,
-          fontWeight: 600,
-          borderRadius: 10,
-          backgroundColor: colors.primary,
-          color: colors.textOnPrimary,
-          alignSelf: "center",
-          "&:hover": { backgroundColor: colors.primaryDark },
-          mt: 2,
-          userSelect: "none",
-        }}
-      >
-        Sonuçları Kontrol Et
-      </Button>
+      <QuestionCard
+        question={currentQuestion.question}
+        options={currentQuestion.options}
+        selectedAnswer={userAnswer}
+        onSelect={handleAnswerChange}
+        colors={colors}
+      />
 
-      {score && (
-        <Box sx={{ mt: 3, textAlign: "center" }}>
-          <Typography
-            sx={{
-              fontWeight: 700,
-              fontSize: "1.25rem",
-              color: colors.successText || "green",
-              userSelect: "text",
-            }}
-          >
-            ✅ Doğru: {score.correct} / {score.total} &nbsp; | &nbsp; Başarı
-            Oranı: {((score.correct / score.total) * 100).toFixed(1)}%
-          </Typography>
-
-          {quizStats && (
-            <Box
-              sx={{
-                mt: 2,
-                textAlign: "center",
-                color: colors.textSecondary || "#555",
-              }}
-            >
-              <Typography variant="h6" sx={{ fontWeight: 600, mt: 2 }}>
-                📊 Kullanıcı İstatistikleri
-              </Typography>
-
-              {/* Örnek: Toplam doğru-yanlış */}
-              {quizStats.additionalProp1 && (
-                <Typography sx={{ mt: 1 }}>
-                  Toplam Doğru: {quizStats.additionalProp1.totalCorrect} <br />
-                  Toplam Yanlış: {quizStats.additionalProp1.totalWrong}
-                </Typography>
-              )}
-
-              {/* Örnek: Seviye bazlı doğru/yanlış */}
-              {quizStats.additionalProp2 && (
-                <Box sx={{ mt: 2 }}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-                    📚 Seviye Bazlı Performans
-                  </Typography>
-                  {Object.entries(quizStats.additionalProp2).map(
-                    ([level, data]) => (
-                      <Typography key={level}>
-                        {level.toUpperCase()} - ✅ {data.dogru || 0} / ❌{" "}
-                        {data.yanlis || 0}
-                      </Typography>
-                    )
-                  )}
-                </Box>
-              )}
-            </Box>
-          )}
-        </Box>
-      )}
+      <NavigationButtons
+        onBack={handleBack}
+        onNext={handleNext}
+        onFinish={handleFinishQuiz}
+        showBack={currentQuestionIndex > 0}
+        showNext={!isLastQuestion}
+        showFinish={isLastQuestion && allAnswered}
+        nextDisabled={!isNextEnabled}
+      />
     </Box>
   );
 }

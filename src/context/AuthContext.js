@@ -1,105 +1,83 @@
 import React, { createContext, useContext, useState } from "react";
-import axios from "axios";
+import { useApiRequest } from "../hooks/useApiRequest";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(() => {
+    // Eğer sayfa yenilendi ise sessionStorage'dan al, yoksa null
+    const savedUser = sessionStorage.getItem("userInfo");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
   const [loading, setLoading] = useState(false);
+  const { request } = useApiRequest();
 
-  const setUserInfo = async (email, token) => {
-    try {
-      const response = await axios.get(
-        "http://localhost:8010/user/getUserInfo",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            email,
-          },
-        }
-      );
+  const setUserInfo = async (email) => {
+    const result = await request({
+      url: "/user/getUserInfo",
+      method: "GET",
+      params: { email },
+    });
 
-      const userInfo = {
-        ...response.data, // sunucudan gelen kullanıcı bilgileri
-        token: token, // auth token
-      };
-
-      localStorage.setItem("userInfo", JSON.stringify(userInfo));
-    } catch (error) {
-      console.error("Kullanıcı bilgisi alınamadı:", error);
+    if (result.success) {
+      const userInfo = { ...result.data };
+      sessionStorage.setItem("userInfo", JSON.stringify(userInfo));
     }
   };
 
   const login = async (email, password) => {
     setLoading(true);
-    try {
-      const response = await axios.post("http://localhost:8010/auth/login", {
-        email,
-        password,
-      });
 
-      const { token, active, ...userData } = response.data;
+    const result = await request({
+      url: "/auth/login",
+      method: "POST",
+      body: { email, password },
+    });
 
-      if (!token) {
-        throw new Error("Token alınamadı.");
-      }
+    if (!result.success) {
+      setLoading(false);
+      return { success: false, error: result.error || "Giriş hatası" };
+    }
 
-      if (!active) {
-        return {
-          success: false,
-          active: false,
-          error:
-            "Hesabınız aktif değil. Lütfen e-posta kutunuzu kontrol edip doğrulama linkine tıklayın.",
-        };
-      }
-      setUserInfo(email, token);
-      localStorage.setItem("authToken", token);
+    const { token, active, ...userData } = result.data;
 
-      setCurrentUser({
-        ...userData,
-        token,
-      });
+    if (!token) {
+      setLoading(false);
+      return { success: false, error: "Token alınamadı." };
+    }
 
-      return { success: true };
-    } catch (error) {
+    if (!active) {
+      setLoading(false);
       return {
         success: false,
-        error:
-          error.response?.data?.messages?.[0]?.text ||
-          "Giriş işlemi sırasında bir hata oluştu.",
+        active: false,
+        error: "Hesabınız aktif değil. Lütfen e-posta kutunuzu kontrol edin.",
       };
-    } finally {
-      setLoading(false);
     }
+
+    // sessionStorage kullanıyoruz:
+    sessionStorage.setItem("authToken", token);
+    await setUserInfo(email);
+
+    setCurrentUser({ ...userData, token });
+
+    setLoading(false);
+
+    return { success: true };
   };
 
-  const logout = async () => {
-    setLoading(true);
-    try {
-      localStorage.removeItem("authToken");
-
-      setCurrentUser(null);
-      return { success: true };
-    } catch (error) {
-      return {
-        success: false,
-        error: error.response?.data?.messages?.[0]?.text,
-      };
-    } finally {
-      setLoading(false);
-    }
+  const logout = () => {
+    sessionStorage.removeItem("authToken");
+    sessionStorage.removeItem("userInfo");
+    setCurrentUser(null);
+    return { success: true };
   };
 
-  const value = {
-    currentUser,
-    loading,
-    login,
-    logout,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ currentUser, login, logout, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {

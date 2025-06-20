@@ -17,8 +17,9 @@ const Form = forwardRef(
       defaultValues = {},
       children,
       submitText = "Gönder",
-      customButton=false,
+      customButton = false,
       loading: externalLoading,
+      buttonSx,
       ...props
     },
     ref
@@ -72,13 +73,14 @@ const Form = forwardRef(
             alignItems="center"
           >
             {(loading || externalLoading) && (
-              <CircularProgress size={24} sx={{ mr: 2 , color: "#9b59b6"}} />
+              <CircularProgress size={24} sx={{ mr: 2, color: "#9b59b6" }} />
             )}
             {submitText && !customButton && (
               <Button
                 type="submit"
                 variant="contained"
                 disabled={loading || externalLoading}
+                sx={{ ...buttonSx }}
               >
                 {submitText}
               </Button>

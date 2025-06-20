@@ -2,7 +2,7 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 
 export default function PrivateRoute({ children }) {
-  const token = localStorage.getItem("authToken"); 
+  const token = sessionStorage.getItem("authToken"); // sessionStorage kullan
 
   if (!token) {
     return <Navigate to="/login" replace />;

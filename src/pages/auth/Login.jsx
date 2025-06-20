@@ -61,12 +61,12 @@ export default function Login() {
             sx={{
               border: "none",
               background: "none",
-              color: colors.primary, // Burada palette'den renk kullandık
+              color: colors.primary, 
               cursor: "pointer",
               fontSize: "0.8rem",
               textDecoration: "underline",
               "&:hover": {
-                color: colors.primaryDark, // Hover rengini biraz koyultabiliriz
+                color: colors.primaryDark, 
               },
               transition: "color 0.3s ease",
             }}

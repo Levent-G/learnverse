@@ -6,7 +6,7 @@ import { useColors } from "../../../context/ColorContext";
 
 const KullaniciBilgisi = () => {
   const { colors } = useColors();
-  const userInfoString = localStorage.getItem("userInfo");
+  const userInfoString = sessionStorage.getItem("userInfo");
   const userInfo = JSON.parse(userInfoString);
   return (
     <Box
@@ -38,7 +38,7 @@ const KullaniciBilgisi = () => {
         }}
         aria-label="kullanıcı avatar"
       >
-        {userInfo.username?.charAt(0)?.toUpperCase()}
+        {userInfo?.username?.charAt(0)?.toUpperCase()}
       </Avatar>
 
       <Typography
