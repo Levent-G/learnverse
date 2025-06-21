@@ -35,13 +35,12 @@ export default function QuestionCard({
   showResult,
   onSelect,
   colors,
-  consecutiveCorrect, // Üst üste doğru sayısı prop'u
+  consecutiveCorrect, 
 }) {
-  // Ayının ifadesini belirle
   let bearExpression = "neutral";
 
   if (consecutiveCorrect >= 3) {
-    bearExpression = "surprised"; // 3 ve üzeri doğruysa şaşırmış ayı
+    bearExpression = "surprised"; 
   } else if (showResult) {
     if (selectedAnswer === correctAnswer) {
       bearExpression = "happy";
@@ -82,6 +81,7 @@ export default function QuestionCard({
         }}
       >
         <Box sx={{ mb: 2 }}>
+        
           <Typography
             variant="h5"
             sx={{
@@ -133,59 +133,60 @@ export default function QuestionCard({
 
             return (
               <Button
-                key={idx}
-                variant={variant === "contained" ? "contained" : "outlined"}
-                onClick={() => !showResult && onSelect(option)}
-                sx={{
-                  justifyContent: "flex-start",
-                  textTransform: "none",
-                  fontWeight: 700,
-                  borderRadius: 3,
-                  py: 1.5,
-                  px: 2,
-                  bgcolor: bgColor,
-                  color: variant === "contained" ? "#fff" : colors.primary,
-                  border:
-                    variant === "outlined"
-                      ? `2px solid ${colors.primary}`
-                      : "none",
-                  boxShadow:
-                    variant === "contained"
-                      ? "0 4px 10px rgb(14 165 233 / 0.4)"
-                      : "none",
-                  transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
-                  cursor: showResult ? "default" : "pointer",
-                  pointerEvents: showResult ? "none" : "auto", // Tıklamayı engelle
-
-                  "&:hover": {
-                    bgcolor: showResult
-                      ? undefined // hover yok
-                      : variant === "contained"
-                      ? `linear-gradient(135deg, ${colors.secondary} 0%, ${colors.primary} 100%)`
-                      : colors.primary,
-                    color: showResult
-                      ? undefined
-                      : variant === "outlined"
-                      ? "#fff"
-                      : "#fff",
-                    boxShadow: showResult
-                      ? "none"
-                      : variant === "contained"
-                      ? "0 6px 14px rgb(14 165 233 / 0.6)"
-                      : `0 0 8px ${colors.primary}`,
-                    transform: showResult ? "none" : "scale(1.05)",
-                  },
-
-                  "&:focus-visible": {
-                    outline: `3px solid ${colors.secondary}`,
-                    outlineOffset: "2px",
-                  },
-
-                  animation: animation,
-                }}
-              >
-                {option.toUpperCase()}
-              </Button>
+              key={idx}
+              variant={variant === "contained" ? "contained" : "outlined"}
+              onClick={() => !showResult && onSelect(option)}
+              sx={{
+                justifyContent: "flex-start",
+                textTransform: "none",
+                fontWeight: 700,
+                borderRadius: 3,
+                py: 1.5,
+                px: 2,
+                bgcolor: bgColor,
+                color: variant === "contained" ? "#fff" : colors.primary,
+                border:
+                  variant === "outlined"
+                    ? `2px solid ${colors.primary}`
+                    : "none",
+                boxShadow:
+                  variant === "contained"
+                    ? "0 4px 10px rgb(14 165 233 / 0.4)"
+                    : "none",
+                transition: "all 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
+                cursor: showResult ? "default" : "pointer",
+                pointerEvents: showResult ? "none" : "auto",  // Tıklamayı engelle
+            
+                "&:hover": {
+                  bgcolor: showResult
+                    ? undefined  // hover yok
+                    : variant === "contained"
+                    ? `linear-gradient(135deg, ${colors.secondary} 0%, ${colors.primary} 100%)`
+                    : colors.primary,
+                  color: showResult
+                    ? undefined
+                    : variant === "outlined"
+                    ? "#fff"
+                    : "#fff",
+                  boxShadow: showResult
+                    ? "none"
+                    : variant === "contained"
+                    ? "0 6px 14px rgb(14 165 233 / 0.6)"
+                    : `0 0 8px ${colors.primary}`,
+                  transform: showResult ? "none" : "scale(1.05)",
+                },
+            
+                "&:focus-visible": {
+                  outline: `3px solid ${colors.secondary}`,
+                  outlineOffset: "2px",
+                },
+            
+                animation: animation,
+              }}
+            >
+              {option.toLocaleUpperCase('tr-TR')}
+            </Button>
+            
             );
           })}
         </Box>

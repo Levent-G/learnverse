@@ -11,6 +11,7 @@ export default function QuizMain() {
   ) : (
     <>
       <QuizSelector onQuizFetched={setQuizData} />
+
       <QuizStats />
     </>
   );

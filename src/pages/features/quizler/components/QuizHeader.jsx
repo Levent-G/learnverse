@@ -20,7 +20,7 @@ export default function QuizHeader({ countdown, current, total }) {
             </Typography>
             <LinearProgress
               variant="determinate"
-              value={(countdown / 3) * 100}
+              value={(countdown / 2) * 100} // tık tık olmasın TODO
               sx={{ height: 10, borderRadius: 5, mt: 0.5 }}
             />
           </>

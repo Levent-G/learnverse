@@ -50,8 +50,6 @@ export default function QuizStats() {
   if (error) return <Typography color="error">{error}</Typography>;
   if (!stats) return <ErrorPage title={"İstatistik bulunamadı."} />;
 
-  const total = (stats.totalCorrect || 0) + (stats.totalWrong || 0);
-  const successRatio = total ? (stats.totalCorrect / total) * 100 : 0;
 
   const statCards = [
     {
@@ -68,9 +66,9 @@ export default function QuizStats() {
     },
     {
       label: "Başarı Oranı",
-      value: `${successRatio.toFixed(1)}%`,
+      value: `${ stats.successRate}`,
       icon: <InsightsIcon sx={{ fontSize: 36 }} />,
-      color: successRatio >= 80 ? colors.success : colors.warning,
+      color:  stats.successRate >= 80 ? colors.success : colors.warning,
     },
     {
       label: "Çözülen Quiz",

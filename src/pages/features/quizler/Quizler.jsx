@@ -57,7 +57,7 @@ export default function DetailedQuiz({ quizData }) {
     if (mcAnswers[currentQuestionIndex] !== undefined) return;
 
     setMcAnswers((prev) => ({ ...prev, [currentQuestionIndex]: val }));
-    setCountdown(3);
+    setCountdown(2);
   };
 
   // Sayaç
@@ -129,6 +129,7 @@ export default function DetailedQuiz({ quizData }) {
       />
 
       <QuestionCard
+        key={currentQuestionIndex}
         question={currentQuestion.question}
         options={currentQuestion.options}
         selectedAnswer={userAnswer}

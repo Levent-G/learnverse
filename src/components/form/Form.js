@@ -20,18 +20,20 @@ const Form = forwardRef(
       customButton = false,
       loading: externalLoading,
       buttonSx,
+      methods: externalMethods,
       ...props
     },
     ref
   ) => {
-    const [loading, setLoading] = useState(false);
-
-    const methods = useForm({
+    const internalMethods = useForm({
       resolver: yupResolver(schema),
       defaultValues,
     });
 
-    // Eğer dışardan ref verilirse formu kontrol etmesini sağlarız (reset vs)
+    const methods = externalMethods || internalMethods;
+
+    const [loading, setLoading] = useState(false);
+
     useImperativeHandle(ref, () => ({
       reset: methods.reset,
       setValue: methods.setValue,
