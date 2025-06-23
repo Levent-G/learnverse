@@ -10,11 +10,10 @@ const QuizPage = ({ onQuizFetched }) => {
         justifyContent: "center",
         alignItems: "flex-start",
         flexWrap: "wrap",
-        gap: 4,
-        mt: 6,
+        gap: 3,
       }}
     >
-      <Box sx={{ flex: "1 1 360px", maxWidth: 460 }}>
+      <Box sx={{ flex: "1 1 60px", maxWidth: 460 }}>
         <QuizSelectorChoose onQuizFetched={onQuizFetched} />
       </Box>
 

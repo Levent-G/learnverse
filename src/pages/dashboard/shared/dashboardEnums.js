@@ -38,18 +38,7 @@ export const features = [
   },
 ];
 
-export const languageLevels = [
-  {
-    language: "İngilizce",
-    level: "B2",
-    progress: 72,
-  },
-  {
-    language: "Almanca",
-    level: "A2",
-    progress: 28,
-  },
-];
+
 
 // Örnek videolu dersler
 export const videoLessons = [

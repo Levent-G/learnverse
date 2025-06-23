@@ -1,42 +1,21 @@
-import React, { useState } from "react";
-import { Typography, Box, Paper } from "@mui/material";
+import { Typography, Box, Paper, Divider } from "@mui/material";
 import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
 import { useApiRequest } from "../../../../hooks/useApiRequest";
 import { useColors } from "../../../../context/ColorContext";
-import * as yup from "yup";
 import Form from "../../../../components/form/Form";
 import { CustomInput } from "../../../../components/form/formInputs/CustomInput";
-
-const categories = [
-  "Greetings",
-  "People",
-  "Numbers",
-  "Family",
-  "Colors",
-  "Months & Seasons",
-];
-
-const schema = yup.object({
-  count: yup
-    .number()
-    .typeError("Soru sayısı bir sayı olmalı")
-    .min(1, "En az 1 soru olmalı")
-    .max(100, "En fazla 100 soru olabilir")
-    .required("Soru sayısı zorunlu"),
-});
+import { schemaRandom } from "../shared/quizSchema";
+import { notify } from "../../../../utils/notify";
 
 const QuizSelectorRandom = ({ onQuizFetched }) => {
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo")) || {};
+  const { level: userLevel } = userInfo;
+
   const { request } = useApiRequest();
   const { colors } = useColors();
 
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const userLevel = "A1";
-
   const handleStartQuiz = async (data) => {
     const count = Number(data.count);
-    const randomCategory =
-      categories[Math.floor(Math.random() * categories.length)];
-    setSelectedCategory(randomCategory);
 
     try {
       const result = await request({
@@ -44,7 +23,6 @@ const QuizSelectorRandom = ({ onQuizFetched }) => {
         method: "GET",
         params: {
           level: userLevel,
-          category: randomCategory,
           count,
         },
       });
@@ -52,7 +30,7 @@ const QuizSelectorRandom = ({ onQuizFetched }) => {
       if (result.success) {
         onQuizFetched(result.data);
       } else {
-        throw new Error(result.error || "Quiz alınamadı");
+        notify("Quiz alınamadı ", "error");
       }
     } catch (error) {
       alert(error.message);
@@ -61,109 +39,92 @@ const QuizSelectorRandom = ({ onQuizFetched }) => {
 
   return (
     <Paper
-      elevation={8}
+      elevation={0}
       sx={{
         mx: "auto",
         mt: 8,
-        p: 5,
-        borderRadius: 6,
+        p: 4,
+        borderRadius: 5,
         bgcolor: colors.background || "#fff",
-        width: 460,
-        height: 600,
+        maxWidth: 480,
+        minHeight: 650,
         display: "flex",
         flexDirection: "column",
-        boxShadow: `0 6px 20px ${colors.primary}30`,
+        border: `1px solid ${colors.primaryLight}`,
+        boxShadow: `0 10px 30px ${colors.primary}10`,
       }}
     >
       {/* Başlık */}
-      <Box sx={{ textAlign: "center", mb: 3, flexShrink: 0 }}>
-        <Box
+      <Box sx={{ textAlign: "center", mb: 3 }}>
+        <EmojiObjectsIcon
           sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 1,
+            fontSize: 36,
+            mb: 1,
+            color: colors.primary || "#1976d2",
           }}
-        >
-          <EmojiObjectsIcon
-            sx={{ fontSize: 34, color: colors.primary || "#1976d2" }}
-          />
-          <Typography
-            variant="h4"
-            fontWeight={700}
-            color={colors.primaryDark || "#0d47a1"}
-          >
-            Rastgele Quiz 
-          </Typography>
-        </Box>
-        <Typography variant="body1" color={colors.textSecondary} mt={1}>
-          Seviye: <strong>{userLevel}</strong> olarak ayarlandı.
-          <br />
-          {selectedCategory
-            ? `Kategori: ${selectedCategory}`
-            : "Kategori otomatik seçilecek."}
+        />
+        <Typography variant="h5" fontWeight={700}>
+          Hızlı Quiz
+        </Typography>
+        <Typography variant="body2" sx={{ mt: 1, color: "text.secondary" }}>
+          Seviye: <strong>{userLevel}</strong>
         </Typography>
       </Box>
 
-      {/* Bilgilendirme alanı */}
+      <Divider sx={{ mb: 3 }} />
+
+      {/* Bilgilendirme kutusu */}
       <Box
         sx={{
           mb: 3,
+          mt: 9,
           p: 2,
           borderRadius: 3,
-          bgcolor: colors.backgroundLight || "#f5f7fa",
+          bgcolor: colors.backgroundLight || "#f9f9f9",
           color: colors.textSecondary,
           fontSize: "0.9rem",
-          boxShadow: `inset 0 0 10px ${colors.primary}22`,
-          lineHeight: 1.5,
-          userSelect: "none",
+          boxShadow: `inset 0 0 10px ${colors.primary}15`,
+          lineHeight: 1.6,
         }}
       >
-        <Typography variant="subtitle1" fontWeight={600} color={colors.primary}>
+        <Typography
+          variant="subtitle1"
+          fontWeight={600}
+          color={colors.primary}
+          mb={1}
+        >
           📌 Nasıl çalışır?
         </Typography>
         <Typography>
-          Seviye otomatik olarak ayarlanmıştır. Kategori ise her quizde rastgele
-          seçilir, böylece farklı konularda kendini test edebilirsin.
+          Seviye otomatik ayarlandı. Her quizde kategori rastgele belirlenir, bu
+          sayede farklı konuları öğrenmiş olursun.
         </Typography>
-        <Typography mt={1}>
-          Soru sayısını istediğin gibi ayarlayabilir, hızlıca quiz'e başlayabilirsin.
-        </Typography>
+        <Typography mt={1}>Sadece soru sayısını girmen yeterli.</Typography>
       </Box>
 
       {/* Form */}
       <Form
-        schema={schema}
+        schema={schemaRandom}
         defaultValues={{ count: 10 }}
         onSubmit={handleStartQuiz}
-        submitText={
-          selectedCategory
-            ? `Kategori: ${selectedCategory} 🚀 Quizi Başlat`
-            : "🚀 Quizi Başlat"
-        }
+        submitText={"🚀 Quiz'e Başla"}
         buttonSx={{
-          py: 1.6,
-          fontWeight: 700,
-          fontSize: "1.1rem",
-          borderRadius: 12,
-          backgroundColor: colors.primary,
-          "&:hover": { backgroundColor: colors.primaryDark },
-          width: "100%",
+          mt: 3,
+          py: 1.5,
+          fontWeight: 600,
+          fontSize: "1rem",
+          borderRadius: "1.5rem",
+          background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.primaryDark} 100%)`,
+          color: "#fff",
           textTransform: "none",
           boxShadow: `0 4px 12px ${colors.primary}55`,
-          flexShrink: 0,
-          mt: 3,
+          "&:hover": {
+            background: colors.primaryDark,
+          },
         }}
-        sx={{
-          flexGrow: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-end",
-        }}
+        sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
       >
-        {/* Bu boşluk, başlık ve bilgilendirme ile form inputları arasında hiza sağlar */}
         <Box />
-
         <CustomInput
           name="count"
           label="Soru Sayısı"

@@ -1,12 +1,21 @@
 import React from "react";
 import { Box, Card, Grid, LinearProgress, Typography } from "@mui/material";
 import { Translate } from "@mui/icons-material";
-import { languageLevels } from "../shared/dashboardEnums";
 import { useColors } from "../../../context/ColorContext";
 
 const DilSeviyesi = () => {
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo")) || {};
+  const { level,successRate } = userInfo;
+
   const { colors } = useColors();
 
+ const languageLevels = [
+    {
+      language: "Güncel Seviye",
+      level: level,
+      progress: successRate.toFixed(1),
+    }
+  ];
   return (
     <Box mb={6} mt={6}>
       <Typography
@@ -47,7 +56,7 @@ const DilSeviyesi = () => {
                   fontWeight={600}
                   color={colors.primaryDark}
                 >
-                  {language} - Seviye: {level}
+                  {language}: {level}
                 </Typography>
               </Box>
 

@@ -50,7 +50,7 @@ export function CustomInput({
             error={!!errors[name]}
             helperText={errors[name]?.message}
             variant="outlined"
-            size="medium"
+            size="small"
             autoComplete={autoComplete || (isPasswordType ? "current-password" : "off")}
             InputLabelProps={{ required: false }}
             sx={{

@@ -1,27 +1,29 @@
+// QuizSelectorChoose.tsx
 import React, { useState, useEffect } from "react";
-import { Paper, Typography, Box } from "@mui/material";
+import { Paper, Typography, Box, Divider } from "@mui/material";
 import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
 import { useForm } from "react-hook-form";
 import { useApiRequest } from "../../../../hooks/useApiRequest";
 import { useColors } from "../../../../context/ColorContext";
-import { schema } from "../shared/quizSchema";
+import { schemaChoose } from "../shared/quizSchema";
 import Form from "../../../../components/form/Form";
 import { CustomSelect } from "../../../../components/form/formInputs/CustomSelect";
 import { CustomInput } from "../../../../components/form/formInputs/CustomInput";
 import CategoryCardList from "./CategoryCardList";
+import { notify } from "../../../../utils/notify";
 
 const QuizSelectorChoose = ({ onQuizFetched }) => {
   const { request } = useApiRequest();
   const { colors } = useColors();
 
   const methods = useForm({
-    defaultValues: { count: 10, level: "", category: "" },
+    defaultValues: { count: 10, level: "", category: [] },
     resolver: null,
   });
-  const { watch, setValue } = methods;
 
+  const { watch, setValue } = methods;
   const selectedLevel = watch("level");
-  const selectedCategory = watch("category");
+  const selectedCategories = watch("category");
 
   const [categoryOptions, setCategoryOptions] = useState([]);
 
@@ -29,7 +31,7 @@ const QuizSelectorChoose = ({ onQuizFetched }) => {
     const fetchCategories = async () => {
       if (!selectedLevel) {
         setCategoryOptions([]);
-        setValue("category", "");
+        setValue("category", []);
         return;
       }
 
@@ -47,7 +49,7 @@ const QuizSelectorChoose = ({ onQuizFetched }) => {
         } else {
           setCategoryOptions([]);
         }
-      } catch (error) {
+      } catch {
         setCategoryOptions([]);
       }
     };
@@ -56,123 +58,108 @@ const QuizSelectorChoose = ({ onQuizFetched }) => {
   }, [selectedLevel, request, setValue]);
 
   const handleSubmit = async (data) => {
+    const { level, count, category } = data;
+
     const result = await request({
-      url: "/quiz",
+      url: "/quiz/mixed",
       method: "GET",
       params: {
-        ...data,
-        count: Number(data.count || 10),
+        level,
+        count: Number(count || 10),
+        categories: category.join(","),
       },
     });
 
     if (result.success) {
       onQuizFetched(result.data);
     } else {
-      throw new Error(result.error || "Quiz alınamadı");
+      notify("Quiz alınamadı ","error");
     }
   };
 
   return (
     <Paper
-      elevation={8}
+      elevation={0}
       sx={{
         mx: "auto",
         mt: 8,
-        p: 5,
-        borderRadius: 6,
+        p: 4,
+        borderRadius: 5,
         bgcolor: colors.background || "#fff",
-        position: "relative",
-        width: 460,
-        height: 600,
+        maxWidth: 480,
+        minHeight: 650,
         display: "flex",
         flexDirection: "column",
-        boxShadow: `0 6px 20px ${colors.primary}30`,
+        border: `1px solid ${colors.primaryLight}`,
+        boxShadow: `0 10px 30px ${colors.primary}10`,
       }}
     >
-      {/* Başlık kısmı */}
-      <Box sx={{ textAlign: "center", mb: 2, flexShrink: 0 }}>
-        <Box
+      <Box sx={{ textAlign: "center", mb: 3 }}>
+        <EmojiObjectsIcon
           sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 1,
+            fontSize: 36,
+            mb: 1,
+            color: colors.primary || "#1976d2",
           }}
-        >
-          <EmojiObjectsIcon
-            sx={{ fontSize: 34, color: colors.primary || "#1976d2" }}
-          />
-          <Typography
-            variant="h4"
-            fontWeight={700}
-            color={colors.primaryDark || "#0d47a1"}
-          >
-            Özel Quiz 
-          </Typography>
-        </Box>
-        <Typography
-          variant="body1"
-          color={colors.textSecondary || "text.secondary"}
-          sx={{ mt: 1, fontWeight: 500 }}
-        >
-          Seviyeni seç, kategorini seç ve testine başla 🎯
+        />
+        <Typography variant="h5" fontWeight={700}>
+          Kendi Quiz'ini Oluştur
+        </Typography>
+        <Typography variant="body2" sx={{ mt: 1, color: "text.secondary" }}>
+          Seviyeni seç, ilgi alanlarını belirle, hemen başla 🎯
         </Typography>
       </Box>
 
-      {/* Form + kategori listesi scroll alanı */}
+      <Divider sx={{ mb: 3 }} />
+
       <Form
         methods={methods}
-        schema={schema}
+        schema={schemaChoose}
         onSubmit={handleSubmit}
-        submitText="🚀 Quizi Başlat"
+        submitText={"🚀 Quiz'e Başla"}
         buttonSx={{
-          py: 1.6,
-          fontWeight: 700,
-          borderRadius: 12,
-          textTransform: "none",
-          fontSize: "1.1rem",
-          backgroundColor: colors.primary,
-          "&:hover": { backgroundColor: colors.primaryDark },
-          width: "100%",
           mt: 3,
+          py: 1.5,
+          fontWeight: 600,
+          fontSize: "1rem",
+          borderRadius: "1.5rem",
+          background: `linear-gradient(135deg, ${colors.primary} 0%, ${colors.primaryDark} 100%)`,
+          color: "#fff",
+          textTransform: "none",
           boxShadow: `0 4px 12px ${colors.primary}55`,
-          flexShrink: 0,
+          "&:hover": {
+            background: colors.primaryDark,
+          },
         }}
-        sx={{
-          flexGrow: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-        }}
+        sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
       >
         <CustomSelect
           name="level"
-          label="Seviye"
+          label="Seviye Seç"
           options={["A1", "A2", "B1", "B2", "C1"]}
         />
 
-       
-          <Box
-            sx={{
-              flexGrow: 1,
-              mt: 2,
-              mb: 1,
-              overflowY: "auto",
-              maxHeight: 150,
-              borderRadius: 2,
-              border: `1px solid ${colors.primaryLight}`,
-              p: 1,
-              backgroundColor: colors.backgroundLight || "#f9f9f9",
-            }}
-          >
-            <CategoryCardList
-              categories={categoryOptions}
-              selectedCategory={selectedCategory}
-              onSelect={(cat) =>
-                setValue("category", cat, { shouldValidate: true })
-              }
-            />
-          </Box>
+        <Box
+          sx={{
+            flexGrow: 1,
+            mt: 2,
+            overflowY: "auto",
+            border: `1px solid ${colors.primaryLight}`,
+            p: 1,
+            borderRadius: 3,
+            backgroundColor: colors.backgroundLight || "#f9f9f9",
+            maxHeight: 200,
+          }}
+        >
+          <CategoryCardList
+            selectedLevel={selectedLevel}
+            categories={categoryOptions}
+            selectedCategories={selectedCategories}
+            onSelect={(updatedList) =>
+              setValue("category", updatedList, { shouldValidate: true })
+            }
+          />
+        </Box>
 
         <CustomInput
           name="count"
@@ -180,7 +167,7 @@ const QuizSelectorChoose = ({ onQuizFetched }) => {
           type="number"
           autoComplete="off"
           inputProps={{ min: 1, max: 100 }}
-          sx={{ mt: selectedLevel ? 2 : 4 }}
+          sx={{ mt: 2 }}
         />
       </Form>
     </Paper>
