@@ -1,13 +1,15 @@
 import { Box, LinearProgress, Typography, Card } from "@mui/material";
 import React from "react";
-import { otherUsersProgress, userProgress } from "../shared/dashboardEnums";
+import { otherUsersProgress } from "../shared/dashboardEnums";
 import { useColors } from "../../../context/ColorContext";
 
 const KullanicinIlerlemesi = () => {
   const { colors } = useColors();
 
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo")) || {};
+  const { username, successRate } = userInfo;
+
   const allProgressValues = [
-    userProgress.progress,
     ...otherUsersProgress.map((u) => u.progress),
   ];
   const averageProgress =
@@ -15,7 +17,7 @@ const KullanicinIlerlemesi = () => {
     allProgressValues.length;
 
   return (
-    <Box mb={6} >
+    <Box mb={6}>
       <Typography
         variant="h5"
         sx={{
@@ -37,8 +39,8 @@ const KullanicinIlerlemesi = () => {
       >
         {[
           {
-            title: `${userProgress.name} (Siz)`,
-            value: userProgress.progress,
+            title: `${username} (Siz)`,
+            value: successRate,
             barColor: colors.primary,
             bgColor: colors.primaryLight + "33", // saydam açık ton
           },

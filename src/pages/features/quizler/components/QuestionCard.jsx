@@ -91,13 +91,13 @@ export default function QuestionCard({
               userSelect: "text",
             }}
           >
-            {question.toUpperCase()}
+            {question?.toUpperCase()}
           </Typography>
         </Box>
 
         {/* Seçenekler */}
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-          {options.map((option, idx) => {
+          {options?.map((option, idx) => {
             let bgColor,
               variant = "outlined",
               animation = "none";

@@ -83,10 +83,7 @@ export const enrolledCourses = [
     avatar: "https://randomuser.me/api/portraits/men/72.jpg",
   },
 ];
-export const userProgress = {
-  name: "Ahmet",
-  progress: 72,
-};
+
 
 // Mock diğer kullanıcıların ilerleme değerleri
 export const otherUsersProgress = [
