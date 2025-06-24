@@ -2,7 +2,6 @@ import React from "react";
 import { Box } from "@mui/material";
 import KullaniciBilgisi from "./components/KullaniciBilgisi";
 import GunlukGorevler from "./components/GunlukGorevler";
-import DilSeviyesi from "./components/DilSeviyesi";
 import Modüller from "./components/Modüller";
 import VideoluDersler from "./components/VideoluDersler";
 import KullanicinIlerlemesi from "./components/KullanicinIlerlemesi";
@@ -16,17 +15,14 @@ export default function Dashboard() {
       {/* Kullanıcı Bilgisi */}
       <KullaniciBilgisi />
 
-      {/* Dil Seviyesi */}
-      <DilSeviyesi />
-
-      {/* Kullanıcının İlerlemesi */}
-      <KullanicinIlerlemesi />
+      {/* Günlük Görevler */}
+      <GunlukGorevler />
 
       {/* öğrenmenize ne akdar kaldı */}
       <LearningCountdown />
 
-      {/* Günlük Görevler */}
-      <GunlukGorevler />
+      {/* Kullanıcının İlerlemesi */}
+      <KullanicinIlerlemesi />
 
       {/* quizler */}
       <QuizStats />

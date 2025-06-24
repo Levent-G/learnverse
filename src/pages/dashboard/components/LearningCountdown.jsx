@@ -9,7 +9,13 @@ import {
 import EmojiObjectsIcon from "@mui/icons-material/EmojiObjects";
 import { useColors } from "../../../context/ColorContext";
 
-const LearningProgressCard = ({ completed = 72, target = 100 }) => {
+const LearningProgressCard = () => {
+  const userInfo = JSON.parse(sessionStorage.getItem("userInfo")) || {};
+  const { level,successRate } = userInfo;
+
+  const completed =  successRate.toFixed(1)
+  const target = 100
+
   const {colors} = useColors();
   
   const remaining = target - completed;
@@ -24,6 +30,7 @@ const LearningProgressCard = ({ completed = 72, target = 100 }) => {
         boxShadow: "0 6px 20px rgba(108, 99, 255, 0.15)", // primary rengin transparan gölgesi
         background: `linear-gradient(135deg, ${colors.primaryLight} 0%, ${colors.primary} 100%)`,
         color: "#fff",
+        mb:4
       }}
       elevation={8}
       aria-label="Öğrenme ilerleme durumu"
@@ -62,7 +69,7 @@ const LearningProgressCard = ({ completed = 72, target = 100 }) => {
 
         <Box>
           <Typography variant="h6" fontWeight="bold" gutterBottom>
-            Öğrenmenize Ne Kadar Kaldı?
+            {level}'seviyesinin bitmesine ne kadar kaldı ? 
           </Typography>
           <Typography
             variant="h4"
@@ -70,7 +77,7 @@ const LearningProgressCard = ({ completed = 72, target = 100 }) => {
             sx={{ lineHeight: 1, mb: 0.5 }}
             aria-live="polite"
           >
-            {remaining} ders 🎯
+            %{remaining} kaldı. 🎯
           </Typography>
           <Typography
             variant="body2"
