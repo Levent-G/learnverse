@@ -77,7 +77,7 @@ const LearningProgressCard = () => {
             sx={{ lineHeight: 1, mb: 0.5 }}
             aria-live="polite"
           >
-            %{remaining} kaldı. 🎯
+            %{remaining.toFixed(1)} kaldı. 🎯
           </Typography>
           <Typography
             variant="body2"
