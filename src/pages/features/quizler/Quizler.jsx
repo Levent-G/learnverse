@@ -105,7 +105,7 @@ export default function DetailedQuiz({ quizData }) {
   const currentQuestion = quizData[currentQuestionIndex];
   const userAnswer = mcAnswers[currentQuestionIndex] || "";
   const showResult = userAnswer !== "";
-console.log(currentQuestion)
+
   return (
     <Box
       sx={{

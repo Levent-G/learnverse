@@ -6,17 +6,6 @@ import Form from "../../../../components/form/Form";
 import { CustomInput } from "../../../../components/form/formInputs/CustomInput";
 import { schemaRandom } from "../shared/quizSchema";
 
-const categories = [
-  "Greetings",
-  "People",
-  "Numbers",
-  "Family",
-  "Colors",
-  "Months & Seasons",
-];
-
-
-
 const QuizSelectorRandom = ({ onQuizFetched }) => {
   const userInfo = JSON.parse(sessionStorage.getItem("userInfo")) || {};
   const { level: userLevel } = userInfo;
@@ -26,16 +15,13 @@ const QuizSelectorRandom = ({ onQuizFetched }) => {
 
   const handleStartQuiz = async (data) => {
     const count = Number(data.count);
-    const randomCategory =
-      categories[Math.floor(Math.random() * categories.length)];
 
     try {
       const result = await request({
-        url: "/quiz",
+        url: "/quiz/mixed",
         method: "GET",
         params: {
           level: userLevel,
-          category: randomCategory,
           count,
         },
       });
@@ -90,7 +76,7 @@ const QuizSelectorRandom = ({ onQuizFetched }) => {
       <Box
         sx={{
           mb: 3,
-          mt:9,
+          mt: 9,
           p: 2,
           borderRadius: 3,
           bgcolor: colors.backgroundLight || "#f9f9f9",
