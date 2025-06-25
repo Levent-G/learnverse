@@ -74,7 +74,7 @@ const WordModal = ({ open, word, onClose }) => {
 
         {/* Ses */}
         <Box sx={{ textAlign: "center" }}>
-          <ListenWithBear textToSpeak={word} />
+          <ListenWithBear textToSpeak={word.word} />
         </Box>
 
         {/* Kapat Butonu */}

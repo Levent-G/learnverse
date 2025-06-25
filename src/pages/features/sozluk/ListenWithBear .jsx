@@ -1,39 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Button } from "@mui/material";
 import { TalkingBear } from "./TalkingBear";
 
 const ListenWithBear = ({ textToSpeak }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
-
+  
   const speak = () => {
-    if (!window.responsiveVoice) {
-      alert("ResponsiveVoice yüklü değil!");
-      return;
-    }
+    setIsSpeaking(true)
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
 
-    if (!textToSpeak) return;
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
 
-    setIsSpeaking(true);
+    utterance.lang = "en-US";
 
-    window.responsiveVoice.speak(textToSpeak, "UK English Female", {
-      onstart: () => {
-        setIsSpeaking(true);
-      },
-      onend: () => {
-        setIsSpeaking(false);
-      },
-      onerror: () => {
-        setIsSpeaking(false);
-      },
-    });
+    window.speechSynthesis.speak(utterance);
+
+ 
   };
 
-  const stopSpeaking = () => {
-    if (window.responsiveVoice) {
-      window.responsiveVoice.cancel();
-    }
-    setIsSpeaking(false);
-  };
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, []);
 
   return (
     <Box
@@ -56,7 +46,7 @@ const ListenWithBear = ({ textToSpeak }) => {
         variant="contained"
         color="primary"
         onClick={speak}
-        disabled={!textToSpeak || isSpeaking}
+        disabled={!textToSpeak}
         sx={{
           borderRadius: 3,
           fontWeight: 700,
@@ -69,7 +59,6 @@ const ListenWithBear = ({ textToSpeak }) => {
             backgroundColor: "#1976d2",
             boxShadow: "0 6px 12px rgba(0,0,0,0.25)",
           },
-          mr: 2,
         }}
       >
         🔊 Dinle
@@ -77,18 +66,10 @@ const ListenWithBear = ({ textToSpeak }) => {
       {isSpeaking && (
         <Button
           variant="outlined"
-          color="secondary"
-          onClick={stopSpeaking}
-          sx={{
-            borderRadius: 3,
-            fontWeight: 700,
-            px: 5,
-            py: 1.5,
-            fontSize: "1.1rem",
-            textTransform: "none",
-          }}
+          color="error"
+          onClick={() => setIsSpeaking(false)}
         >
-          ■ Durdur
+          ⏹ Durdur
         </Button>
       )}
     </Box>
