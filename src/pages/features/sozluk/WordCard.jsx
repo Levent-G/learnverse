@@ -94,7 +94,11 @@ export default function WordCard({ word, isFavorite, onToggleFavorite, onClick }
             },
           }}
         >
-          {isFavorite ? <FavoriteIcon fontSize="small" /> : <FavoriteBorderIcon fontSize="small" />}
+          {isFavorite ? (
+            <FavoriteIcon fontSize="small" />
+          ) : (
+            <FavoriteBorderIcon fontSize="small" />
+          )}
         </IconButton>
       </Box>
 

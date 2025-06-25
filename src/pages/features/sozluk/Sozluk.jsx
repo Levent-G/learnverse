@@ -14,7 +14,6 @@ export default function Sozluk() {
   const [search, setSearch] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [favorites, setFavorites] = useState(() => {
-    // Localstorage'dan favorileri yükle
     const favs = localStorage.getItem("sozlukFavorites");
     return favs ? JSON.parse(favs) : [];
   });
@@ -22,18 +21,21 @@ export default function Sozluk() {
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
 
-  // Kategori değişince sayfa 1 e dön
+  // Kategori değişince sayfa sıfırlanır ve veriler çekilir
   useEffect(() => {
     setPage(1);
     if (selectedCategories.length === 0) {
       request({ url: "/words" });
     } else {
-      const category = selectedCategories[0];
-      request({ url: `/words/category/${encodeURIComponent(category)}` });
+      const params = selectedCategories
+        .map((cat) => `categories=${encodeURIComponent(cat)}`)
+        .join("&");
+
+      request({ url: `/words/by-categories?${params}` });
     }
   }, [selectedCategories, request]);
 
-  // Arama filtrelemesi
+  // Arama filtresi
   const words = useMemo(() => {
     if (!data) return [];
     return data.filter((w) =>
@@ -41,21 +43,18 @@ export default function Sozluk() {
     );
   }, [data, search]);
 
-  // Favorilere ekle / çıkar, localstorage kaydet
-  const toggleFavorite = (wordId) => {
-    setFavorites((prev) => {
-      let updated;
-      if (prev.includes(wordId)) {
-        updated = prev.filter((id) => id !== wordId);
-      } else {
-        updated = [...prev, wordId];
-      }
-      localStorage.setItem("sozlukFavorites", JSON.stringify(updated));
-      return updated;
+  // Favorilere ekleme/çıkarma
+  function toggleFavorite(wordId) {
+    setFavorites((prevFavorites) => {
+      const newFavs = prevFavorites.includes(wordId)
+        ? prevFavorites.filter((id) => id !== wordId)
+        : [...prevFavorites, wordId];
+      localStorage.setItem("sozlukFavorites", JSON.stringify(newFavs));
+      return newFavs;
     });
-  };
+  }
 
-  // Kelime seçildiğinde modal aç
+  // Kelime seçildiğinde modal açılır
   const handleWordClick = (word) => {
     setSelectedWord(word);
     setOpen(true);
@@ -137,13 +136,7 @@ export default function Sozluk() {
         >
           <CategorySidebar
             selectedCategories={selectedCategories}
-            onSelect={(cats) => {
-              if (cats.length > 1) {
-                setSelectedCategories([cats[cats.length - 1]]);
-              } else {
-                setSelectedCategories(cats);
-              }
-            }}
+            onSelect={setSelectedCategories}
           />
         </Box>
 

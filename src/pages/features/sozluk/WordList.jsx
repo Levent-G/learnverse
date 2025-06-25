@@ -34,7 +34,7 @@ export default function WordList({
 
       <Grid container spacing={3}>
         {paginatedWords.map((word) => (
-          <Grid item xs={12} sm={12} md={12} key={word.id}>
+          <Grid item xs={12} key={word.id}>
             <WordCard
               word={word}
               isFavorite={favorites.includes(word.id)}
