@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Typography, Button, Modal, Divider } from "@mui/material";
 import { useColors } from "../../../context/ColorContext";
+import ListenWithBear from "./ListenWithBear ";
 
 const WordModal = ({ open, word, onClose }) => {
   const { colors } = useColors();
@@ -73,21 +74,7 @@ const WordModal = ({ open, word, onClose }) => {
 
         {/* Ses */}
         <Box sx={{ textAlign: "center" }}>
-          <audio
-            controls
-            style={{
-              width: "100%",
-              borderRadius: 10,
-              outline: "none",
-              filter: `drop-shadow(0 2px 4px ${colors.primaryDark}33)`,
-            }}
-          >
-            <source
-              src={`https://ssl.gstatic.com/dictionary/static/sounds/oxford/${word.word}--_gb_1.mp3`}
-              type="audio/mpeg"
-            />
-            Tarayıcınız ses oynatıcısını desteklemiyor.
-          </audio>
+          <ListenWithBear textToSpeak={word} />
         </Box>
 
         {/* Kapat Butonu */}
