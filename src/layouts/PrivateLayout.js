@@ -30,13 +30,13 @@ export default function PrivateLayout({ children }) {
   const menuItems = [
     { label: "Ana Sayfa", icon: <HomeIcon />, path: "/ana-sayfa" },
     {
-      label: "Kelime Kartları",
-      icon: <SchoolIcon />,
-      path: "/feature/kelime-kartlari",
+      label: "Learnverse Sözlük",
+      icon: <MenuBookIcon />,
+      path: "/feature/learnverse-sozluk",
     },
     {
       label: "Kalıp Cümleler",
-      icon: <MenuBookIcon />,
+      icon: <SchoolIcon />,
       path: "/feature/kalip-cumleler",
     },
     { label: "Quizler", icon: <QuizIcon />, path: "/feature/quizler" },

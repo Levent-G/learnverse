@@ -1,12 +1,12 @@
 import React from "react";
-import { Box, Typography, Button, Modal, Chip, Divider, Stack } from "@mui/material";
+import { Box, Typography, Button, Modal, Divider } from "@mui/material";
 import { useColors } from "../../../context/ColorContext";
 
 const WordModal = ({ open, word, onClose }) => {
   const { colors } = useColors();
 
   if (!word) return null;
-
+  console.log(word);
   return (
     <Modal
       open={open}
@@ -82,74 +82,12 @@ const WordModal = ({ open, word, onClose }) => {
               filter: `drop-shadow(0 2px 4px ${colors.primaryDark}33)`,
             }}
           >
-            <source src={word.audio} type="audio/mpeg" />
+            <source
+              src={`https://ssl.gstatic.com/dictionary/static/sounds/oxford/${word.word}--_gb_1.mp3`}
+              type="audio/mpeg"
+            />
             Tarayıcınız ses oynatıcısını desteklemiyor.
           </audio>
-        </Box>
-
-        {/* Örnek Cümleler */}
-        <Box>
-          <Typography
-            variant="subtitle1"
-            sx={{ mb: 1, fontWeight: 700, color: colors.primaryDark }}
-          >
-            Örnek Cümleler:
-          </Typography>
-          <Box
-            component="ul"
-            sx={{
-              pl: 3,
-              color: colors.neutralDark,
-              fontSize: "1rem",
-              lineHeight: 1.5,
-              userSelect: "text",
-            }}
-          >
-            {word.examples.map((ex, i) => (
-              <li
-                key={i}
-                style={{
-                  marginBottom: 10,
-                  borderLeft: `3px solid ${colors.secondary}`,
-                  paddingLeft: 8,
-                }}
-              >
-                {ex}
-              </li>
-            ))}
-          </Box>
-        </Box>
-
-        {/* Benzer Kelimeler */}
-        <Box>
-          <Typography
-            variant="subtitle1"
-            sx={{ mb: 1, fontWeight: 700, color: colors.primaryDark }}
-          >
-            Benzer Kelimeler:
-          </Typography>
-          <Stack
-            direction="row"
-            spacing={1}
-            sx={{ flexWrap: "wrap", gap: 1 }}
-          >
-            {word.similar.map((sim, i) => (
-              <Chip
-                key={i}
-                label={sim}
-                variant="filled"
-                sx={{
-                  bgcolor: colors.secondary,
-                  color: colors.neutralLight,
-                  fontWeight: 600,
-                  boxShadow: `0 3px 6px ${colors.secondary}99`,
-                  cursor: "default",
-                  userSelect: "none",
-                }}
-                size="medium"
-              />
-            ))}
-          </Stack>
         </Box>
 
         {/* Kapat Butonu */}

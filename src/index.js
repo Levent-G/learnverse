@@ -6,9 +6,7 @@ import { ColorProvider } from "./context/ColorContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
     <ColorProvider>
       <App />
     </ColorProvider>
-  </React.StrictMode>
 );
