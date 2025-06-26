@@ -33,13 +33,7 @@ export default function Sozluk() {
       });
 
       if (result.success) {
-        const wordsWithId = result.data.map((word, index) => ({
-          ...word,
-          id: word.id || index.toString(), // var olan id yoksa index kullan
-        }));
-
-        // Shuffle işlemi
-        const shuffled = [...wordsWithId];
+        const shuffled = [...result.data];
         for (let i = shuffled.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
@@ -64,7 +58,9 @@ export default function Sozluk() {
 
   const toggleFavorite = (wordId) => {
     setWords((prev) =>
-      prev.map((w) => (w.id === wordId ? { ...w, favorite: !w.favorite } : w))
+      prev.map((w) =>
+        w.id === wordId ? { ...w, favorite: !w.favorite } : w
+      )
     );
   };
 

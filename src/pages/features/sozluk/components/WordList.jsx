@@ -1,7 +1,7 @@
 import React from "react";
 import { Typography, Box, Grid, Pagination, Button } from "@mui/material";
-import WordCard from "./WordCard";
 import { useColors } from "../../../../context/ColorContext";
+import WordCard from "./wordCard/WordCard";
 
 export default function WordList({
   words,
