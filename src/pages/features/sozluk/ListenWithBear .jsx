@@ -6,31 +6,31 @@ const ListenWithBear = ({ textToSpeak }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   const speak = () => {
-    if (!window.speechSynthesis || !textToSpeak) return;
+    if (!window.speechSynthesis) return;
 
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.lang = "en-US";
 
-    utterance.onstart = () => {
-      setIsSpeaking(true);
-    };
+    // Konuşma başladığında
+    setIsSpeaking(true);
 
+    // Konuşma bittikten sonra
     utterance.onend = () => {
       setIsSpeaking(false);
     };
 
-    utterance.onerror = () => {
-      setIsSpeaking(false);
-    };
-
     window.speechSynthesis.speak(utterance);
+
+    // 5 saniye sonra da güvenlik için kapat
+    setTimeout(() => {
+      setIsSpeaking(false);
+    }, 2500);
   };
 
   useEffect(() => {
     return () => {
       window.speechSynthesis.cancel();
-      setIsSpeaking(false);
     };
   }, []);
 
