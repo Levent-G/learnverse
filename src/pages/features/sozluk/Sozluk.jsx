@@ -132,6 +132,7 @@ export default function Sozluk() {
             totalFavorites={totalFavorites}
             showOnlyFavorites={showOnlyFavorites}
             setShowOnlyFavorites={setShowOnlyFavorites}
+            setPage={setPage}
           />
         </Box>
       </Container>

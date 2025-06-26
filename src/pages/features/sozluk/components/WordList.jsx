@@ -12,6 +12,7 @@ export default function WordList({
   totalFavorites,
   showOnlyFavorites,
   setShowOnlyFavorites,
+  setPage
 }) {
   const { colors } = useColors();
 
@@ -40,7 +41,10 @@ export default function WordList({
         <Button
           variant="contained"
           color={showOnlyFavorites ? "primary" : "secondary"}
-          onClick={() => setShowOnlyFavorites((prev) => !prev)}
+          onClick={() => {
+            setShowOnlyFavorites((prev) => !prev);
+            setPage(1);
+          }}
           sx={{
             fontWeight: 700,
             textTransform: "none",
