@@ -7,7 +7,6 @@ const WordModal = ({ open, word, onClose }) => {
   const { colors } = useColors();
 
   if (!word) return null;
-  console.log(word);
   return (
     <Modal
       open={open}

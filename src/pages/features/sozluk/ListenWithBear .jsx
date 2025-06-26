@@ -4,24 +4,33 @@ import { TalkingBear } from "./TalkingBear";
 
 const ListenWithBear = ({ textToSpeak }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
-  
+
   const speak = () => {
-    setIsSpeaking(true)
-    if (!window.speechSynthesis) return;
+    if (!window.speechSynthesis || !textToSpeak) return;
+
     window.speechSynthesis.cancel();
-
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
-
     utterance.lang = "en-US";
 
-    window.speechSynthesis.speak(utterance);
+    utterance.onstart = () => {
+      setIsSpeaking(true);
+    };
 
- 
+    utterance.onend = () => {
+      setIsSpeaking(false);
+    };
+
+    utterance.onerror = () => {
+      setIsSpeaking(false);
+    };
+
+    window.speechSynthesis.speak(utterance);
   };
 
   useEffect(() => {
     return () => {
       window.speechSynthesis.cancel();
+      setIsSpeaking(false);
     };
   }, []);
 
@@ -63,15 +72,6 @@ const ListenWithBear = ({ textToSpeak }) => {
       >
         🔊 Dinle
       </Button>
-      {isSpeaking && (
-        <Button
-          variant="outlined"
-          color="error"
-          onClick={() => setIsSpeaking(false)}
-        >
-          ⏹ Durdur
-        </Button>
-      )}
     </Box>
   );
 };
