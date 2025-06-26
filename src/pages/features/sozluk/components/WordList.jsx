@@ -1,23 +1,44 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { Typography, Box, Grid, Pagination, Button } from "@mui/material";
 import { useColors } from "../../../../context/ColorContext";
 import WordCard from "./wordCard/WordCard";
+import WordModal from "./WordModal";
 
 export default function WordList({
   words,
-  page,
-  onPageChange,
-  toggleFavorite,
-  onWordClick,
-  totalFavorites,
+  setWords,
   showOnlyFavorites,
   setShowOnlyFavorites,
-  setPage
 }) {
   const { colors } = useColors();
 
+  const [selectedWord, setSelectedWord] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [page, setPage] = useState(1);
+
   const PAGE_SIZE = 4;
   const paginatedWords = words.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  const toggleFavorite = (wordId) => {
+    setWords((prev) =>
+      prev.map((w) => (w.id === wordId ? { ...w, favorite: !w.favorite } : w))
+    );
+  };
+
+  const totalFavorites = useMemo(
+    () => words.filter((w) => w.favorite).length,
+    [words]
+  );
+
+  const openWordModal = (word) => {
+    setSelectedWord(word);
+    setOpen(true);
+  };
+
+  const closeWordModal = () => {
+    setSelectedWord(null);
+    setOpen(false);
+  };
 
   return (
     <Box sx={{ flex: 1 }}>
@@ -66,8 +87,8 @@ export default function WordList({
             <WordCard
               word={word}
               isFavorite={word.favorite}
-              onToggleFavorite={() => toggleFavorite(word.id)} // sadece bu kartı etkiler
-              onClick={() => onWordClick(word)}
+              onToggleFavorite={() => toggleFavorite(word.id)}
+              onClick={() => openWordModal(word)}
             />
           </Grid>
         ))}
@@ -82,7 +103,7 @@ export default function WordList({
         <Pagination
           count={Math.ceil(words.length / PAGE_SIZE)}
           page={page}
-          onChange={(e, val) => onPageChange(val)}
+          onChange={(e, val) => setPage(val)}
           color="primary"
           shape="rounded"
           sx={{
@@ -99,6 +120,11 @@ export default function WordList({
           }}
         />
       </Box>
+
+      {/* Kelime Modal */}
+      {open && (
+        <WordModal word={selectedWord} onClose={closeWordModal} open={open} />
+      )}
     </Box>
   );
 }

@@ -4,9 +4,9 @@ import { useColors } from "../../../context/ColorContext";
 import { useApiRequest } from "../../../hooks/useApiRequest";
 import CategorySidebar from "./components/CategorySidebar";
 import WordList from "./components/WordList";
-import WordModal from "./components/WordModal";
 import ErrorPage from "../../../components/errorPage/ErrorPage";
 import Header from "./components/Header";
+import { shuffledArray } from "../../../utils/shuffledArray";
 
 export default function Sozluk() {
   const { colors } = useColors();
@@ -16,9 +16,6 @@ export default function Sozluk() {
   const [search, setSearch] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [words, setWords] = useState([]);
-  const [selectedWord, setSelectedWord] = useState(null);
-  const [page, setPage] = useState(1);
-  const [open, setOpen] = useState(false);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
 
   useEffect(() => {
@@ -33,11 +30,8 @@ export default function Sozluk() {
       });
 
       if (result.success) {
-        const shuffled = [...result.data];
-        for (let i = shuffled.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
+        const shuffled = shuffledArray(result.data);
+
         setWords(shuffled);
       } else {
         setWords([]);
@@ -55,29 +49,6 @@ export default function Sozluk() {
       w.word.toLowerCase().includes(search.toLowerCase())
     );
   }, [words, search, showOnlyFavorites]);
-
-  const toggleFavorite = (wordId) => {
-    setWords((prev) =>
-      prev.map((w) =>
-        w.id === wordId ? { ...w, favorite: !w.favorite } : w
-      )
-    );
-  };
-
-  const totalFavorites = useMemo(
-    () => words.filter((w) => w.favorite).length,
-    [words]
-  );
-
-  const openWordModal = (word) => {
-    setSelectedWord(word);
-    setOpen(true);
-  };
-
-  const closeWordModal = () => {
-    setSelectedWord(null);
-    setOpen(false);
-  };
 
   if (error) {
     return (
@@ -125,21 +96,12 @@ export default function Sozluk() {
         >
           <WordList
             words={filteredWords}
-            page={page}
-            onPageChange={setPage}
-            toggleFavorite={toggleFavorite}
-            onWordClick={openWordModal}
-            totalFavorites={totalFavorites}
+            setWords={setWords}
             showOnlyFavorites={showOnlyFavorites}
             setShowOnlyFavorites={setShowOnlyFavorites}
-            setPage={setPage}
           />
         </Box>
       </Container>
-
-      {open && (
-        <WordModal word={selectedWord} onClose={closeWordModal} open={open} />
-      )}
     </Box>
   );
 }
