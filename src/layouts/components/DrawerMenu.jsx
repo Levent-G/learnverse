@@ -27,11 +27,12 @@ export default function DrawerMenu({ menuItems, onLogout }) {
         "& .MuiDrawer-paper": {
           width: drawerWidth,
           boxSizing: "border-box",
-          backgroundColor: colors.neutralLight,
+          backgroundColor: colors.primaryLight, // soft buz mavisi
           paddingTop: 2,
         },
       }}
     >
+      {/* Logo */}
       <Box
         sx={{
           px: 3,
@@ -44,59 +45,68 @@ export default function DrawerMenu({ menuItems, onLogout }) {
       >
         LearnVerse
       </Box>
+
       <Divider />
+
       <List>
-        {menuItems.map((item) => (
-          <ListItem
-            button
-            key={item.label}
-            component={Link}
-            to={item.path}
-            sx={{
-              mx: 2,
-              my: 1,
-              borderRadius: 2,
-              backgroundColor:
-                location.pathname === item.path
-                  ? colors.secondaryLight
-                  : "transparent",
-              color: colors.neutralDark,
-              "&:hover": {
-                backgroundColor: colors.secondary,
-                color: "white",
-              },
-              transition: "all 0.3s ease",
-            }}
-          >
-            <ListItemIcon
+        {menuItems.map((item) => {
+          const isSelected = location.pathname === item.path;
+
+          return (
+            <ListItem
+              button
+              key={item.label}
+              component={Link}
+              to={item.path}
               sx={{
-                minWidth: 35,
-                color:
-                  location.pathname === item.path
-                    ? colors.secondaryDark
-                    : colors.primary,
+                mx: 2,
+                my: 0.5,
+                borderRadius: 2,
+                backgroundColor: isSelected
+                  ? colors.primary
+                  : "transparent",
+                color: isSelected ? "#fff" : colors.primaryDark,
+                fontWeight: isSelected ? 600 : 500,
+                transition: "all 0.25s ease",
+                "&:hover": {
+                  backgroundColor: `${colors.primary}22`, // transparan soft mavi
+                },
               }}
             >
-              {item.icon}
-            </ListItemIcon>
-            <ListItemText primary={item.label} />
-          </ListItem>
-        ))}
+              <ListItemIcon
+                sx={{
+                  minWidth: 35,
+                  color: isSelected ? "#fff" : colors.primaryDark,
+                }}
+              >
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText
+                primary={item.label}
+                primaryTypographyProps={{
+                  fontSize: 14,
+                }}
+              />
+            </ListItem>
+          );
+        })}
       </List>
 
       <Box sx={{ flexGrow: 1 }} />
 
+      {/* Logout Button */}
       <Box sx={{ px: 3, pb: 2 }}>
         <LogoutButton
           fullWidth
           onClick={onLogout}
           sx={{
-            color: colors.secondaryDark,
-            borderColor: colors.secondaryDark,
+            color: colors.primaryDark,
+            borderColor: colors.primary,
+            fontWeight: 600,
             "&:hover": {
-              backgroundColor: colors.secondaryLight,
-              borderColor: colors.secondary,
-              color: colors.secondaryDark,
+              backgroundColor: `${colors.primary}22`,
+              borderColor: colors.primary,
+              color: colors.primaryDark,
             },
           }}
         />
