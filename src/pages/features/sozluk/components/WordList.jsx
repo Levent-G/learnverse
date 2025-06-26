@@ -3,6 +3,7 @@ import { Typography, Box, Grid, Pagination, Button } from "@mui/material";
 import { useColors } from "../../../../context/ColorContext";
 import WordCard from "./wordCard/WordCard";
 import WordModal from "./WordModal";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function WordList({
   words,
@@ -82,16 +83,26 @@ export default function WordList({
       </Box>
 
       <Grid container spacing={3}>
-        {paginatedWords.map((word) => (
-          <Grid item xs={12} sm={12} key={word.id}>
-            <WordCard
-              word={word}
-              isFavorite={word.favorite}
-              onToggleFavorite={() => toggleFavorite(word.id)}
-              onClick={() => openWordModal(word)}
-            />
-          </Grid>
-        ))}
+        <AnimatePresence mode="wait">
+          {paginatedWords.map((word) => (
+            <Grid item xs={12} sm={12} key={word.id}>
+              <motion.div
+                key={word.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              >
+                <WordCard
+                  word={word}
+                  isFavorite={word.favorite}
+                  onToggleFavorite={() => toggleFavorite(word.id)}
+                  onClick={() => openWordModal(word)}
+                />
+              </motion.div>
+            </Grid>
+          ))}
+        </AnimatePresence>
       </Grid>
 
       <Box
