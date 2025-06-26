@@ -21,7 +21,7 @@ import { notify } from "../utils/notify";
 export default function PrivateLayout({ children }) {
   const userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
   const { colors } = useColors();
-  const isMobile = useMediaQuery("(max-width:800px)");
+  const isMobile = useMediaQuery("(max-width:1000px)");
   const navigate = useNavigate();
   const { logout } = useAuth();
 
