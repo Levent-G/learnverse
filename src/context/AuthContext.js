@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 import { useApiRequest } from "../hooks/useApiRequest";
 import { useAutoLogout } from "../hooks/useAutoLogout";
+import { useNavigate } from "react-router";
 
 const AuthContext = createContext();
 
@@ -13,12 +14,10 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const { request } = useApiRequest();
 
+  const navigate = useNavigate();
+
   // 🔥 Otomatik çıkış aktifleşiyor
-  useAutoLogout(currentUser, () => {
-    sessionStorage.removeItem("authToken");
-    sessionStorage.removeItem("userInfo");
-    setCurrentUser(null);
-  });
+  useAutoLogout({setCurrentUser, navigate});
 
   const setUserInfo = async (email) => {
     const result = await request({

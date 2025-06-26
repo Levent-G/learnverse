@@ -7,8 +7,8 @@ import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <Routes>
           {publicRoutes.map(({ path, element }) => (
             <Route key={path} path={path} element={element} />
@@ -29,9 +29,9 @@ function App() {
             }
           />
         </Routes>
-      </Router>
-      <ToastContainer />
-    </AuthProvider>
+        <ToastContainer />
+      </AuthProvider>
+    </Router>
   );
 }
 

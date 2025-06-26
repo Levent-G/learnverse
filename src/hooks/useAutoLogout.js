@@ -1,15 +1,15 @@
 import { useEffect } from "react";
 
-export const useAutoLogout = (setCurrentUser) => {
+export const useAutoLogout = ({ setCurrentUser, navigate, timeoutDuration = 15 * 60 * 1000 }) => {
   useEffect(() => {
-    // 15 dakika sonra otomatik çıkış
     const timeout = setTimeout(() => {
       sessionStorage.removeItem("authToken");
       sessionStorage.removeItem("userInfo");
       setCurrentUser(null);
-      console.log("Otomatik olarak çıkış yapıldı");
-    }, 15 * 60 * 1000); // 15 dakika
+      navigate("/login");
+      console.log("15 dakika doldu, otomatik çıkış yapıldı.");
+    }, timeoutDuration);
 
-    return () => clearTimeout(timeout); // component unmount olursa iptal et
-  }, [setCurrentUser]);
+    return () => clearTimeout(timeout);
+  }, [setCurrentUser, navigate, timeoutDuration]);
 };
