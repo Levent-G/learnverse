@@ -1,6 +1,6 @@
 import React from "react";
-import { Box, Typography, Button, Modal, Divider } from "@mui/material";
-import { useColors } from "../../../context/ColorContext";
+import { Box, Typography,  Modal, Divider } from "@mui/material";
+import { useColors } from "../../../../context/ColorContext";
 import ListenWithBear from "./ListenWithBear ";
 
 const WordModal = ({ open, word, onClose }) => {
@@ -76,31 +76,7 @@ const WordModal = ({ open, word, onClose }) => {
           <ListenWithBear textToSpeak={word.word} />
         </Box>
 
-        {/* Kapat Butonu */}
-        <Box sx={{ textAlign: "center", mt: 2 }}>
-          <Button
-            variant="contained"
-            onClick={onClose}
-            sx={{
-              textTransform: "none",
-              borderRadius: 3,
-              backgroundColor: colors.primary,
-              color: colors.neutralLight,
-              fontWeight: 700,
-              px: 5,
-              py: 1.5,
-              fontSize: "1rem",
-              boxShadow: `0 4px 12px ${colors.primary}99`,
-              transition: "background-color 0.3s ease, box-shadow 0.3s ease",
-              "&:hover": {
-                backgroundColor: colors.primaryDark,
-                boxShadow: `0 6px 18px ${colors.primaryDark}cc`,
-              },
-            }}
-          >
-            Kapat
-          </Button>
-        </Box>
+      
       </Box>
     </Modal>
   );

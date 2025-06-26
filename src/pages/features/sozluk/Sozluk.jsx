@@ -1,137 +1,108 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Box, Typography } from "@mui/material";
-import CategorySidebar from "./CategorySidebar";
-import WordList from "./WordList";
-import SearchBar from "./SearchBar";
-import WordModal from "./WordModal";
+import { Box, Container, useMediaQuery } from "@mui/material";
 import { useColors } from "../../../context/ColorContext";
 import { useApiRequest } from "../../../hooks/useApiRequest";
+import CategorySidebar from "./components/CategorySidebar";
+import WordList from "./components/WordList";
+import WordModal from "./components/WordModal";
+import ErrorPage from "../../../components/errorPage/ErrorPage";
+import Header from "./components/Header";
 
 export default function Sozluk() {
   const { colors } = useColors();
-  const { data, error, loading, request } = useApiRequest();
+  const { error, request } = useApiRequest();
+  const isMobile = useMediaQuery("(max-width:768px)");
 
   const [search, setSearch] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [favorites, setFavorites] = useState(() => {
-    const favs = localStorage.getItem("sozlukFavorites");
-    return favs ? JSON.parse(favs) : [];
+    const saved = localStorage.getItem("sozlukFavorites");
+    return saved ? JSON.parse(saved) : [];
   });
+  const [words, setWords] = useState([]);
   const [selectedWord, setSelectedWord] = useState(null);
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
 
-  // Kategori değişince sayfa sıfırlanır ve veriler çekilir
   useEffect(() => {
-    setPage(1);
-    if (selectedCategories.length === 0) {
-      request({ url: "/words" });
-    } else {
-      const params = selectedCategories
-        .map((cat) => `categories=${encodeURIComponent(cat)}`)
-        .join("&");
-
-      request({ url: `/words/by-categories?${params}` });
+    async function fetchWords() {
+      const params = selectedCategories.length
+        ? { categories: selectedCategories }
+        : null;
+  
+      const result = await request({
+        url: selectedCategories.length ? "/words/by-categories" : "/words",
+        params,
+      });
+  
+      if (result.success) {
+        // Fisher-Yates Shuffle
+        const shuffled = [...result.data];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        setWords(shuffled);
+      } else {
+        setWords([]);
+      }
     }
+    fetchWords();
   }, [selectedCategories, request]);
+  
 
-  // Arama filtresi
-  const words = useMemo(() => {
-    if (!data) return [];
-    return data.filter((w) =>
+  const filteredWords = useMemo(() => {
+    return words.filter((w) =>
       w.word.toLowerCase().includes(search.toLowerCase())
     );
-  }, [data, search]);
+  }, [words, search]);
 
-  // Favorilere ekleme/çıkarma
-  function toggleFavorite(wordId) {
-    setFavorites((prevFavorites) => {
-      const newFavs = prevFavorites.includes(wordId)
-        ? prevFavorites.filter((id) => id !== wordId)
-        : [...prevFavorites, wordId];
-      localStorage.setItem("sozlukFavorites", JSON.stringify(newFavs));
-      return newFavs;
+  const toggleFavorite = (wordId) => {
+    setFavorites((prev) => {
+      const updated = prev.includes(wordId)
+        ? prev.filter((id) => id !== wordId)
+        : [...prev, wordId];
+      localStorage.setItem("sozlukFavorites", JSON.stringify(updated));
+      return updated;
     });
-  }
+  };
 
-  // Kelime seçildiğinde modal açılır
-  const handleWordClick = (word) => {
+  const openWordModal = (word) => {
     setSelectedWord(word);
     setOpen(true);
   };
 
+  const closeWordModal = () => {
+    setSelectedWord(null);
+    setOpen(false);
+  };
+
+  if (error) {
+    return (
+      <ErrorPage title="Veri Yüklenirken Hata Oluştu" description={error} />
+    );
+  }
+
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        backgroundColor: colors.background || "#f9fbfc",
-        display: "flex",
-        flexDirection: "column",
-        fontFamily: "'Poppins', sans-serif",
-      }}
-    >
-      {/* HEADER */}
-      <Box
-        sx={{
-          py: 6,
-          px: 3,
-          background: `linear-gradient(135deg, ${colors.primaryLight}, ${colors.primary})`,
-          color: "#fff",
-          textAlign: "center",
-          boxShadow: "0 5px 15px rgba(0,0,0,0.15)",
-          userSelect: "none",
-        }}
-      >
-        <Typography
-          variant="h4"
-          sx={{
-            fontWeight: 900,
-            letterSpacing: 2,
-            fontFamily: "'Montserrat', sans-serif",
-            textShadow: "0 1px 4px rgba(0,0,0,0.3)",
-            mb: 1,
-          }}
-        >
-          Learnverse Sözlük
-        </Typography>
-        <Typography
-          variant="span"
-          sx={{ opacity: 0.85, fontWeight: 500, fontStyle: "italic" }}
-        >
-          🚀 İngilizce kelimeleri keşfetmenin en şık yolu!
-        </Typography>
+    <Box sx={{ minHeight: "100vh", bgcolor: colors.neutralLight }}>
+      <Header search={search} setSearch={setSearch} />
 
-        <Box sx={{ mt: 4, maxWidth: 600, mx: "auto" }}>
-          <SearchBar value={search} onChange={setSearch} />
-        </Box>
-      </Box>
-
-      {/* BODY */}
-      <Box
+      <Container
+        maxWidth="xl"
         sx={{
-          flex: 1,
+          py: 4,
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
-          gap: 2,
-          px: { xs: 2, md: 4 },
-          py: 4,
-          backgroundColor: "#fff",
-          flexGrow: 1,
-          overflow: "hidden",
+          gap: 4,
         }}
       >
-        {/* CATEGORY SIDEBAR */}
         <Box
           sx={{
-            flexShrink: 0,
-            width: { xs: "100%", md: 360 },
-            height: { xs: "auto", md: "calc(100vh - 210px)" },
-            overflowY: "auto",
+            width: isMobile ? "100%" : 320,
+            background: "#fff",
             borderRadius: 3,
-            boxShadow: "0 0 15px rgba(0,0,0,0.07)",
-            px: 1,
-            py: 3,
-            bgcolor: "#fefefe",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+            p: 2,
           }}
         >
           <CategorySidebar
@@ -140,58 +111,29 @@ export default function Sozluk() {
           />
         </Box>
 
-        {/* WORD LIST */}
         <Box
           sx={{
-            flexGrow: 1,
-            height: { xs: "auto", md: "calc(100vh - 210px)" },
-            overflowY: "auto",
+            flex: 1,
+            background: "#fff",
             borderRadius: 3,
-            boxShadow: "0 0 20px rgba(0,0,0,0.05)",
             p: 3,
-            bgcolor: "#fafafa",
+            boxShadow: "0 6px 15px rgba(0,0,0,0.04)",
+            overflowY: "auto",
           }}
         >
-          {loading && (
-            <Typography
-              variant="h6"
-              sx={{ textAlign: "center", color: colors.primaryDark }}
-            >
-              Yükleniyor...
-            </Typography>
-          )}
-          {error && (
-            <Typography
-              variant="h6"
-              color="error"
-              sx={{ textAlign: "center", fontWeight: "bold" }}
-            >
-              Hata: {error}
-            </Typography>
-          )}
-          {!loading && !error && (
-            <WordList
-              words={words}
-              page={page}
-              onPageChange={setPage}
-              favorites={favorites}
-              toggleFavorite={toggleFavorite}
-              onWordClick={handleWordClick}
-            />
-          )}
+          <WordList
+            words={filteredWords}
+            page={page}
+            onPageChange={setPage}
+            favorites={favorites}
+            toggleFavorite={toggleFavorite}
+            onWordClick={openWordModal}
+          />
         </Box>
-      </Box>
+      </Container>
 
-      {/* WORD DETAIL MODAL */}
       {open && (
-        <WordModal
-          word={selectedWord}
-          onClose={() => {
-            setSelectedWord(null);
-            setOpen(false);
-          }}
-          open={open}
-        />
+        <WordModal word={selectedWord} onClose={closeWordModal} open={open} />
       )}
     </Box>
   );

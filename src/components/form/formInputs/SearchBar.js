@@ -3,14 +3,14 @@ import { TextField, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useColors } from "../../../context/ColorContext";
 
-export default function SearchBar({ value, onChange }) {
+export default function SearchBar({ value, onChange,placeholder }) {
   const { colors } = useColors();
 
   return (
     <TextField
       variant="outlined"
       fullWidth
-      placeholder="Kelime veya anlam ara..."
+      placeholder={placeholder }
       value={value}
       onChange={(e) => onChange(e.target.value)}
       size="medium"
@@ -31,6 +31,7 @@ export default function SearchBar({ value, onChange }) {
             borderColor: colors.primary,
             boxShadow: `0 0 10px ${colors.primaryLight}`,
           },
+          
         },
       }}
       InputProps={{

@@ -1,7 +1,7 @@
 import React from "react";
 import { IconButton, Badge, Tooltip } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { useColors } from "../../../context/ColorContext";
+import { useColors } from "../../../../context/ColorContext";
 
 export default function FavoritesButton({ onClick, favoritesCount = 0 }) {
   const { colors } = useColors();

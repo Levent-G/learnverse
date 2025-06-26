@@ -1,8 +1,13 @@
 import React from "react";
-import { Grid, Pagination, Box } from "@mui/material";
+import {
+  Typography,
+  Box,
+  Grid,
+  Pagination,
+  Button,
+} from "@mui/material";
 import WordCard from "./WordCard";
-import FavoritesButton from "./FavoritesButton";
-import { useColors } from "../../../context/ColorContext";
+import { useColors } from "../../../../context/ColorContext";
 
 export default function WordList({
   words,
@@ -14,27 +19,49 @@ export default function WordList({
 }) {
   const { colors } = useColors();
 
-  const PAGE_SIZE = 6;
+  const PAGE_SIZE = 5;
   const paginatedWords = words.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <Box sx={{ flex: 1 }}>
+      {/* Favoriler ve filtre */}
       <Box
         sx={{
           display: "flex",
-          justifyContent: "flex-end",
-          mb: 2,
+          justifyContent: "space-between",
+          mb: 3,
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 2,
         }}
       >
-        <FavoritesButton
+        <Typography
+          variant="h6"
+          sx={{ fontWeight: 700, color: colors.primaryDark }}
+        >
+          Toplam Kelime: {words.length}
+        </Typography>
+
+        <Button
+          variant="contained"
+          color="secondary"
           onClick={() => alert("Favorileriniz gösterilecek.")}
-          favoritesCount={favorites.length}
-        />
+          sx={{
+            fontWeight: 700,
+            textTransform: "none",
+            boxShadow: `0 3px 12px ${colors.accent}77`,
+            "&:hover": {
+              boxShadow: `0 5px 20px ${colors.accent}aa`,
+            },
+          }}
+        >
+          Favoriler ({favorites.length})
+        </Button>
       </Box>
 
       <Grid container spacing={3}>
         {paginatedWords.map((word) => (
-          <Grid item xs={12} key={word.id}>
+          <Grid item xs={12} sm={12} key={word.id}>
             <WordCard
               word={word}
               isFavorite={favorites.includes(word.id)}
