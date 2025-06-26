@@ -12,85 +12,98 @@ import {
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import LightbulbIcon from "@mui/icons-material/Lightbulb";
-import { useColors } from "../../../../context/ColorContext";
+import InfoIcon from "@mui/icons-material/Info";
+import VolumeUpIcon from "@mui/icons-material/VolumeUp";
+
+const colors = {
+  primaryDark: "#1E1E2F",
+  primaryLight: "#F1F5F9",
+  accent: "#3B82F6",
+  neutralDark: "#64748B",
+  neutralLight: "#F8FAFC",
+  error: "#EF4444",
+  info: "#0EA5E9",
+};
+
+const hexToRgba = (hex, alpha = 1) => {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+};
 
 const WordCard = ({ word, isFavorite, onToggleFavorite, onClick }) => {
-  const { colors } = useColors();
   const [showExample, setShowExample] = useState(false);
 
-  // Yardımcı fonksiyon: rgba oluştur (hex to rgba)
-  const hexToRgba = (hex, alpha = 1) => {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    return `rgba(${r},${g},${b},${alpha})`;
+  // word objesine eksik alanları mock olarak ekle
+  const updatedWord = {
+    ...word,
+    info:
+      word.info ||
+      "Bu kelime genellikle akademik ya da resmi yazışmalarda kullanılır.",
+    hint: word.hint || "Benzer kelimeleri düşün: achieve, complete.",
+    example: word.example || `Example usage of "${word.word}" in a sentence.`,
+    tags: word.tags || ["örnek", "kelime", "deneme"],
   };
-
+console.log(word)
   return (
     <Card
       onClick={onClick}
       sx={{
-        height: "100%",
-        cursor: "pointer",
         borderRadius: 4,
-        backgroundColor: hexToRgba(colors.neutralLight, 0.9), // biraz transparan
-        boxShadow: `0 6px 15px ${hexToRgba(colors.primaryDark, 0.35)}`, // Daha koyu gölge
-        transition: "transform 0.35s ease, box-shadow 0.35s ease",
+        backgroundColor: "#ffffff",
+        border: `1px solid ${hexToRgba(colors.neutralDark, 0.1)}`,
+        boxShadow: `0 6px 14px ${hexToRgba(colors.primaryDark, 0.08)}`,
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
         "&:hover": {
-          transform: "translateY(-8px) scale(1.02)",
-          boxShadow: `0 14px 30px ${hexToRgba(colors.primaryDark, 0.55)}`, // Hoverda gölge koyulaştı
-          backgroundColor: hexToRgba(colors.primaryLight, 0.85), // transparan hover
+          transform: "translateY(-6px)",
+          boxShadow: `0 14px 28px ${hexToRgba(colors.primaryDark, 0.15)}`,
         },
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
         p: 3,
-        minHeight: 210,
+        minHeight: 240,
       }}
-      elevation={8}
     >
-      <Box display="flex" alignItems="center" gap={2} mb={1}>
+      <Box display="flex" alignItems="center" gap={2} mb={2}>
         <Avatar
           sx={{
             bgcolor: colors.accent,
-            color: hexToRgba(colors.primaryDark, 0.95), // Yazı biraz daha koyu
+            color: "#fff",
             fontWeight: "bold",
             fontSize: 20,
-            width: 50,
-            height: 50,
-            boxShadow: `0 4px 10px ${hexToRgba(colors.primaryDark, 0.6)}`, // İkon gölgesi koyu yapıldı
+            width: 48,
+            height: 48,
+            boxShadow: `0 4px 8px ${hexToRgba(colors.primaryDark, 0.25)}`,
             userSelect: "none",
           }}
-          aria-label={`Kelimenin ilk harfi: ${word.word[0]}`}
         >
-          {word.word[0]?.toUpperCase()}
+          {updatedWord.word[0]?.toUpperCase()}
         </Avatar>
 
         <Box sx={{ flexGrow: 1 }}>
           <Typography
-            variant="h5"
+            variant="h6"
             sx={{
-              color: hexToRgba(colors.primaryDark, 0.95),
-              fontWeight: 800,
-              userSelect: "none",
+              color: colors.primaryDark,
+              fontWeight: 700,
               textTransform: "capitalize",
-              fontSize: "1.3rem",
-              letterSpacing: 1,
+              fontSize: "1.25rem",
             }}
           >
-            {word.word}
+            {updatedWord.word}
           </Typography>
-          {word.type && (
+          {updatedWord.type && (
             <Typography
               variant="subtitle2"
               sx={{
-                color: hexToRgba(colors.neutralDark, 0.8), // Yazı biraz açık
+                color: hexToRgba(colors.neutralDark, 0.65),
                 fontStyle: "italic",
-                fontWeight: 600,
-                letterSpacing: 0.5,
+                fontWeight: 500,
               }}
             >
-              {word.type}
+              {updatedWord.type}
             </Typography>
           )}
         </Box>
@@ -98,102 +111,145 @@ const WordCard = ({ word, isFavorite, onToggleFavorite, onClick }) => {
         <IconButton
           onClick={(e) => {
             e.stopPropagation();
-            onToggleFavorite(word.id);
+            onToggleFavorite(word.id); // Bu satır doğru şekilde sadece ilgili kelimeyi günceller
           }}
-          size="medium"
-          aria-label={isFavorite ? "Favorilerden kaldır" : "Favorilere ekle"}
           sx={{
-            color: isFavorite ? colors.error : hexToRgba(colors.neutralDark, 0.6),
-            transition: "transform 0.3s ease, color 0.3s ease",
+            color: isFavorite
+              ? colors.error
+              : hexToRgba(colors.neutralDark, 0.5),
             "&:hover": {
-              transform: "scale(1.4)",
               color: colors.error,
-              boxShadow: `0 0 8px ${hexToRgba(colors.error, 0.7)}`, // Hoverda hafif kırmızı ışıltı
+              transform: "scale(1.2)",
             },
           }}
         >
-          {isFavorite ? (
-            <FavoriteIcon fontSize="medium" />
-          ) : (
-            <FavoriteBorderIcon fontSize="medium" />
-          )}
+          {isFavorite ? <FavoriteIcon /> : <FavoriteBorderIcon />}
         </IconButton>
       </Box>
 
-      <Typography
-        variant="body1"
+      {/* Anlam Alanı */}
+      <Box
         sx={{
-          color: hexToRgba(colors.neutralDark, 0.85),
-          fontWeight: 600,
-          fontSize: "1rem",
-          minHeight: 56,
-          lineHeight: 1.5,
-          userSelect: "text",
-          mb: 1,
+          backgroundColor: "#F9FAFB",
+          borderLeft: `4px solid ${colors.accent}`,
+          borderRadius: 2,
+          px: 2,
+          py: 1.5,
+          mb: 2,
+          boxShadow: `0 1px 4px ${hexToRgba(colors.primaryDark, 0.06)}`,
         }}
       >
-        {word.meaning}
-      </Typography>
-
-      {word.level && (
-        <Chip
-          label={`Seviye: ${word.level}`}
-          size="small"
-          color="primary"
+        <Typography
+          variant="subtitle2"
           sx={{
-            fontWeight: "bold",
-            borderRadius: 2,
-            userSelect: "none",
-            mb: 1,
-            boxShadow: `0 2px 6px ${hexToRgba(colors.primaryDark, 0.4)}`, // Daha koyu gölge
-            backgroundColor: hexToRgba(colors.primaryLight, 0.9),
-            color: hexToRgba(colors.primaryDark, 0.9),
+            display: "flex",
+            alignItems: "center",
+            color: colors.accent,
+            fontWeight: 700,
+            mb: 0.5,
+            fontSize: "0.85rem",
+            letterSpacing: 0.4,
           }}
-        />
+        >
+          📖 Anlamı
+        </Typography>
+        <Typography
+          variant="body1"
+          sx={{
+            color: colors.primaryDark,
+            fontWeight: 500,
+            lineHeight: 1.7,
+            fontSize: "1rem",
+          }}
+        >
+          {updatedWord.meaning}
+        </Typography>
+      </Box>
+
+      {/* Seviye Alanı - Yeni Tasarım */}
+      {updatedWord.level && (
+        <Box
+          sx={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 1,
+            px: 1.5,
+            py: 0.6,
+            borderRadius: 2,
+            background: `linear-gradient(135deg, ${colors.accent}11, ${colors.accent}22)`,
+            color: colors.primaryDark,
+            fontWeight: "bold",
+            fontSize: "0.8rem",
+            mb: 1,
+            width: "fit-content",
+          }}
+        >
+          <Box
+            sx={{
+              width: 8,
+              height: 8,
+              borderRadius: "50%",
+              backgroundColor: colors.accent,
+            }}
+          />
+          Seviye: {updatedWord.level}
+        </Box>
       )}
 
-      {word.hint && (
+      {/* Bilgi Mesajı */}
+      {updatedWord.info && (
+        <Box
+          display="flex"
+          alignItems="center"
+          gap={1}
+          color={colors.info}
+          fontSize="0.85rem"
+          mb={2}
+          mt={1}
+        >
+          <InfoIcon fontSize="small" />
+          {updatedWord.info}
+        </Box>
+      )}
+
+      {/* İpucu */}
+      {updatedWord.hint && (
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
             gap: 1,
-            color: hexToRgba(colors.accent, 0.9),
+            color: colors.accent,
             fontStyle: "italic",
-            userSelect: "text",
-            mb: 1,
             fontSize: "0.9rem",
+            mb: 2,
           }}
         >
-          <LightbulbIcon
-            fontSize="small"
-            sx={{
-              filter: `drop-shadow(0 0 1.5px ${hexToRgba(colors.accent, 0.7)})`, // İkon gölgesi
-            }}
-          />
-          {word.hint}
+          <LightbulbIcon fontSize="small" />
+          {updatedWord.hint}
         </Box>
       )}
 
-      <Box display="flex" gap={1} flexWrap="wrap" mb={1}>
-        {word.tags?.map((tag) => (
+      {/* Etiketler */}
+      <Box display="flex" gap={1} flexWrap="wrap" mb={2} mt={2}>
+        {updatedWord.tags?.map((tag) => (
           <Chip
             key={tag}
             label={tag}
             size="small"
             sx={{
-              bgcolor: hexToRgba(colors.primaryLight, 0.85),
+              bgcolor: hexToRgba(colors.primaryLight, 0.8),
               color: hexToRgba(colors.primaryDark, 0.95),
-              fontWeight: 600,
+              fontWeight: 500,
               textTransform: "capitalize",
               userSelect: "none",
-              boxShadow: `0 1px 3px ${hexToRgba(colors.primaryDark, 0.3)}`, // Chip gölgesi koyu
             }}
           />
         ))}
       </Box>
 
-      {word.example && (
+      {/* Örnek ve Sesli Okuma */}
+      {updatedWord.example && (
         <>
           <Button
             variant="outlined"
@@ -203,32 +259,74 @@ const WordCard = ({ word, isFavorite, onToggleFavorite, onClick }) => {
               setShowExample((prev) => !prev);
             }}
             sx={{
-              color: hexToRgba(colors.primaryDark, 0.95),
-              borderColor: hexToRgba(colors.primaryLight, 0.95),
+              color: colors.accent,
+              borderColor: colors.accent,
               fontWeight: 600,
               textTransform: "none",
-              mb: 1,
+              fontSize: "0.85rem",
+              px: 2,
+              py: 0.5,
+              borderRadius: 2,
+              background: `linear-gradient(135deg, ${hexToRgba(
+                colors.accent,
+                0.04
+              )}, ${hexToRgba(colors.accent, 0.08)})`,
+              boxShadow: `0 2px 6px ${hexToRgba(colors.accent, 0.15)}`,
+              transition: "all 0.25s ease-in-out",
               alignSelf: "flex-start",
+              "&:hover": {
+                backgroundColor: hexToRgba(colors.accent, 0.1),
+                borderColor: colors.accent,
+                transform: "scale(1.03)",
+                boxShadow: `0 4px 10px ${hexToRgba(colors.accent, 0.25)}`,
+              },
             }}
           >
-            {showExample ? "Örnek Cümleyi Gizle" : "Örnek Cümleyi Göster"}
+            {showExample ? "Örneği Gizle" : "Örneği Göster"}
           </Button>
-          <Collapse
-            in={showExample}
-            timeout="auto"
-            unmountOnExit
-            sx={{
-              color: hexToRgba(colors.neutralDark, 0.8),
-              fontStyle: "italic",
-              userSelect: "text",
-              borderLeft: `3px solid ${hexToRgba(colors.accent, 0.7)}`,
-              pl: 2,
-            }}
-          >
-            "{word.example}"
+
+          <Collapse in={showExample} timeout="auto" unmountOnExit>
+            <Box
+              sx={{
+                color: hexToRgba(colors.neutralDark, 0.9),
+                borderLeft: `3px solid ${colors.accent}`,
+                pl: 2,
+                fontStyle: "italic",
+                mb: 1,
+                mt: 2,
+              }}
+            >
+              "{updatedWord.example}"
+            </Box>
           </Collapse>
         </>
       )}
+      <Button
+        variant="outlined"
+        size="small"
+        startIcon={<VolumeUpIcon fontSize="small" />}
+        onClick={onClick}
+        sx={{
+          color: colors.accent,
+          borderColor: hexToRgba(colors.accent, 0.6),
+          fontWeight: 500,
+          textTransform: "none",
+          fontSize: "0.75rem",
+          ml: "auto",
+          mb: 1,
+          px: 1.5,
+          py: 0.4,
+          borderRadius: 1.5,
+          transition: "all 0.2s ease",
+          "&:hover": {
+            backgroundColor: hexToRgba(colors.accent, 0.1),
+            borderColor: colors.accent,
+            transform: "scale(1.02)",
+          },
+        }}
+      >
+        Dinle
+      </Button>
     </Card>
   );
 };

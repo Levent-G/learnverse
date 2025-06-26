@@ -1,12 +1,13 @@
 import React from "react";
-import { Box, Typography,  Modal, Divider } from "@mui/material";
+import { Box, Typography, Modal, Divider } from "@mui/material";
 import { useColors } from "../../../../context/ColorContext";
-import ListenWithBear from "./ListenWithBear ";
+import ListenWithBear from "./ListenWithBear";
 
 const WordModal = ({ open, word, onClose }) => {
   const { colors } = useColors();
 
   if (!word) return null;
+
   return (
     <Modal
       open={open}
@@ -15,7 +16,7 @@ const WordModal = ({ open, word, onClose }) => {
       aria-describedby="word-modal-description"
       sx={{
         overflowY: "auto",
-        backdropFilter: "blur(6px)", // arka planı flu yapar, odak artırır
+        backdropFilter: "blur(6px)",
         backgroundColor: "rgba(0,0,0,0.3)",
         display: "flex",
         alignItems: "center",
@@ -35,11 +36,10 @@ const WordModal = ({ open, word, onClose }) => {
           overflowY: "auto",
           display: "flex",
           flexDirection: "column",
-          gap: 3,
+          gap: 4,
           fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
         }}
       >
-        {/* Başlık */}
         <Typography
           id="word-modal-title"
           variant="h3"
@@ -55,28 +55,46 @@ const WordModal = ({ open, word, onClose }) => {
           {word.word}
         </Typography>
 
-        {/* Anlam */}
-        <Typography
-          variant="h6"
+        {/* Anlam alanı - modern */}
+        <Box
           sx={{
-            color: colors.neutralDark,
-            fontWeight: 600,
-            textAlign: "center",
-            fontStyle: "italic",
-            letterSpacing: 0.3,
+            backgroundColor: "#F9FAFB",
+            borderLeft: `4px solid ${colors.primaryDark}`,
+            borderRadius: 2,
+            px: 2,
+            py: 1.5,
+            boxShadow: `0 1px 4px ${colors.primaryDark}10`,
           }}
         >
-          {word.meaning}
-        </Typography>
+          <Typography
+            variant="subtitle2"
+            sx={{
+              color: colors.primaryDark,
+              fontWeight: 700,
+              mb: 0.5,
+              letterSpacing: 0.5,
+            }}
+          >
+            📖 Anlamı
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              color: colors.primaryDark,
+              fontWeight: 500,
+              lineHeight: 1.7,
+              fontSize: "1.05rem",
+            }}
+          >
+            {word.meaning}
+          </Typography>
+        </Box>
 
         <Divider sx={{ borderColor: colors.primaryLight }} />
 
-        {/* Ses */}
-        <Box sx={{ textAlign: "center" }}>
+        <Box>
           <ListenWithBear textToSpeak={word.word} />
         </Box>
-
-      
       </Box>
     </Modal>
   );

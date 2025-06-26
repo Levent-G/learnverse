@@ -15,29 +15,31 @@ export default function Sozluk() {
 
   const [search, setSearch] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [favorites, setFavorites] = useState(() => {
-    const saved = localStorage.getItem("sozlukFavorites");
-    return saved ? JSON.parse(saved) : [];
-  });
   const [words, setWords] = useState([]);
   const [selectedWord, setSelectedWord] = useState(null);
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
 
   useEffect(() => {
     async function fetchWords() {
       const params = selectedCategories.length
         ? { categories: selectedCategories }
         : null;
-  
+
       const result = await request({
         url: selectedCategories.length ? "/words/by-categories" : "/words",
         params,
       });
-  
+
       if (result.success) {
-        // Fisher-Yates Shuffle
-        const shuffled = [...result.data];
+        const wordsWithId = result.data.map((word, index) => ({
+          ...word,
+          id: word.id || index.toString(), // var olan id yoksa index kullan
+        }));
+
+        // Shuffle işlemi
+        const shuffled = [...wordsWithId];
         for (let i = shuffled.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
@@ -49,23 +51,27 @@ export default function Sozluk() {
     }
     fetchWords();
   }, [selectedCategories, request]);
-  
 
   const filteredWords = useMemo(() => {
-    return words.filter((w) =>
+    let list = words;
+    if (showOnlyFavorites) {
+      list = list.filter((w) => w.favorite);
+    }
+    return list.filter((w) =>
       w.word.toLowerCase().includes(search.toLowerCase())
     );
-  }, [words, search]);
+  }, [words, search, showOnlyFavorites]);
 
   const toggleFavorite = (wordId) => {
-    setFavorites((prev) => {
-      const updated = prev.includes(wordId)
-        ? prev.filter((id) => id !== wordId)
-        : [...prev, wordId];
-      localStorage.setItem("sozlukFavorites", JSON.stringify(updated));
-      return updated;
-    });
+    setWords((prev) =>
+      prev.map((w) => (w.id === wordId ? { ...w, favorite: !w.favorite } : w))
+    );
   };
+
+  const totalFavorites = useMemo(
+    () => words.filter((w) => w.favorite).length,
+    [words]
+  );
 
   const openWordModal = (word) => {
     setSelectedWord(word);
@@ -125,9 +131,11 @@ export default function Sozluk() {
             words={filteredWords}
             page={page}
             onPageChange={setPage}
-            favorites={favorites}
             toggleFavorite={toggleFavorite}
             onWordClick={openWordModal}
+            totalFavorites={totalFavorites}
+            showOnlyFavorites={showOnlyFavorites}
+            setShowOnlyFavorites={setShowOnlyFavorites}
           />
         </Box>
       </Container>

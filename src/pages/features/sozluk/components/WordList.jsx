@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Typography,
-  Box,
-  Grid,
-  Pagination,
-  Button,
-} from "@mui/material";
+import { Typography, Box, Grid, Pagination, Button } from "@mui/material";
 import WordCard from "./WordCard";
 import { useColors } from "../../../../context/ColorContext";
 
@@ -13,18 +7,19 @@ export default function WordList({
   words,
   page,
   onPageChange,
-  favorites,
   toggleFavorite,
   onWordClick,
+  totalFavorites,
+  showOnlyFavorites,
+  setShowOnlyFavorites,
 }) {
   const { colors } = useColors();
 
-  const PAGE_SIZE = 5;
+  const PAGE_SIZE = 4;
   const paginatedWords = words.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <Box sx={{ flex: 1 }}>
-      {/* Favoriler ve filtre */}
       <Box
         sx={{
           display: "flex",
@@ -44,8 +39,8 @@ export default function WordList({
 
         <Button
           variant="contained"
-          color="secondary"
-          onClick={() => alert("Favorileriniz gösterilecek.")}
+          color={showOnlyFavorites ? "primary" : "secondary"}
+          onClick={() => setShowOnlyFavorites((prev) => !prev)}
           sx={{
             fontWeight: 700,
             textTransform: "none",
@@ -55,7 +50,9 @@ export default function WordList({
             },
           }}
         >
-          Favoriler ({favorites.length})
+          {showOnlyFavorites
+            ? "T\u00fcm\u00fcn\u00fc G\u00f6ster"
+            : `Favoriler (${totalFavorites})`}
         </Button>
       </Box>
 
@@ -64,8 +61,8 @@ export default function WordList({
           <Grid item xs={12} sm={12} key={word.id}>
             <WordCard
               word={word}
-              isFavorite={favorites.includes(word.id)}
-              onToggleFavorite={toggleFavorite}
+              isFavorite={word.favorite}
+              onToggleFavorite={() => toggleFavorite(word.id)} // sadece bu kartı etkiler
               onClick={() => onWordClick(word)}
             />
           </Grid>

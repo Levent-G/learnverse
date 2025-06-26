@@ -141,7 +141,7 @@ export default function CategorySidebar({ selectedCategories, onSelect }) {
               dense
               disablePadding
               sx={{
-                maxHeight: 190,
+                maxHeight: 395,
                 overflowY: "auto",
                 px: 1,
                 borderRadius: 2,

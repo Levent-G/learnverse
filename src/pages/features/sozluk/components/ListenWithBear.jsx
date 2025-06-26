@@ -6,23 +6,18 @@ const ListenWithBear = ({ textToSpeak }) => {
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   const speak = () => {
-    if (!window.speechSynthesis) return;
+    if (!window.speechSynthesis || !textToSpeak) return;
 
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.lang = "en-US";
 
-    // Konuşma başladığında
     setIsSpeaking(true);
 
-    // Konuşma bittikten sonra
-    utterance.onend = () => {
-      setIsSpeaking(false);
-    };
+    utterance.onend = () => setIsSpeaking(false);
 
     window.speechSynthesis.speak(utterance);
 
-    // 5 saniye sonra da güvenlik için kapat
     setTimeout(() => {
       setIsSpeaking(false);
     }, 2500);
@@ -38,14 +33,12 @@ const ListenWithBear = ({ textToSpeak }) => {
     <Box
       sx={{
         textAlign: "center",
-        mt: 5,
-        px: 2,
-        maxWidth: 360,
-        mx: "auto",
-        bgcolor: "#f5f5f5",
-        borderRadius: 3,
-        boxShadow: 3,
+        mt: 1,
+        px: 3,
         py: 4,
+        borderRadius: 3,
+        bgcolor: "#F0F4F8",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
       }}
     >
       <Box sx={{ mb: 3, display: "flex", justifyContent: "center" }}>
@@ -53,20 +46,20 @@ const ListenWithBear = ({ textToSpeak }) => {
       </Box>
       <Button
         variant="contained"
-        color="primary"
         onClick={speak}
-        disabled={!textToSpeak}
         sx={{
+          background: "linear-gradient(90deg, #3B82F6, #2563EB)",
+          color: "#fff",
+          fontWeight: 600,
+          px: 4,
+          py: 1,
           borderRadius: 3,
-          fontWeight: 700,
-          px: 5,
-          py: 1.5,
-          fontSize: "1.1rem",
+          fontSize: "0.95rem",
           textTransform: "none",
-          boxShadow: "0 4px 8px rgba(0,0,0,0.15)",
+          transition: "all 0.2s ease",
           "&:hover": {
-            backgroundColor: "#1976d2",
-            boxShadow: "0 6px 12px rgba(0,0,0,0.25)",
+            background: "#2563EB",
+            transform: "scale(1.03)",
           },
         }}
       >
