@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { useApiRequest } from "../hooks/useApiRequest";
+import { useAutoLogout } from "../hooks/useAutoLogout";
 
 const AuthContext = createContext();
 
@@ -12,19 +13,12 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const { request } = useApiRequest();
 
-  // ⏱ Token süresi dolduğunda oturumu otomatik olarak sonlandır
-  useEffect(() => {
-    if (!currentUser) return;
-
-    const timeout = setTimeout(() => {
-      sessionStorage.removeItem("authToken");
-      sessionStorage.removeItem("userInfo");
-      setCurrentUser(null);
-      console.warn("15 dakika sonra otomatik çıkış yapıldı.");
-    }, 15 * 60 * 1000); // 15 dakika = 900000 ms
-
-    return () => clearTimeout(timeout); // Cleanup
-  }, [currentUser]);
+  // 🔥 Otomatik çıkış aktifleşiyor
+  useAutoLogout(currentUser, () => {
+    sessionStorage.removeItem("authToken");
+    sessionStorage.removeItem("userInfo");
+    setCurrentUser(null);
+  });
 
   const setUserInfo = async (email) => {
     const result = await request({
@@ -72,6 +66,7 @@ export function AuthProvider({ children }) {
     sessionStorage.setItem("authToken", token);
     await setUserInfo(email);
     setCurrentUser({ ...userData, token });
+
     setLoading(false);
 
     return { success: true };
