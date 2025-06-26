@@ -11,9 +11,7 @@ const GunlukGorevler = () => {
   const { email } = userInfo;
 
   const navigate = useNavigate();
-
   const { colors } = useColors();
-
   const { request } = useApiRequest();
 
   const [newTasksData, setNewTasksData] = useState(tasksData);
@@ -29,29 +27,38 @@ const GunlukGorevler = () => {
 
         if (result.success) {
           setNewTasksData((prev) => {
-            const newTasksData = [...prev];
-            const dailyTaskIndex = newTasksData.findIndex(
+            const updatedTasks = [...prev];
+            const dailyTaskIndex = updatedTasks.findIndex(
               (item) => item.title === "Günlük Görev"
             );
+
             if (dailyTaskIndex === -1) return prev;
 
-            const dailyTask = newTasksData[dailyTaskIndex];
+            const dailyTask = updatedTasks[dailyTaskIndex];
+            const { remaining, target } = result.data;
+            const completed = target - remaining;
+
             const newTasks = dailyTask.tasks.map((task) => {
               if (task.includes("quiz")) {
-                const remaining = result.data.remaining;
-                const target = result.data.target;
-
-                return `🧠 ${remaining} / ${target} quiz çözdün`;
+                if (completed === 0) {
+                  return "✅ Tüm quiz görevlerini tamamladın!";
+                } else if (completed === 0) {
+                  return `🚀 Hedefin: ${target} quiz çözmek – Hadi başlayalım!`;
+                } else if (remaining === 1) {
+                  return `🔥 ${target} quiz hedefinden ${completed} tanesini tamamladın. Sadece 1 kaldı!`;
+                } else {
+                  return `🧠 ${target} quiz hedefinden ${completed} tanesini tamamladın. ${remaining} kaldı.`;
+                }
               }
               return task;
             });
 
-            newTasksData[dailyTaskIndex] = {
+            updatedTasks[dailyTaskIndex] = {
               ...dailyTask,
               tasks: newTasks,
             };
 
-            return newTasksData;
+            return updatedTasks;
           });
         } else {
           notify("Günlük görev alınamadı.", "error");
@@ -66,7 +73,6 @@ const GunlukGorevler = () => {
 
   return (
     <Grid container spacing={4} justifyContent="center" sx={{ mb: 6, mt: 5 }}>
-      {/* Her görev kartını burada dönebilirsin, ben sadece Günlük Görev'i örnekledim */}
       {newTasksData.map(({ title, tasks, buttonText, route }) => (
         <Grid item xs={12} sm={6} md={4} key={title}>
           <Card
