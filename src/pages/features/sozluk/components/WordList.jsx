@@ -4,6 +4,8 @@ import { useColors } from "../../../../context/ColorContext";
 import WordCard from "./wordCard/WordCard";
 import WordModal from "./WordModal";
 import { motion, AnimatePresence } from "framer-motion";
+import { useApiRequest } from "../../../../hooks/useApiRequest";
+import { notify } from "../../../../utils/notify";
 
 export default function WordList({
   words,
@@ -12,6 +14,7 @@ export default function WordList({
   setShowOnlyFavorites,
 }) {
   const { colors } = useColors();
+  const { request } = useApiRequest();
 
   const [selectedWord, setSelectedWord] = useState(null);
   const [open, setOpen] = useState(false);
@@ -20,14 +23,29 @@ export default function WordList({
   const PAGE_SIZE = 4;
   const paginatedWords = words.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  const toggleFavorite = (wordId) => {
-    setWords((prev) =>
-      prev.map((w) => (w.id === wordId ? { ...w, favorite: !w.favorite } : w))
-    );
+  const toggleFavorite = async (wordId) => {
+    try {
+      const result = await request({
+        url: `/words/favori/${wordId}`,
+        method: "POST",
+      });
+
+      if (result.success) {
+        setWords((prev) =>
+          prev.map((w) =>
+            w.id === wordId ? { ...w, favori: !w.favori } : w
+          )
+        );
+      } else {
+        notify(result.error, "error");
+      }
+    } catch (err) {
+      notify(err.message, "error");
+    }
   };
 
   const totalFavorites = useMemo(
-    () => words.filter((w) => w.favorite).length,
+    () => words.filter((w) => w.favori).length,
     [words]
   );
 
@@ -77,7 +95,7 @@ export default function WordList({
           }}
         >
           {showOnlyFavorites
-            ? "T\u00fcm\u00fcn\u00fc G\u00f6ster"
+            ? "Tümünü Göster"
             : `Favoriler (${totalFavorites})`}
         </Button>
       </Box>
@@ -95,7 +113,7 @@ export default function WordList({
               >
                 <WordCard
                   word={word}
-                  isFavorite={word.favorite}
+                  isFavorite={word.favori}
                   onToggleFavorite={() => toggleFavorite(word.id)}
                   onClick={() => openWordModal(word)}
                 />
@@ -132,7 +150,6 @@ export default function WordList({
         />
       </Box>
 
-      {/* Kelime Modal */}
       {open && (
         <WordModal word={selectedWord} onClose={closeWordModal} open={open} />
       )}

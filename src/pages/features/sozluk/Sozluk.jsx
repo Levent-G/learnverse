@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Box, Container, useMediaQuery } from "@mui/material";
 import { useColors } from "../../../context/ColorContext";
 import { useApiRequest } from "../../../hooks/useApiRequest";
@@ -18,8 +18,12 @@ export default function Sozluk() {
   const [words, setWords] = useState([]);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
 
-  useEffect(() => {
-    async function fetchWords() {
+  /**
+   * Words listesini API'den çeker
+   * @param {boolean} shuffle kelimeleri karıştırıp karıştırmayacağı
+   */
+  const fetchWords = useCallback(
+    async (shuffle = true) => {
       const params = selectedCategories.length
         ? { categories: selectedCategories }
         : null;
@@ -30,20 +34,27 @@ export default function Sozluk() {
       });
 
       if (result.success) {
-        const shuffled = shuffledArray(result.data);
-
-        setWords(shuffled);
+        const data = shuffle ? shuffledArray(result.data) : result.data;
+        setWords(data);
       } else {
         setWords([]);
       }
-    }
-    fetchWords();
-  }, [selectedCategories, request]);
+    },
+    [request, selectedCategories]
+  );
+
+  useEffect(() => {
+    fetchWords(true);
+  }, [fetchWords]);
+
+  useEffect(() => {
+    fetchWords(false);
+  }, [showOnlyFavorites, fetchWords]);
 
   const filteredWords = useMemo(() => {
     let list = words;
     if (showOnlyFavorites) {
-      list = list.filter((w) => w.favorite);
+      list = list.filter((w) => w.favori);
     }
     return list.filter((w) =>
       w.word.toLowerCase().includes(search.toLowerCase())
@@ -99,6 +110,7 @@ export default function Sozluk() {
             setWords={setWords}
             showOnlyFavorites={showOnlyFavorites}
             setShowOnlyFavorites={setShowOnlyFavorites}
+            onRefresh={() => fetchWords(false)}
           />
         </Box>
       </Container>
