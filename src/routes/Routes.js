@@ -13,6 +13,7 @@ import QuizMain from "../pages/features/quizler/QuizMain";
 import ProfilSayfasi from "../pages/profile/ProfilSayfasi";
 import Sozluk from "../pages/features/sozluk/Sozluk";
 import LessonVideos from "../pages/features/lessonVideos/LessonVideos";
+import WordCatcherGame from "../pages/features/wordCarcherGame/WordCatcherGame";
 
 const publicRoutes = [
   { path: "/", element: <LandingPage /> },
@@ -33,6 +34,8 @@ const privateRoutes = [
   { path: "/feature/ai-asistan", element: <AIAsistan /> },
   { path: "/profil", element: <ProfilSayfasi /> },
   { path: "/feature/lessonVideos", element: <LessonVideos /> },
+  { path: "/feature/word-catcher-game", element: <WordCatcherGame /> },
+
 
 ];
 

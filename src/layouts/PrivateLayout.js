@@ -17,6 +17,7 @@ import QuizIcon from "@mui/icons-material/Quiz";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
+import CatchingPokemonIcon from '@mui/icons-material/CatchingPokemon'; 
 
 import { notify } from "../utils/notify";
 
@@ -52,6 +53,12 @@ export default function PrivateLayout({ children }) {
       label: "AI Asistan",
       icon: <SmartToyIcon />,
       path: "/feature/ai-asistan",
+    },
+    // Yeni oyun menü öğesi
+    {
+      label: "Kelime Yakala",
+      icon: <CatchingPokemonIcon />,
+      path: "/feature/word-catcher-game",
     },
   ];
 
