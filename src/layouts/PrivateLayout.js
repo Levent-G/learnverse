@@ -16,6 +16,8 @@ import MenuBookIcon from "@mui/icons-material/MenuBook";
 import QuizIcon from "@mui/icons-material/Quiz";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
+import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
+
 import { notify } from "../utils/notify";
 
 export default function PrivateLayout({ children }) {
@@ -40,6 +42,11 @@ export default function PrivateLayout({ children }) {
       path: "/feature/kalip-cumleler",
     },
     { label: "Quizler", icon: <QuizIcon />, path: "/feature/quizler" },
+    {
+      label: "Ders Videoları",
+      icon: <VideoLibraryIcon />,
+      path: "/feature/lessonVideos",
+    },
     { label: "Topluluk", icon: <PeopleAltIcon />, path: "/feature/topluluk" },
     {
       label: "AI Asistan",

@@ -12,6 +12,7 @@ import KalipCumleler from "../pages/features/kalipCumleler/KalipCumleler";
 import QuizMain from "../pages/features/quizler/QuizMain";
 import ProfilSayfasi from "../pages/profile/ProfilSayfasi";
 import Sozluk from "../pages/features/sozluk/Sozluk";
+import LessonVideos from "../pages/features/lessonVideos/LessonVideos";
 
 const publicRoutes = [
   { path: "/", element: <LandingPage /> },
@@ -31,6 +32,8 @@ const privateRoutes = [
   { path: "/feature/topluluk", element: <Topluluk /> },
   { path: "/feature/ai-asistan", element: <AIAsistan /> },
   { path: "/profil", element: <ProfilSayfasi /> },
+  { path: "/feature/lessonVideos", element: <LessonVideos /> },
+
 ];
 
 export { publicRoutes, privateRoutes };
