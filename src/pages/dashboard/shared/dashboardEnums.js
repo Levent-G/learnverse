@@ -38,8 +38,6 @@ export const features = [
   },
 ];
 
-
-
 // Örnek videolu dersler
 export const videoLessons = [
   {
@@ -84,7 +82,6 @@ export const enrolledCourses = [
   },
 ];
 
-
 // Mock diğer kullanıcıların ilerleme değerleri
 export const otherUsersProgress = [
   { name: "Elif", progress: 80 },
@@ -108,9 +105,10 @@ export const tasksData = [
     tasks: [
       "📖 “The Curious Incident...” kitabına başla",
       "💬 “How do you feel?” kalıbını tekrar et",
+      "🌍 “Learnverse Sözlük ” alanından kelime çalış.",
     ],
     buttonText: "Daha fazla öneri al",
-    route: "/feature/quizler",
+    route: "/feature/learnverse-sozluk",
   },
   {
     title: "Mini Test",
@@ -141,4 +139,3 @@ export const featuresModul = [
     description: "Gramer kurallarını kolay ve hızlı öğren",
   },
 ];
-
