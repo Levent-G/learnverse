@@ -18,6 +18,7 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import SmartToyIcon from "@mui/icons-material/SmartToy";
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
 import CatchingPokemonIcon from '@mui/icons-material/CatchingPokemon'; 
+import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
 
 import { notify } from "../utils/notify";
 
@@ -47,6 +48,11 @@ export default function PrivateLayout({ children }) {
       label: "Ders Videoları",
       icon: <VideoLibraryIcon />,
       path: "/feature/lessonVideos",
+    },
+    {
+      label: "Roleplay Modu",
+      icon: <WorkOutlineIcon />,
+      path: "/feature/roleplay",
     },
     { label: "Topluluk", icon: <PeopleAltIcon />, path: "/feature/topluluk" },
     {

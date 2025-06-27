@@ -14,6 +14,7 @@ import ProfilSayfasi from "../pages/profile/ProfilSayfasi";
 import Sozluk from "../pages/features/sozluk/Sozluk";
 import LessonVideos from "../pages/features/lessonVideos/LessonVideos";
 import WordCatcherGame from "../pages/features/wordCarcherGame/WordCatcherGame";
+import RoleplayMode from "../pages/features/replayMode/ReplayMode";
 
 const publicRoutes = [
   { path: "/", element: <LandingPage /> },
@@ -35,6 +36,8 @@ const privateRoutes = [
   { path: "/profil", element: <ProfilSayfasi /> },
   { path: "/feature/lessonVideos", element: <LessonVideos /> },
   { path: "/feature/word-catcher-game", element: <WordCatcherGame /> },
+  { path: "/feature/roleplay", element: <RoleplayMode /> },
+
 
 
 ];
