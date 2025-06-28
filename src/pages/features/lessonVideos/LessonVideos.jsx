@@ -1,6 +1,5 @@
-// src/pages/LessonVideos.jsx
 import React, { useState } from "react";
-import { Box, Typography, Grid } from "@mui/material";
+import { Box, Typography, Grid, Container } from "@mui/material";
 import FilterBar from "./components/FilterBar";
 import VideoCard from "./components/VideoCard";
 import VideoPreviewModal from "./components/VideoPreviewModal";
@@ -15,19 +14,18 @@ export default function LessonVideos() {
 
   const filteredVideos = videos.filter((v) => {
     return (
-      (!search ||
-        v.title.toLowerCase().includes(search.toLowerCase())) &&
+      (!search || v.title.toLowerCase().includes(search.toLowerCase())) &&
       (!category || v.category === category) &&
       (!level || v.level === level)
     );
   });
 
   return (
-    <Box sx={{ p: { xs: 2, md: 4 } }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 3, md: 6 } }}>
       <Typography
-        variant="h4"
-        color="primary.dark"
-        sx={{ mb: 3, fontWeight: 800 }}
+        variant="h3"
+        color="primary.main"
+        sx={{ mb: 4, fontWeight: 900, letterSpacing: "0.05em", textAlign: "center" }}
       >
         🎥 Video Lessons
       </Typography>
@@ -47,39 +45,38 @@ export default function LessonVideos() {
         <Box
           sx={{
             textAlign: "center",
-            mt: 8,
+            mt: 12,
+            color: "text.secondary",
+            userSelect: "none",
           }}
         >
           <img
             src="https://cdn-icons-png.flaticon.com/512/7486/7486793.png"
             alt="No results"
-            style={{ width: 150, opacity: 0.5 }}
+            style={{ width: 140, opacity: 0.3, margin: "0 auto" }}
           />
-          <Typography
-            variant="h6"
-            sx={{ mt: 2, color: "#94A3B8" }}
-          >
+          <Typography variant="h6" sx={{ mt: 3, fontWeight: 600, fontStyle: "italic" }}>
             Oops! No videos found.
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1, maxWidth: 360, mx: "auto", color: "text.secondary" }}>
+            Try adjusting your filters or search terms to find what you need.
           </Typography>
         </Box>
       ) : (
-        <Grid container spacing={3}>
+        <Grid container spacing={{ xs: 3, md: 4 }}>
           {filteredVideos.map((video) => (
-            <Grid item xs={12} key={video.id}>
-              <VideoCard
-                video={video}
-                onPreview={setPreviewVideo}
-              />
+            <Grid item xs={12} sm={6} md={4} key={video.id}>
+              <VideoCard video={video} onPreview={setPreviewVideo} />
             </Grid>
           ))}
         </Grid>
       )}
 
       <VideoPreviewModal
-        open={!!previewVideo}
+        open={Boolean(previewVideo)}
         onClose={() => setPreviewVideo(null)}
         video={previewVideo}
       />
-    </Box>
+    </Container>
   );
 }

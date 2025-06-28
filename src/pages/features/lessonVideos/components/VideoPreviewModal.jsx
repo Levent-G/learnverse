@@ -1,40 +1,86 @@
-// src/components/VideoPreviewModal.jsx
 import React from "react";
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   IconButton,
+  useMediaQuery,
+  useTheme,
+  Box,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
 export default function VideoPreviewModal({ open, onClose, video }) {
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+
   return (
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth="md"
+      fullScreen={fullScreen}
+      maxWidth="lg"
       fullWidth
+      PaperProps={{
+        sx: {
+          borderRadius: 3,
+          backgroundColor: "#F9FAFB",
+          boxShadow: "0 12px 36px rgba(0,0,0,0.15)",
+        },
+      }}
+      aria-labelledby="video-dialog-title"
     >
-      <DialogTitle>
+      <DialogTitle
+        id="video-dialog-title"
+        sx={{
+          fontWeight: 800,
+          fontSize: 20,
+          color: theme.palette.primary.main,
+          position: "relative",
+          pb: 1,
+          userSelect: "none",
+        }}
+      >
         {video?.title}
         <IconButton
-          sx={{ position: "absolute", right: 8, top: 8 }}
+          aria-label="Close video preview"
           onClick={onClose}
+          sx={{
+            position: "absolute",
+            right: 12,
+            top: 12,
+            color: theme.palette.primary.main,
+          }}
         >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent dividers>
-        {video && (
+
+      <DialogContent
+        dividers
+        sx={{
+          p: 0,
+          display: "flex",
+          justifyContent: "center",
+          backgroundColor: "black",
+          borderRadius: "0 0 16px 16px",
+        }}
+      >
+        {video ? (
           <iframe
             width="100%"
-            height="400"
+            height={fullScreen ? 250 : 480}
             src={video.videoUrl}
-            frameBorder="0"
-            allowFullScreen
             title={video.title}
-          ></iframe>
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            style={{ borderRadius: 8 }}
+          />
+        ) : (
+          <Box sx={{ p: 4, color: "text.secondary" }}>
+            No video selected.
+          </Box>
         )}
       </DialogContent>
     </Dialog>

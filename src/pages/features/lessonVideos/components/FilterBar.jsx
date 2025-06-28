@@ -1,40 +1,38 @@
 import React from "react";
-import {
-  Grid,
-  TextField,
-  MenuItem,
-} from "@mui/material";
+import { Grid, TextField, MenuItem, InputAdornment } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 
 const inputSx = {
-  backgroundColor: "#F5F9FF",
-  borderRadius: 3,
-  boxShadow: "inset 0 2px 5px rgba(0,0,0,0.05)",
+  backgroundColor: "#F9FAFB",
+  borderRadius: 2,
   "& .MuiOutlinedInput-root": {
-    borderRadius: 3,
+    borderRadius: 8,
     "& fieldset": {
-      borderColor: "#A3BFFA",
+      borderColor: "#CBD5E1",
       transition: "border-color 0.3s ease",
     },
     "&:hover fieldset": {
-      borderColor: "#87CEEB",
-      boxShadow: "0 0 8px #87CEEB",
+      borderColor: "#3B82F6",
+      boxShadow: "0 0 8px rgba(59, 130, 246, 0.4)",
     },
     "&.Mui-focused fieldset": {
-      borderColor: "#0EA5E9",
-      boxShadow: "0 0 8px #0EA5E9",
+      borderColor: "#2563EB",
+      boxShadow: "0 0 8px rgba(37, 99, 235, 0.7)",
     },
   },
   "& .MuiInputBase-input": {
-    padding: "12.5px 14px",
-    fontWeight: 500,
-    color: "#394867",
+    padding: "12px 14px",
+    fontWeight: 600,
+    color: "#1E293B",
+    fontSize: 14,
   },
   "& .MuiInputLabel-root": {
-    color: "#657786",
+    color: "#64748B",
     fontWeight: 600,
+    fontSize: 14,
   },
   "& .MuiInputLabel-root.Mui-focused": {
-    color: "#0EA5E9",
+    color: "#2563EB",
   },
 };
 
@@ -47,8 +45,8 @@ export default function FilterBar({
   onLevelChange,
 }) {
   return (
-    <Grid container spacing={2} sx={{ mb: 4 }}>
-      <Grid item xs={12} md={4}>
+    <Grid container spacing={3} sx={{ mb: 5 }}>
+      <Grid item xs={12} md={5}>
         <TextField
           fullWidth
           variant="outlined"
@@ -58,9 +56,16 @@ export default function FilterBar({
           sx={inputSx}
           label="Search"
           InputLabelProps={{ shrink: true }}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon sx={{ color: "#64748B" }} />
+              </InputAdornment>
+            ),
+          }}
         />
       </Grid>
-      <Grid item xs={6} md={4}>
+      <Grid item xs={6} md={3.5}>
         <TextField
           select
           fullWidth
@@ -69,13 +74,13 @@ export default function FilterBar({
           onChange={(e) => onCategoryChange(e.target.value)}
           sx={inputSx}
         >
-          <MenuItem value="">All</MenuItem>
+          <MenuItem value="">All Categories</MenuItem>
           <MenuItem value="Grammar">Grammar</MenuItem>
           <MenuItem value="Speaking">Speaking</MenuItem>
           <MenuItem value="Listening">Listening</MenuItem>
         </TextField>
       </Grid>
-      <Grid item xs={6} md={4}>
+      <Grid item xs={6} md={3.5}>
         <TextField
           select
           fullWidth
@@ -84,7 +89,7 @@ export default function FilterBar({
           onChange={(e) => onLevelChange(e.target.value)}
           sx={inputSx}
         >
-          <MenuItem value="">All</MenuItem>
+          <MenuItem value="">All Levels</MenuItem>
           <MenuItem value="Beginner">Beginner</MenuItem>
           <MenuItem value="Intermediate">Intermediate</MenuItem>
           <MenuItem value="Advanced">Advanced</MenuItem>
